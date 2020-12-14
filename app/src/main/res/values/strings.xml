@@ -17,4 +17,7 @@
     <string name="your_lunch" translatable="false">Mon dinner</string>
     <string name="sidebar_menu_settings" translatable="false">Paramétres</string>
     <string name="sidebar_menu_logout" translatable="false">Se déconnecter</string>
+
+    <!-- Main Activity __menu -->
+    <string name="menu_persona_description">Image de la personne connecté</string>
 </resources>
