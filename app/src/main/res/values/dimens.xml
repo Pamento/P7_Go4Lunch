@@ -12,9 +12,10 @@
     <dimen name="size_m">24dp</dimen>
     <dimen name="size_b">32dp</dimen>
     <dimen name="size_ex">40dp</dimen>
+    <dimen name="size_h">64dp</dimen>
 
     <dimen name="size_text_n">16sp</dimen>
     <dimen name="size_text_m">24sp</dimen>
-    <dimen name="size_text_logo">48sp</dimen>
+    <dimen name="size_text_logo">32sp</dimen>
 
 </resources>

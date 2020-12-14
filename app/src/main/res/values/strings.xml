@@ -2,9 +2,12 @@
     <!-- Facebook application ID and custom URL scheme (app ID prefixed by 'fb'). -->
     <!-- <string name="facebook_app_id">429297778093935</string>
     <string name="fb_login_protocol_scheme">fb429297778093935</string> -->
-
     <string name="facebook_application_id" translatable="false">429297778093935</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fb429297778093935</string>
+
+    <!-- Functional strings for open and close the navigation drawer -->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="app_name">Go4Lunch</string>
     <string name="nav_bottom_map_view" translatable="false">Carte</string>
@@ -14,8 +17,8 @@
     <!-- Main Activity -->
     <string name="login_succeed" translatable="false">Authentification réussite !</string>
     <string name="login_filed" translatable="false">Erreur d\'authentification&#8230;</string>
-    <string name="your_lunch" translatable="false">Mon dinner</string>
-    <string name="sidebar_menu_settings" translatable="false">Paramétres</string>
+    <string name="your_lunch" translatable="false">Mon restaurant</string>
+    <string name="sidebar_menu_settings" translatable="false">Paramètres</string>
     <string name="sidebar_menu_logout" translatable="false">Se déconnecter</string>
 
     <!-- Main Activity __menu -->
