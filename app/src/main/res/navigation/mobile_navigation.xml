@@ -3,23 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/navigation_map_view">
 
     <fragment
-        android:id="@+id/navigation_home"
-        android:name="com.pawel.p7_go4lunch.ui.home.HomeFragment"
-        android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        android:id="@+id/navigation_map_view"
+        android:name="com.pawel.p7_go4lunch.ui.mapView.MapViewFragment"
+        android:label="@string/nav_bottom_map_view"
+        tools:layout="@layout/fragment_map_view" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.pawel.p7_go4lunch.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:id="@+id/navigation_list_view"
+        android:name="com.pawel.p7_go4lunch.ui.listView.ListViewFragment"
+        android:label="@string/nav_bottom_list_view"
+        tools:layout="@layout/fragment_list_view" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.pawel.p7_go4lunch.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/navigation_workmates"
+        android:name="com.pawel.p7_go4lunch.ui.workmates.WorkmatesFragment"
+        android:label="@string/nav_bottom_workmates"
+        tools:layout="@layout/fragment_workmates" />
 </navigation>

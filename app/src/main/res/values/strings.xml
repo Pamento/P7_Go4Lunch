@@ -10,9 +10,9 @@
     <string name="twitter_consumer_secret" translatable="false">YOUR_CONSUMER_SECRET</string>
 
     <string name="app_name">Go4Lunch</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="nav_bottom_map_view">Map View</string>
+    <string name="nav_bottom_list_view">List View</string>
+    <string name="nav_bottom_workmates">Workmates</string>
 
     <!-- Main Activity -->
     <string name="login_succeed">Authentification réussie !</string>

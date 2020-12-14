@@ -1,16 +1,16 @@
-package com.pawel.p7_go4lunch.ui.notifications;
+package com.pawel.p7_go4lunch.ui.listView;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class NotificationsViewModel extends ViewModel {
+public class ListViewViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public NotificationsViewModel() {
+    public ListViewViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is notifications fragment");
+        mText.setValue("This is listView fragment");
     }
 
     public LiveData<String> getText() {

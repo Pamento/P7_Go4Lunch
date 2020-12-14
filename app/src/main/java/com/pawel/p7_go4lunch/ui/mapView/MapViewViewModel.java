@@ -1,14 +1,14 @@
-package com.pawel.p7_go4lunch.ui.home;
+package com.pawel.p7_go4lunch.ui.mapView;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class HomeViewModel extends ViewModel {
+public class MapViewViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public HomeViewModel() {
+    public MapViewViewModel() {
         mText = new MutableLiveData<>();
         mText.setValue("This is home fragment");
     }
