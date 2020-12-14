@@ -2,8 +2,12 @@ package com.pawel.p7_go4lunch;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
@@ -17,6 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -39,11 +44,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //com.pawel.p7_go4lunch.databinding.ActivityMainBinding
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        binding = com.pawel.p7_go4lunch.databinding.ActivityMainBinding.inflate(getLayoutInflater());
         view = binding.getRoot();
         setContentView(view);
         setSupportActionBar(binding.toolbar);
+        binding.toolbar.setOverflowIcon(ContextCompat.getDrawable(this,R.drawable.ic_baseline_search_24));
         setNavigationDrawer();
 
         if (isCurrentUserLogged()){
@@ -51,6 +56,42 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             startSignInActivity();
         }
+    }
+
+    // ____________ Toolbar search _____________________
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        String searchHint = getString(R.string.search_hint);
+        //MenuInflater inf = getMenuInflater();
+        getMenuInflater().inflate(R.menu.toolbar_search_menu, menu);
+        MenuItem menuItem = menu.findItem(R.id.toolbar_search_icon);
+        SearchView searchView = (SearchView) menuItem.getActionView();
+        searchView.setQueryHint(searchHint);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                //TODO "search" get value and do actions with
+                showSnackBar(view, "submit research");
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                //TODO "search" get value and do actions with
+                Toast.makeText(MainActivity.this,"searching",Toast.LENGTH_LONG).show();
+                return false;
+            }
+        });
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.toolbar_search_icon) {
+            //TODO add action
+            showSnackBar(view, "Search");
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void setNavigationDrawer() {
@@ -70,6 +111,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.sidebar_menu_your_lunch:
+                //TODO for each case, add a link to new fragments or activities or actions
 //                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
 //                        new MessageFragment()).commit();
                 showSnackBar(view,"restaurant");
@@ -136,7 +178,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void logOutUser() {
-        showSnackBar(view,"Action to logout");
+        AuthUI.getInstance().signOut(this).addOnSuccessListener(this, aVoid ->
+        {
+            if (FirebaseAuth.getInstance().getCurrentUser() == null)
+            {
+                showSnackBar(view,"Action to logout");
+//                Intent intent = new Intent(MainActivity.this);
+//                startActivity(intent);
+            }
+        });
+
     }
 
     private void showSnackBar(View view, String message){

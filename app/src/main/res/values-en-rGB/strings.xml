@@ -19,6 +19,9 @@
     <string name="sidebar_menu_settings" translatable="false">Settings</string>
     <string name="sidebar_menu_logout" translatable="false">Logout</string>
 
-    <!-- Main Activity __menu -->
+    <!-- Main Activity __menu_drawer -->
     <string name="menu_persona_description">Image of the person logged in.</string>
+    <!-- Main Activity __menu_toolbar -->
+    <string name="search">search</string>
+    <string name="search_hint">Name of restaurant</string>
 </resources>
