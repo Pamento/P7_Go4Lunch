@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="facebook_application_id" translatable="false">429297778093935</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb429297778093935</string>
+
+    <string name="app_name">Go4Lunch</string>
+    <string name="nav_bottom_map_view" translatable="false">Map View</string>
+    <string name="nav_bottom_list_view" translatable="false">List View</string>
+    <string name="nav_bottom_workmates" translatable="false">Workmates</string>
+
+    <!-- Main Activity -->
+    <string name="login_succeed" translatable="false">Successful login!</string>
+    <string name="login_filed" translatable="false">Error of authentication&#8230;</string>
+    <string name="your_lunch" translatable="false">Mon dinner</string>
+    <string name="sidebar_menu_settings" translatable="false">Settings</string>
+    <string name="sidebar_menu_logout" translatable="false">Logout</string>
+</resources>
