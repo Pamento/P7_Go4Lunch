@@ -1,60 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".MainActivity"
     android:layout_width="match_parent"
     android:layout_height="@dimen/nav_drawer_header_height"
-    android:background="@drawable/fui_idp_button_background_anonymous"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark">
-
-
-    <TextView
-        android:id="@+id/nav_drawer_text_logo"
-        style="@android:style/TextAppearance.WindowTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/app_name"
-        android:textSize="@dimen/size_text_logo"
-        android:layout_marginTop="@dimen/size_b"
-        android:layout_marginHorizontal="@dimen/size_b"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    android:theme="@style/ThemeOverlay.AppCompat.Dark"
+    tools:context=".MainActivity">
 
     <ImageView
-        android:id="@+id/nav_drawer_user_image"
-        android:layout_width="@dimen/size_h"
-        android:layout_height="@dimen/size_h"
-        android:layout_margin="@dimen/size_s"
-        android:src="@drawable/ic_persona_placeholder"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:contentDescription="@string/menu_persona_description" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/background_header_land"
+        android:scaleType="centerCrop" />
 
-    <TextView
-        android:id="@+id/nav_drawer_user_full_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/size_n"
-        android:layout_marginBottom="@dimen/size_s"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        app:layout_constraintBottom_toTopOf="@+id/nav_drawer_user_email"
-        app:layout_constraintStart_toEndOf="@+id/nav_drawer_user_image"
-        tools:text="John Travolta" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/nav_drawer_user_email"
-        android:layout_width="128dp"
-        android:layout_height="16dp"
-        android:layout_marginStart="@dimen/size_n"
-        android:layout_marginEnd="@dimen/size_m"
-        android:layout_marginBottom="@dimen/size_n"
-        app:layout_constraintBottom_toBottomOf="@id/nav_drawer_user_image"
-        app:layout_constraintStart_toEndOf="@+id/nav_drawer_user_image"
-        tools:text="android@cam.andro" />
+        <TextView
+            android:id="@+id/nav_drawer_text_logo"
+            style="@android:style/TextAppearance.WindowTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginHorizontal="@dimen/size_b"
+            android:layout_marginTop="@dimen/size_b"
+            android:gravity="center"
+            android:text="@string/app_name"
+            android:textSize="@dimen/size_text_logo" />
 
+        <ImageView
+            android:id="@+id/nav_drawer_user_image"
+            android:layout_width="@dimen/size_h"
+            android:layout_height="@dimen/size_h"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="@dimen/size_s"
+            android:contentDescription="@string/menu_persona_description"
+            android:src="@drawable/ic_persona_placeholder" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/nav_drawer_user_full_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/nav_drawer_user_image"
+            android:layout_marginStart="@dimen/size_n"
+            android:layout_marginBottom="@dimen/size_s"
+            android:layout_toEndOf="@+id/nav_drawer_user_image"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            tools:text="John Travolta" />
+
+        <TextView
+            android:id="@+id/nav_drawer_user_email"
+            android:layout_width="128dp"
+            android:layout_height="16dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="@dimen/size_n"
+            android:layout_marginEnd="@dimen/size_m"
+            android:layout_marginBottom="@dimen/size_b"
+            android:layout_toEndOf="@+id/nav_drawer_user_image"
+            tools:text="android@cam.andro" />
+
+    </RelativeLayout>
+
+</RelativeLayout>
