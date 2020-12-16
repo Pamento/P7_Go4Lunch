@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.material.navigation.NavigationView;
@@ -149,10 +150,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void startSignInActivity() {
+        AuthMethodPickerLayout customLayout = new AuthMethodPickerLayout
+                .Builder(R.layout.login_firebase)
+                .setGoogleButtonId(R.id.google_btn)
+                .setFacebookButtonId(R.id.facebook_btn)
+                .setEmailButtonId(R.id.email_btn)
+                .build();
+
         startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
                         .setAvailableProviders(providers)
+                        .setAuthMethodPickerLayout(customLayout)
                         .setTheme(R.style.LoginTheme) //.setLogo(R.drawable.my_great_logo)      // Set logo drawable
                         .build(),
                 RC_SIGN_IN);
@@ -170,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 showSnackBar(view, getString(R.string.login_succeed));
             } else {
                 // Sign in failed. If response is null the user canceled the
-                // sign-in flow using the back button. Otherwise check
+                // sign-in flow using the back background_facebook_btn. Otherwise check
                 // response.getError().getErrorCode() and handle the error.
                 // ...
             }

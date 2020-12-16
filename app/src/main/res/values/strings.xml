@@ -26,4 +26,9 @@
     <!-- Main Activity __menu_toolbar -->
     <string name="search">recherche</string>
     <string name="search_hint">Nom de restaurant</string>
+    <!-- Login Firebase -->
+    <string name="slogan">Trouvez une restaurant sympa et invite tes collèques à dîner!</string>
+    <string name="btn_text_google">Connection avec Google</string>
+    <string name="btn_text_facebook">Connection avec Facebook</string>
+    <string name="btn_text_email">Connection avec email</string>
 </resources>
