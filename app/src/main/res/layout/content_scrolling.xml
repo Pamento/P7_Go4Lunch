@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".AboutRestaurantActivity"
+    tools:showIn="@layout/activity_about_restaurant">
+
+<!--    <TextView-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_margin="@dimen/text_margin"-->
+<!--        android:text="@string/large_text" />-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:padding="@dimen/size_n">
+
+            <TextView
+                android:id="@+id/detail_restaurant_name"
+                style="@style/TextAppearance.MaterialComponents.Headline5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/size_m"
+                android:textColor="@android:color/white"
+                tools:text="@string/app_name" />
+
+            <ImageView
+                android:id="@+id/detail_star_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/detail_restaurant_name"
+                android:contentDescription="@string/star1"
+                android:paddingTop="@dimen/size_s"
+                tools:src="@drawable/ic_baseline_star_24" />
+
+            <ImageView
+                android:id="@+id/detail_star_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/detail_star_1"
+                android:contentDescription="@string/star2"
+                android:paddingTop="@dimen/size_s"
+                tools:src="@drawable/ic_baseline_star_24" />
+
+            <ImageView
+                android:id="@+id/detail_star_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/detail_star_2"
+                android:contentDescription="@string/star3"
+                android:paddingTop="@dimen/size_s"
+                tools:src="@drawable/ic_baseline_star_24" />
+
+            <TextView
+                android:id="@+id/detail_restaurant_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/detail_restaurant_name"
+                android:textColor="@android:color/white"
+                tools:text="French restaurant - 12 rue Faubourg Poissonier" />
+        </RelativeLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/size_x"
+            android:paddingVertical="@dimen/size_n">
+
+            <TextView
+                android:id="@+id/detail_tx_call"
+                style="@style/about_the_restaurant"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/call"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:drawableTopCompat="@drawable/ic_local_phone_primary_36" />
+
+            <TextView
+                android:id="@+id/detail_tx_like"
+                style="@style/about_the_restaurant"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/like"
+                app:layout_constraintEnd_toStartOf="@+id/detail_tx_website"
+                app:layout_constraintStart_toEndOf="@+id/detail_tx_call"
+                app:layout_constraintTop_toTopOf="parent"
+                app:drawableTopCompat="@drawable/ic_star_primary_36" />
+
+            <TextView
+                android:id="@+id/detail_tx_website"
+                style="@style/about_the_restaurant"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/website"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:drawableTopCompat="@drawable/ic_glob_primary_36" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/holo_orange_light" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/detail_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+
+</androidx.core.widget.NestedScrollView>

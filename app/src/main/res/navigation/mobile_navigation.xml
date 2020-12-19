@@ -22,4 +22,9 @@
         android:name="com.pawel.p7_go4lunch.ui.workmates.WorkmatesFragment"
         android:label="@string/nav_bottom_workmates"
         tools:layout="@layout/fragment_workmates" />
+    <activity
+        android:id="@+id/about_the_restaurant_dest"
+        android:name="com.pawel.p7_go4lunch.AboutRestaurantActivity"
+        android:label="content_scrolling"
+        tools:layout="@layout/content_scrolling" />
 </navigation>

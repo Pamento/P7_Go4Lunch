@@ -3,7 +3,6 @@ package com.pawel.p7_go4lunch;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.SearchView;
@@ -41,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             new AuthUI.IdpConfig.EmailBuilder().build(),
             new AuthUI.IdpConfig.GoogleBuilder().build(),
             new AuthUI.IdpConfig.FacebookBuilder().build());
+    NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         view = binding.getRoot();
         setContentView(view);
         setSupportActionBar(binding.toolbar);
-        binding.toolbar.setOverflowIcon(ContextCompat.getDrawable(this,R.drawable.ic_baseline_search_24));
+        //binding.toolbar.setOverflowIcon(ContextCompat.getDrawable(this,R.drawable.ic_baseline_search_24));
         setNavigationDrawer();
 
         if (isCurrentUserLogged()){
@@ -57,6 +57,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             startSignInActivity();
         }
+    }
+
+    // ____________ Main Activity _____________________
+    private void startMainActivity() {
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.navigation_map_view, R.id.navigation_list_view, R.id.navigation_workmates)
+                .build();
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        NavigationUI.setupWithNavController(binding.navView, navController);
     }
 
     // ____________ Toolbar search _____________________
@@ -111,11 +123,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.sidebar_menu_your_lunch:
+            case R.id.about_the_restaurant_dest:
                 //TODO for each case, add a link to new fragments or activities or actions
 //                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
 //                        new MessageFragment()).commit();
                 showSnackBar(view,"restaurant");
+                navController.navigate(R.id.about_the_restaurant_dest);
                 break;
             case R.id.sidebar_menu_settings:
                 showSnackBar(view,"settings");
@@ -135,18 +148,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             super.onBackPressed();
         }
-    }
-
-    // MainActivity
-    private void startMainActivity() {
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_map_view, R.id.navigation_list_view, R.id.navigation_workmates)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(binding.navView, navController);
     }
 
     private void startSignInActivity() {

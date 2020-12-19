@@ -22,7 +22,7 @@
         android:layout_height="50dp"
         android:layout_marginBottom="@dimen/size_b"
         android:paddingHorizontal="@dimen/size_m"
-        android:drawableStart="@drawable/ic_at_email_24"
+        android:drawableStart="@drawable/ic_baseline_mail_outline_red_24"
         android:textAppearance="@style/com_facebook_button"
         android:textColor="@android:color/black"
         android:background="@drawable/background_email_btn"
