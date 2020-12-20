@@ -25,7 +25,7 @@
             android:padding="@dimen/size_n">
 
             <TextView
-                android:id="@+id/detail_restaurant_name"
+                android:id="@+id/about_the_rest_name"
                 style="@style/TextAppearance.MaterialComponents.Headline5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -34,37 +34,40 @@
                 tools:text="@string/app_name" />
 
             <ImageView
-                android:id="@+id/detail_star_1"
+                android:id="@+id/about_the_rest_star_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@+id/detail_restaurant_name"
+                android:layout_toEndOf="@+id/about_the_rest_name"
                 android:contentDescription="@string/star1"
                 android:paddingTop="@dimen/size_s"
-                tools:src="@drawable/ic_baseline_star_24" />
+                android:src="@drawable/ic_baseline_star_24"
+                android:visibility="invisible" />
 
             <ImageView
-                android:id="@+id/detail_star_2"
+                android:id="@+id/about_the_rest_star_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@+id/detail_star_1"
+                android:layout_toEndOf="@+id/about_the_rest_star_1"
                 android:contentDescription="@string/star2"
                 android:paddingTop="@dimen/size_s"
-                tools:src="@drawable/ic_baseline_star_24" />
+                android:src="@drawable/ic_baseline_star_24"
+                android:visibility="invisible" />
 
             <ImageView
-                android:id="@+id/detail_star_3"
+                android:id="@+id/about_the_rest_star_3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@+id/detail_star_2"
+                android:layout_toEndOf="@+id/about_the_rest_star_2"
                 android:contentDescription="@string/star3"
                 android:paddingTop="@dimen/size_s"
-                tools:src="@drawable/ic_baseline_star_24" />
+                android:src="@drawable/ic_baseline_star_24"
+                android:visibility="invisible" />
 
             <TextView
-                android:id="@+id/detail_restaurant_address"
+                android:id="@+id/about_the_rest_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/detail_restaurant_name"
+                android:layout_below="@+id/about_the_rest_name"
                 android:textColor="@android:color/white"
                 tools:text="French restaurant - 12 rue Faubourg Poissonier" />
         </RelativeLayout>
@@ -76,7 +79,7 @@
             android:paddingVertical="@dimen/size_n">
 
             <TextView
-                android:id="@+id/detail_tx_call"
+                android:id="@+id/about_the_rest_tx_call"
                 style="@style/about_the_restaurant"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -86,18 +89,19 @@
                 app:drawableTopCompat="@drawable/ic_local_phone_primary_36" />
 
             <TextView
-                android:id="@+id/detail_tx_like"
+                android:id="@+id/about_the_rest_tx_like"
                 style="@style/about_the_restaurant"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/like"
-                app:layout_constraintEnd_toStartOf="@+id/detail_tx_website"
-                app:layout_constraintStart_toEndOf="@+id/detail_tx_call"
+                app:layout_constraintEnd_toStartOf="@+id/about_the_rest_tx_website"
+                app:layout_constraintStart_toEndOf="@+id/about_the_rest_tx_call"
                 app:layout_constraintTop_toTopOf="parent"
-                app:drawableTopCompat="@drawable/ic_star_primary_36" />
+                app:drawableTopCompat="@drawable/ic_star_primary_36"
+                android:paddingHorizontal="@dimen/size_n" />
 
             <TextView
-                android:id="@+id/detail_tx_website"
+                android:id="@+id/about_the_rest_tx_website"
                 style="@style/about_the_restaurant"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -114,7 +118,7 @@
             android:background="@android:color/holo_orange_light" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/detail_recycler_view"
+            android:id="@+id/about_the_rest_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </LinearLayout>
