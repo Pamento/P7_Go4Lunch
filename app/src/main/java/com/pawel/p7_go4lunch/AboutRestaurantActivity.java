@@ -77,7 +77,7 @@ public class AboutRestaurantActivity extends AppCompatActivity {
     }
 
     private void setDrawable() {
-        ic_Like = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_twotone_star_36, null);
+        ic_Like = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_star_in_star_36, null);
         ic_notLike = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_star_primary_36, null);
         ic_rest_chosen = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_check_circle_32, null);
         ic_rest_not_chosen = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_check_circle_red_32, null);

@@ -12,16 +12,15 @@ import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.pawel.p7_go4lunch.databinding.ActivityMainBinding;
+import com.pawel.p7_go4lunch.tools.ViewWidgets;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -84,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public boolean onQueryTextSubmit(String query) {
                 //TODO "search" get value and do actions with
-                showSnackBar(view, "submit research");
+                ViewWidgets.showSnackBar(0,view, "submit research");
                 return false;
             }
 
@@ -102,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.toolbar_search_icon) {
             //TODO add action
-            showSnackBar(view, "Search");
+            ViewWidgets.showSnackBar(0, view, "Search");
         }
         return super.onOptionsItemSelected(item);
     }
@@ -127,11 +126,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 //TODO for each case, add a link to new fragments or activities or actions
 //                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
 //                        new MessageFragment()).commit();
-                showSnackBar(view,"restaurant");
+                ViewWidgets.showSnackBar(0, view,"restaurant");
                 navController.navigate(R.id.about_the_restaurant_dest);
                 break;
-            case R.id.sidebar_menu_settings:
-                showSnackBar(view,"settings");
+            case R.id.settings_activity:
+                ViewWidgets.showSnackBar(0, view,"settings");
+                navController.navigate(R.id.settings_activity);
                 break;
             case R.id.sidebar_menu_log_out:
                 logOutUser();
@@ -177,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
                 //FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                showSnackBar(view, getString(R.string.login_succeed));
+                ViewWidgets.showSnackBar(0, view, getString(R.string.login_succeed));
             } else {
                 // Sign in failed. If response is null the user canceled the
                 // sign-in flow using the back background_facebook_btn. Otherwise check
@@ -192,16 +192,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         {
             if (FirebaseAuth.getInstance().getCurrentUser() == null)
             {
-                showSnackBar(view,"Action to logout");
+                ViewWidgets.showSnackBar(0, view,"Action to logout");
 //                Intent intent = new Intent(MainActivity.this);
 //                startActivity(intent);
             }
         });
 
-    }
-
-    private void showSnackBar(View view, String message){
-        Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show();
     }
 
     @Nullable

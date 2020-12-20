@@ -27,4 +27,8 @@
         android:name="com.pawel.p7_go4lunch.AboutRestaurantActivity"
         android:label="content_scrolling"
         tools:layout="@layout/content_scrolling" />
+    <activity
+        android:id="@+id/settings_activity"
+        android:name="com.pawel.p7_go4lunch.SettingsActivity"
+        android:label="SettingsActivity" />
 </navigation>

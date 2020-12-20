@@ -5,11 +5,11 @@
         <item android:id="@+id/about_the_restaurant_dest"
             android:icon="@drawable/ic_baseline_restaurant_menu_24"
             android:title="@string/your_lunch"/>
-        <item android:id="@+id/sidebar_menu_settings"
+        <item android:id="@+id/settings_activity"
             android:icon="@drawable/ic_baseline_settings_24"
             android:title="@string/sidebar_menu_settings"/>
         <item android:id="@+id/sidebar_menu_log_out"
-            android:icon="@drawable/ic_baseline_power_settings_new_24"
+            android:icon="@drawable/ic_custom_logout_svg_24"
             android:title="@string/sidebar_menu_logout"/>
     </group>
 </menu>

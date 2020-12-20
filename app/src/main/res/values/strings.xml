@@ -44,6 +44,34 @@
     <string name="star3">Star tree</string>
     <string name="title_activity_about_restaurant"> </string>
 
+    <!-- Settings Activity -->
+    <string name="title_activity_settings">Paramètres</string>
+
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Settings & Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="notification_category">Notifications</string>
+    <string name="hour">Heure d\'affichage</string>
+    <string name="research_category">Paramètres de recherche</string>
+    <string name="account_category">Compte</string>
+    <string name="delete_account">Supprimer le compte</string>
+    <string name="perimeter_research">Périmètre de recherche</string>
+
+    <!-- View Widgets -->
+    <string name="snack_action_btn">Ok</string>
+    <string name="thanks">Merci</string>
+
     <!--<string name="title_activity_about_restaurant">ScrollingActivity</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
