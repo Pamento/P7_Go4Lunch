@@ -25,4 +25,23 @@
         <item>5</item>
         <item>max</item>
     </string-array>
+
+    <string-array name="hour_entries">
+        <item>11:30 am</item>
+        <item>11:45 am</item>
+        <item>12:00 pm</item>
+        <item>12:15 pm</item>
+        <item>12:30 pm</item>
+        <item>12:45 pm</item>
+        <item>13:00 pm</item>
+    </string-array>
+    <string-array name="hour_values">
+        <item>11_30</item>
+        <item>11_45</item>
+        <item>12</item>
+        <item>12_15</item>
+        <item>12_30</item>
+        <item>12_45</item>
+        <item>13</item>
+    </string-array>
 </resources>

@@ -62,6 +62,8 @@
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="notification_category">Notifications</string>
+    <string name="notification_active">Activés</string>
+    <string name="notification_inactive">Désactivés</string>
     <string name="hour">Heure d\'affichage</string>
     <string name="research_category">Paramètres de recherche</string>
     <string name="account_category">Compte</string>

@@ -3,29 +3,35 @@
     <PreferenceCategory app:title="@string/notification_category">
 
         <SwitchPreferenceCompat
-            app:key="notification"
             app:icon="@drawable/ic_notifications_24"
-            app:title="Notifications"/>
+            app:key="notification"
+            app:title="Notifications"
+            app:summaryOff="@string/notification_inactive"
+            app:summaryOn="@string/notification_active"/>
 
-        <EditTextPreference
+        <ListPreference
+            app:defaultValue="12"
             app:dependency="notification"
-            app:defaultValue="12h"
+            app:entries="@array/hour_entries"
+            app:entryValues="@array/hour_values"
+            app:icon="@drawable/ic_clock_time_primary_dark_24"
             app:key="hour"
             app:title="@string/hour"
-            app:icon="@drawable/ic_clock_time_primary_dark_24"
             app:useSimpleSummaryProvider="true" />
 
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/research_category">
+    <PreferenceCategory
+        app:allowDividerAbove="true"
+        app:title="@string/research_category">
 
         <ListPreference
             app:defaultValue="max"
-            app:key="perimeter"
             app:entries="@array/perimeter_entries"
             app:entryValues="@array/perimeter_values"
             app:icon="@drawable/ic_explore_24"
+            app:key="perimeter"
             app:title="@string/perimeter_research"
             app:useSimpleSummaryProvider="true" />
 
@@ -34,41 +40,41 @@
     <PreferenceCategory app:title="@string/account_category">
 
         <Preference
+            app:icon="@drawable/ic_delete_primary_dark_24"
             app:key="delete_account"
-            app:title="@string/delete_account"
-            app:icon="@drawable/ic_delete_primary_dark_24" />
+            app:title="@string/delete_account" />
     </PreferenceCategory>
 
 
-<!--    <PreferenceCategory app:title="@string/messages_header">-->
+    <!--    <PreferenceCategory app:title="@string/messages_header">-->
 
-<!--        <EditTextPreference-->
-<!--            app:key="signature"-->
-<!--            app:title="@string/signature_title"-->
-<!--            app:useSimpleSummaryProvider="true" />-->
+    <!--        <EditTextPreference-->
+    <!--            app:key="signature"-->
+    <!--            app:title="@string/signature_title"-->
+    <!--            app:useSimpleSummaryProvider="true" />-->
 
-<!--        <ListPreference-->
-<!--            app:defaultValue="reply"-->
-<!--            app:entries="@array/reply_entries"-->
-<!--            app:entryValues="@array/reply_values"-->
-<!--            app:key="reply"-->
-<!--            app:title="@string/reply_title"-->
-<!--            app:useSimpleSummaryProvider="true" />-->
+    <!--        <ListPreference-->
+    <!--            app:defaultValue="reply"-->
+    <!--            app:entries="@array/reply_entries"-->
+    <!--            app:entryValues="@array/reply_values"-->
+    <!--            app:key="reply"-->
+    <!--            app:title="@string/reply_title"-->
+    <!--            app:useSimpleSummaryProvider="true" />-->
 
-<!--    </PreferenceCategory>-->
+    <!--    </PreferenceCategory>-->
 
-<!--    <PreferenceCategory app:title="@string/sync_header">-->
+    <!--    <PreferenceCategory app:title="@string/sync_header">-->
 
-<!--        <SwitchPreference-->
-<!--            app:key="sync"-->
-<!--            app:title="@string/sync_title" />-->
+    <!--        <SwitchPreference-->
+    <!--            app:key="sync"-->
+    <!--            app:title="@string/sync_title" />-->
 
-<!--        <SwitchPreferenceCompat-->
-<!--            app:dependency="sync"-->
-<!--            app:key="attachment"-->
-<!--            app:summaryOff="@string/attachment_summary_off"-->
-<!--            app:summaryOn="@string/attachment_summary_on"-->
-<!--            app:title="@string/attachment_title" />-->
+    <!--        <SwitchPreferenceCompat-->
+    <!--            app:dependency="sync"-->
+    <!--            app:key="attachment"-->
+    <!--            app:summaryOff="@string/attachment_summary_off"-->
+    <!--            app:summaryOn="@string/attachment_summary_on"-->
+    <!--            app:title="@string/attachment_title" />-->
 
-<!--    </PreferenceCategory>-->
+    <!--    </PreferenceCategory>-->
 </PreferenceScreen>
