@@ -1,6 +1,7 @@
 package com.pawel.p7_go4lunch;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,6 +27,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.preference.PreferenceManager;
 
 import java.util.Arrays;
 import java.util.List;
@@ -56,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             startSignInActivity();
         }
+        SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
     }
 
     // ____________ Main Activity _____________________
