@@ -1,4 +1,4 @@
-package com.pawel.p7_go4lunch.tools;
+package com.pawel.p7_go4lunch.utils;
 
 import android.graphics.Color;
 import android.view.View;

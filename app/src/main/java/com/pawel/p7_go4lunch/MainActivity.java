@@ -15,7 +15,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.pawel.p7_go4lunch.databinding.ActivityMainBinding;
-import com.pawel.p7_go4lunch.tools.ViewWidgets;
+import com.pawel.p7_go4lunch.utils.ViewWidgets;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

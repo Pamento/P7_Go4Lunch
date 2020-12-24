@@ -30,5 +30,6 @@
     <activity
         android:id="@+id/settings_activity"
         android:name="com.pawel.p7_go4lunch.SettingsActivity"
-        android:label="SettingsActivity" />
+        android:label="SettingsActivity"
+        tools:layout="@layout/settings_activity"/>
 </navigation>

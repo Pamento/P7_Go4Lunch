@@ -71,4 +71,11 @@
     <!-- View Widgets -->
     <string name="snack_action_btn">Ok</string>
     <string name="thanks">Thank you</string>
+
+    <!-- AlertDialog widget -->
+    <string name="alert_title">Deletion of account !</string>
+    <string name="alert_message">Are You want to definitely delete your account ?</string>
+    <string name="btn_ok">Delete it</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="cancel_message">Deletion of account is canceled.</string>
 </resources>

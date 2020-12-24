@@ -15,5 +15,6 @@
         android:text="@string/delete_account"
         android:textColor="@android:color/white"
         android:background="@drawable/background_google_btn"
-        android:layout_margin="@dimen/size_s" />
+        android:layout_margin="@dimen/size_s"
+        android:onClick="deleteUserAccount"/>
 </LinearLayout>

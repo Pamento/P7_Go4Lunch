@@ -74,6 +74,13 @@
     <string name="snack_action_btn">Ok</string>
     <string name="thanks">Merci</string>
 
+    <!-- AlertDialog widget -->
+    <string name="alert_title">Suppression du compte !</string>
+    <string name="alert_message">Voulez-vous supprimer definitivement votre compte ?</string>
+    <string name="btn_ok">Supprimer</string>
+    <string name="btn_cancel">Annuler</string>
+    <string name="cancel_message">Suppression du compte annulé.</string>
+
     <!--<string name="title_activity_about_restaurant">ScrollingActivity</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
