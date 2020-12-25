@@ -20,6 +20,8 @@
     <string name="your_lunch" translatable="false">Mon restaurant</string>
     <string name="sidebar_menu_settings" translatable="false">Paramètres</string>
     <string name="sidebar_menu_logout" translatable="false">Se déconnecter</string>
+    <!-- Main Activity Error messages -->
+    <string name="google_maps_not_available">Le service Google Maps n'est pas disponible.</string>
 
     <!-- Main Activity __menu_drawer -->
     <string name="menu_persona_description">Image de la personne connecté</string>

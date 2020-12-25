@@ -18,6 +18,8 @@
     <string name="your_lunch" translatable="false">Mon dinner</string>
     <string name="sidebar_menu_settings" translatable="false">Settings</string>
     <string name="sidebar_menu_logout" translatable="false">Logout</string>
+    <!-- Main Activity Error messages -->
+    <string name="google_maps_not_available">Google Maps services not available.</string>
 
     <!-- Main Activity __menu_drawer -->
     <string name="menu_persona_description">Image of the person logged in.</string>

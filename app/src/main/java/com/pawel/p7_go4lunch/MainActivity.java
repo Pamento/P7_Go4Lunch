@@ -1,5 +1,6 @@
 package com.pawel.p7_go4lunch;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -11,6 +12,8 @@ import android.widget.Toast;
 import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -37,7 +40,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //private static final String TAG = "MAPS_GOOGLE";
     private ActivityMainBinding binding;
     private View view;
+    private SharedPreferences mPrefs;
     private static final int RC_SIGN_IN = 697;
+    public static final int ERROR_DIALOG_REQUEST = 9001;
     List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.EmailBuilder().build(),
             new AuthUI.IdpConfig.GoogleBuilder().build(),
@@ -59,7 +64,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             startSignInActivity();
         }
-        //SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        // retrieve the settings from Settings Activity
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+    }
+
+    // Check if service Google Maps is available
+    public boolean isMapsServiceOk() {
+        if (mPrefs.getBoolean("localisation",true)) {
+            int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(MainActivity.this);
+            if (available == ConnectionResult.SUCCESS) {
+                return true;
+            } else if (GoogleApiAvailability.getInstance().isUserResolvableError(available)) {
+                Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(MainActivity.this, available, ERROR_DIALOG_REQUEST);
+                dialog.show();
+            } else {
+                ViewWidgets.showSnackBar(1,view,getString(R.string.google_maps_not_available));
+            }
+        }
+        return false;
     }
 
     // ____________ Main Activity _____________________

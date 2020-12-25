@@ -1,6 +1,9 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
+def localProperties = new Properties()
+localProperties.load(new FileInputStream(rootProject.file("local.properties")))
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
@@ -12,11 +15,16 @@ android {
         versionCode 1
         versionName "1.0"
 
+        resValue "string", "google_maps_key", (project.findProperty("API_KEY") ?: "")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
 
     buildTypes {
+        debug {
+            //resValue("string", "google_maps_key", localProperties['mapiKey'])
+            buildConfigField("String", "API_KEY", "\"" + localProperties['mapiKey'] + "\"")
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

@@ -28,8 +28,17 @@
         app:allowDividerAbove="true"
         app:title="@string/localisation_category">
 
+        <SwitchPreferenceCompat
+            app:icon="@drawable/ic_baseline_location_on_24"
+            app:defaultValue="true"
+            app:key="localisation"
+            app:title="Localisation"
+            app:summaryOn="@string/notification_active"
+            app:summaryOff="@string/notification_inactive"/>
+
         <ListPreference
             app:defaultValue="max"
+            app:dependency="localisation"
             app:entries="@array/perimeter_entries"
             app:entryValues="@array/perimeter_values"
             app:icon="@drawable/ic_explore_24"
