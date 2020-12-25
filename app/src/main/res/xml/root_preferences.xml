@@ -5,6 +5,7 @@
 
         <SwitchPreferenceCompat
             app:icon="@drawable/ic_notifications_24"
+            app:defaultValue="true"
             app:key="notification"
             app:title="Notifications"
             app:summaryOff="@string/notification_inactive"
@@ -25,7 +26,7 @@
 
     <PreferenceCategory
         app:allowDividerAbove="true"
-        app:title="@string/research_category">
+        app:title="@string/localisation_category">
 
         <ListPreference
             app:defaultValue="max"

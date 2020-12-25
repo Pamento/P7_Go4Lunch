@@ -13,23 +13,35 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.pawel.p7_go4lunch.R;
+import com.pawel.p7_go4lunch.databinding.FragmentMapViewBinding;
 
 public class MapViewFragment extends Fragment {
 
     private MapViewViewModel mMapViewViewModel;
+    private FragmentMapViewBinding mBinding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         mMapViewViewModel =
                 ViewModelProviders.of(this).get(MapViewViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_map_view, container, false);
-        final TextView textView = root.findViewById(R.id.text_home);
-        mMapViewViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
-        return root;
+
+        mBinding = FragmentMapViewBinding.inflate(inflater, container, false);
+        View view = mBinding.getRoot();
+        return view;
+//        View root = inflater.inflate(R.layout.fragment_map_view, container, false);
+//        final TextView textView = root.findViewById(R.id.text_home);
+//        mMapViewViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+//            @Override
+//            public void onChanged(@Nullable String s) {
+//                textView.setText(s);
+//            }
+//        });
+//        return root;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mBinding = null;
     }
 }

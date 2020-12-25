@@ -63,7 +63,7 @@
     <string name="notification_active">Activated</string>
     <string name="notification_inactive">Disabled</string>
     <string name="hour">Hour of display</string>
-    <string name="research_category">Paramètres de recherche</string>
+    <string name="localisation_category">Localisation</string>
     <string name="account_category">Account</string>
     <string name="delete_account">Delete the account</string>
     <string name="perimeter_research">Perimeter of recherche</string>

@@ -65,7 +65,7 @@
     <string name="notification_active">Activés</string>
     <string name="notification_inactive">Désactivés</string>
     <string name="hour">Heure d\'affichage</string>
-    <string name="research_category">Paramètres de recherche</string>
+    <string name="localisation_category">Localisation</string>
     <string name="account_category">Compte</string>
     <string name="delete_account">Supprimer le compte</string>
     <string name="perimeter_research">Périmètre de recherche</string>

@@ -3,6 +3,7 @@ package com.pawel.p7_go4lunch;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,6 +35,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    private static final String TAG = "MAPS_GOOGLE";
     private ActivityMainBinding binding;
     private View view;
     private static final int RC_SIGN_IN = 697;
@@ -46,11 +48,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = com.pawel.p7_go4lunch.databinding.ActivityMainBinding.inflate(getLayoutInflater());
+        Log.i(TAG, "onCreate: 0");
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
         view = binding.getRoot();
         setContentView(view);
         setSupportActionBar(binding.toolbar);
         //binding.toolbar.setOverflowIcon(ContextCompat.getDrawable(this,R.drawable.ic_baseline_search_24));
+        setNavController();
         setNavigationDrawer();
 
         if (isCurrentUserLogged()){
@@ -61,8 +65,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
     }
 
+    private void setNavController() {
+        Log.i(TAG, "setNavController: start");
+        if (navController!=null) {
+            navController = Navigation.findNavController(this,R.id.nav_host_fragment);
+        }
+    }
+
     // ____________ Main Activity _____________________
     private void startMainActivity() {
+        Log.i(TAG, "startMainActivity: start");
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
@@ -71,11 +83,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
+        Log.d(TAG, "startMainActivity: navController "+navController);
     }
 
     // ____________ Toolbar search _____________________
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        Log.i(TAG, "onCreateOptionsMenu: start");
         String searchHint = getString(R.string.search_hint);
         //MenuInflater inf = getMenuInflater();
         getMenuInflater().inflate(R.menu.toolbar_search_menu, menu);
@@ -110,6 +124,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void setNavigationDrawer() {
+        Log.i(TAG, "setNavigationDrawer: start");
         binding.navDrawerView.setNavigationItemSelectedListener(this);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this,
@@ -124,16 +139,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        Log.i(TAG, "onNavigationItemSelected: start");
         switch (item.getItemId()) {
             case R.id.about_the_restaurant_dest:
-                //TODO for each case, add a link to new fragments or activities or actions
-//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-//                        new MessageFragment()).commit();
-                ViewWidgets.showSnackBar(0, view,"restaurant");
+                Log.i(TAG, "onNavigationItemSelected: about_the_restaurant "+ navController);
                 navController.navigate(R.id.about_the_restaurant_dest);
                 break;
             case R.id.settings_activity:
-                ViewWidgets.showSnackBar(0, view,"settings");
+                Log.d(TAG, "onNavigationItemSelected: settings (navController_ "+navController);
                 navController.navigate(R.id.settings_activity);
                 break;
             case R.id.sidebar_menu_log_out:
