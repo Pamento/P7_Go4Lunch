@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -27,6 +28,8 @@ import com.pawel.p7_go4lunch.R;
 import com.pawel.p7_go4lunch.databinding.FragmentMapViewBinding;
 import com.pawel.p7_go4lunch.utils.ViewWidgets;
 
+import java.util.Objects;
+
 public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
     private MapViewViewModel mMapViewViewModel;
@@ -39,12 +42,13 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        mMapViewViewModel =
-                ViewModelProviders.of(this).get(MapViewViewModel.class);
+        mMapViewViewModel = ViewModelProviders.of(this)
+                .get(MapViewViewModel.class);
 
         try {
             mBinding = FragmentMapViewBinding.inflate(inflater, container, false);
             view = mBinding.getRoot();
+            //Objects.requireNonNull(((AppCompatActivity) requireActivity()).setSupportActionBar());
             Activity activity = getActivity();
             if (activity != null) {
                 mPrefs = PreferenceManager.getDefaultSharedPreferences(activity);
@@ -60,10 +64,9 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    // TODO return newInstance of fragment ?
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
+        this.mMap = googleMap;
     }
 
     // Check if service Google Maps is available

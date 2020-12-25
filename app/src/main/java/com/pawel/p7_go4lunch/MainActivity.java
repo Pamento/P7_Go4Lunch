@@ -1,9 +1,12 @@
 package com.pawel.p7_go4lunch;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +21,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.pawel.p7_go4lunch.databinding.ActivityMainBinding;
+import com.pawel.p7_go4lunch.utils.Const;
 import com.pawel.p7_go4lunch.utils.ViewWidgets;
 
 import androidx.annotation.NonNull;
@@ -25,6 +29,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -37,12 +43,11 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    //private static final String TAG = "MAPS_GOOGLE";
+    private static final String TAG = "MAPS_GOOGLE";
     private ActivityMainBinding binding;
     private View view;
     private SharedPreferences mPrefs;
-    private static final int RC_SIGN_IN = 697;
-    public static final int ERROR_DIALOG_REQUEST = 9001;
+    private Boolean mLocationPermissionGranted = false;
     List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.EmailBuilder().build(),
             new AuthUI.IdpConfig.GoogleBuilder().build(),
@@ -58,24 +63,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(binding.toolbar);
         //binding.toolbar.setOverflowIcon(ContextCompat.getDrawable(this,R.drawable.ic_baseline_search_24));
         setNavigationDrawer();
+        // retrieve the settings from Settings Activity
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
         if (isCurrentUserLogged()){
-            startMainActivity();
+            getLocationPermission();
+            if (isMapsServiceOk() && mLocationPermissionGranted) {
+                startMainActivity();
+            } else {
+                ViewWidgets.showSnackBar(1,view,getString(R.string.localisation_not_available));
+            }
         } else {
             startSignInActivity();
         }
-        // retrieve the settings from Settings Activity
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
     }
 
     // Check if service Google Maps is available
     public boolean isMapsServiceOk() {
-        if (mPrefs.getBoolean("localisation",true)) {
+        boolean isLocalisationSet = mPrefs.getBoolean("localisation",true);
+        Log.i(TAG, "isMapsServiceOk: prefs "+isLocalisationSet);
+        if (isLocalisationSet) {
             int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(MainActivity.this);
             if (available == ConnectionResult.SUCCESS) {
                 return true;
             } else if (GoogleApiAvailability.getInstance().isUserResolvableError(available)) {
-                Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(MainActivity.this, available, ERROR_DIALOG_REQUEST);
+                Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(MainActivity.this, available, Const.ERROR_DIALOG_REQUEST);
                 dialog.show();
             } else {
                 ViewWidgets.showSnackBar(1,view,getString(R.string.google_maps_not_available));
@@ -83,6 +95,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         return false;
     }
+
+
 
     // ____________ Main Activity _____________________
     private void startMainActivity() {
@@ -189,15 +203,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .createSignInIntentBuilder()
                         .setAvailableProviders(providers)
                         .setAuthMethodPickerLayout(customLayout)
-                        .setTheme(R.style.LoginTheme) //.setLogo(R.drawable.my_great_logo)      // Set logo drawable
+                        .setTheme(R.style.LoginTheme)
                         .build(),
-                RC_SIGN_IN);
+                Const.RC_SIGN_IN);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_SIGN_IN) {
+        if (requestCode == Const.RC_SIGN_IN) {
             IdpResponse response = IdpResponse.fromResultIntent(data);
 
             if (resultCode == RESULT_OK) {
@@ -232,4 +246,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected FirebaseUser getCurrentUser(){ return FirebaseAuth.getInstance().getCurrentUser(); }
 
     protected Boolean isCurrentUserLogged(){ return (this.getCurrentUser() != null); }
+
+    private void getLocationPermission() {
+        String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.ACCESS_COARSE_LOCATION};
+
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(), Const.FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(this.getApplicationContext(),Const.COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                mLocationPermissionGranted = true;
+            } else {
+                ActivityCompat.requestPermissions(this,permissions,Const.LOCATION_PERMISSION_REQUEST_CODE);
+            }
+        } else {
+            ActivityCompat.requestPermissions(this,permissions,Const.LOCATION_PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        mLocationPermissionGranted = false;
+        if (requestCode == Const.LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0) {
+                for (int grantResult : grantResults) {
+                    if (grantResult != PackageManager.PERMISSION_GRANTED) {
+                        mLocationPermissionGranted = false;
+                        return;
+                    }
+                    mLocationPermissionGranted = true;
+                }
+            }
+        }
+    }
 }

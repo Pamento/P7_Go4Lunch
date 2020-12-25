@@ -22,8 +22,7 @@ android {
 
     buildTypes {
         debug {
-            //resValue("string", "google_maps_key", localProperties['mapiKey'])
-            buildConfigField("String", "API_KEY", "\"" + localProperties['mapiKey'] + "\"")
+            resValue("string", "google_maps_key", localProperties['mapiKey'])
         }
         release {
             minifyEnabled false

@@ -20,6 +20,7 @@
     <string name="sidebar_menu_logout" translatable="false">Logout</string>
     <!-- Main Activity Error messages -->
     <string name="google_maps_not_available">Google Maps services not available.</string>
+    <string name="localisation_not_available">You need activate localisation if you want use this app.</string>
 
     <!-- Main Activity __menu_drawer -->
     <string name="menu_persona_description">Image of the person logged in.</string>
