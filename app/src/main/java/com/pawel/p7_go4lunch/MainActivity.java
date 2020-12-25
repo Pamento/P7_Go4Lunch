@@ -3,7 +3,6 @@ package com.pawel.p7_go4lunch;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,7 +34,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final String TAG = "MAPS_GOOGLE";
+    //private static final String TAG = "MAPS_GOOGLE";
     private ActivityMainBinding binding;
     private View view;
     private static final int RC_SIGN_IN = 697;
@@ -48,13 +47,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i(TAG, "onCreate: 0");
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         view = binding.getRoot();
         setContentView(view);
         setSupportActionBar(binding.toolbar);
         //binding.toolbar.setOverflowIcon(ContextCompat.getDrawable(this,R.drawable.ic_baseline_search_24));
-        setNavController();
         setNavigationDrawer();
 
         if (isCurrentUserLogged()){
@@ -62,19 +59,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             startSignInActivity();
         }
-        SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-    }
-
-    private void setNavController() {
-        Log.i(TAG, "setNavController: start");
-        if (navController!=null) {
-            navController = Navigation.findNavController(this,R.id.nav_host_fragment);
-        }
+        //SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
     }
 
     // ____________ Main Activity _____________________
     private void startMainActivity() {
-        Log.i(TAG, "startMainActivity: start");
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
@@ -83,13 +72,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
-        Log.d(TAG, "startMainActivity: navController "+navController);
     }
 
     // ____________ Toolbar search _____________________
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        Log.i(TAG, "onCreateOptionsMenu: start");
         String searchHint = getString(R.string.search_hint);
         //MenuInflater inf = getMenuInflater();
         getMenuInflater().inflate(R.menu.toolbar_search_menu, menu);
@@ -124,7 +111,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void setNavigationDrawer() {
-        Log.i(TAG, "setNavigationDrawer: start");
         binding.navDrawerView.setNavigationItemSelectedListener(this);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this,
@@ -139,15 +125,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        Log.i(TAG, "onNavigationItemSelected: start");
         switch (item.getItemId()) {
             case R.id.about_the_restaurant_dest:
-                Log.i(TAG, "onNavigationItemSelected: about_the_restaurant "+ navController);
-                navController.navigate(R.id.about_the_restaurant_dest);
+                initOtherActivity(AboutRestaurantActivity.class);
                 break;
             case R.id.settings_activity:
-                Log.d(TAG, "onNavigationItemSelected: settings (navController_ "+navController);
-                navController.navigate(R.id.settings_activity);
+                initOtherActivity(SettingsActivity.class);
                 break;
             case R.id.sidebar_menu_log_out:
                 logOutUser();
@@ -155,6 +138,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         binding.drawerLayout.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void initOtherActivity(Class<?> activityClass) {
+        Intent intent = new Intent(MainActivity.this, activityClass);
+        startActivity(intent);
     }
 
     @Override
@@ -199,6 +187,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 // sign-in flow using the back background_facebook_btn. Otherwise check
                 // response.getError().getErrorCode() and handle the error.
                 // ...
+                assert response != null;
+                ViewWidgets.showSnackBar(0,view,response.getEmail());
             }
         }
     }
