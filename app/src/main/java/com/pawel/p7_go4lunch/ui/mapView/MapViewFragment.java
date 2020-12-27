@@ -22,6 +22,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
 import com.pawel.p7_go4lunch.MainActivity;
 import com.pawel.p7_go4lunch.R;
@@ -39,6 +41,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     private LocalAppSettings mPrefs;
     private Activity mActivity;
     private static final String TAG = "TESTING_MAPS";
+    private Location currentLocation;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -69,18 +72,30 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
         this.mMap = googleMap;
         if (MainActivity.mLocationPermissionGranted) {
             // get automatically & unrepentantly of user will the position of device
-            getCurrentDeviceLocation();
+            //getCurrentDeviceLocation();
             // recheck permissions for settings  for maps below
-            if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_COARSE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED) {
-                return;
-            }
+//            if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION)
+//                    != PackageManager.PERMISSION_GRANTED
+//                    && ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_COARSE_LOCATION)
+//                    != PackageManager.PERMISSION_GRANTED) {
+//                return;
+//            }
             // Set blue point (mark) of user position. "true" is visible; "false" is hidden.
-            mMap.setMyLocationEnabled(true);
+            //mMap.setMyLocationEnabled(true);
             // Disable icon of the center location
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
+            Log.i(TAG, "onMapReady: mMap "+mMap);
+            LatLng testPosition = new LatLng(37,-121);
+            LatLng sydney = new LatLng(-34, 151);
+            mMap.addMarker(new MarkerOptions()
+                    .position(sydney)
+                    .title("Marker in Sydney"));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+            mMap.setOnMarkerClickListener(marker -> {
+                Log.i(TAG, "onMarkerClick: "+marker.toString());
+                return true;
+            });
         }
     }
 
@@ -91,7 +106,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
                 Task<Location> getLocation = mFusedLocationProviderClient.getLastLocation();
                 getLocation.addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Location currentLocation = task.getResult();
+                        currentLocation = task.getResult();
                         float zoom = Float.parseFloat(mPrefs.getPerimeter());
                         Log.i(TAG, "onComplete: location " + currentLocation);
                         moveCamera(new LatLng(currentLocation.getLatitude(),currentLocation.getLongitude()),zoom);

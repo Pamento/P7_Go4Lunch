@@ -54,6 +54,7 @@ public class SettingsActivity extends AppCompatActivity implements DialogWidget.
     @Override
     public void OnPositiveBtnAlertDialogClick() {
         ViewWidgets.showSnackBar(1,mView,"deletion WORKS");
+        // TODO uncomment for release version
 //        AuthUI.getInstance().delete(this)
 //                .addOnCompleteListener(task -> {
 //                    NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -69,10 +70,6 @@ public class SettingsActivity extends AppCompatActivity implements DialogWidget.
             Preference test = SettingsFragment.this.findPreference("delete_account");
             if (test != null) {
                 test.setLayoutResource(R.layout.delete_btn_layout);
-//                test.setOnPreferenceClickListener(preference -> {
-//                    ViewWidgets.showSnackBar(1,getView(),"delete ?");
-//                    return true;
-//                });
             } else {
                 ViewWidgets.showSnackBar(1,getView(),"Indentured error. please retry.");
             }
