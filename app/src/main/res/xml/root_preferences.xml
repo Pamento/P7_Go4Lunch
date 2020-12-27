@@ -20,6 +20,12 @@
             app:title="@string/hour"
             app:useSimpleSummaryProvider="true" />
 
+<!--        <SeekBarPreference-->
+<!--            app:key="notification_volume"-->
+<!--            app:title="Volume"-->
+<!--            app:showSeekBarValue="true"-->
+<!--            app:defaultValue="50"/>-->
+
 
     </PreferenceCategory>
 
@@ -48,6 +54,10 @@
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/account_category">
+
+        <Preference
+            app:key="text"
+            app:summary="@string/account_category_descript" />
 
         <Preference
             app:icon="@drawable/ic_delete_primary_dark_24"

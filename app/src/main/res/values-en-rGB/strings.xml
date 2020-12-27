@@ -29,6 +29,9 @@
     <string name="search">search</string>
     <string name="search_hint">Name of restaurant</string>
 
+    <!-- Fragment map view -->
+    <string name="current_location_not_found">Unable to get current location.</string>
+
     <!-- Login Firebase -->
     <string name="slogan">Find a nice restaurant and invite your co-workers for lunch!</string>
     <string name="btn_text_google">Sign in with Google</string>
@@ -68,6 +71,8 @@
     <string name="hour">Hour of display</string>
     <string name="localisation_category">Localisation</string>
     <string name="account_category">Account</string>
+    <string name="account_category_descript">
+        Using this action will delete all your preference and its history that you have used through this application.</string>
     <string name="delete_account">Delete the account</string>
     <string name="perimeter_research">Perimeter of recherche</string>
 

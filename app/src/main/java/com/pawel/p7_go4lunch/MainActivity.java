@@ -3,7 +3,6 @@ package com.pawel.p7_go4lunch;
 import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.pawel.p7_go4lunch.databinding.ActivityMainBinding;
 import com.pawel.p7_go4lunch.utils.Const;
+import com.pawel.p7_go4lunch.utils.LocalAppSettings;
 import com.pawel.p7_go4lunch.utils.ViewWidgets;
 
 import androidx.annotation.NonNull;
@@ -36,18 +36,18 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.preference.PreferenceManager;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final String TAG = "MAPS_GOOGLE";
+    private static final String TAG = "TESTING_MAPS";
     private ActivityMainBinding binding;
     private View view;
-    private SharedPreferences mPrefs;
-    private Boolean mLocationPermissionGranted = false;
+    //private SharedPreferences mPrefs;
+    private LocalAppSettings mPrefs;
+    public static boolean mLocationPermissionGranted = false;
     List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.EmailBuilder().build(),
             new AuthUI.IdpConfig.GoogleBuilder().build(),
@@ -61,10 +61,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         view = binding.getRoot();
         setContentView(view);
         setSupportActionBar(binding.toolbar);
-        //binding.toolbar.setOverflowIcon(ContextCompat.getDrawable(this,R.drawable.ic_baseline_search_24));
         setNavigationDrawer();
         // retrieve the settings from Settings Activity
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        mPrefs = new LocalAppSettings(this);
 
         if (isCurrentUserLogged()){
             getLocationPermission();
@@ -78,10 +77,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+//    private void loadSettings() {
+//        mPrefs = new LocalAppSettings(MainActivity.this);
+//    }
+
     // Check if service Google Maps is available
     public boolean isMapsServiceOk() {
-        boolean isLocalisationSet = mPrefs.getBoolean("localisation",true);
-        Log.i(TAG, "isMapsServiceOk: prefs "+isLocalisationSet);
+        boolean isLocalisationSet = mPrefs.isLocalisation();
+        Log.i(TAG, "isMapsServiceOk: prefs LOCALISATION "+isLocalisationSet);
         if (isLocalisationSet) {
             int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(MainActivity.this);
             if (available == ConnectionResult.SUCCESS) {
@@ -161,16 +164,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.about_the_restaurant_dest:
-                initOtherActivity(AboutRestaurantActivity.class);
-                break;
-            case R.id.settings_activity:
-                initOtherActivity(SettingsActivity.class);
-                break;
-            case R.id.sidebar_menu_log_out:
-                logOutUser();
-                break;
+        int itemId = item.getItemId();
+        if (itemId == R.id.about_the_restaurant_dest) {
+            initOtherActivity(AboutRestaurantActivity.class);
+        } else if (itemId == R.id.settings_activity) {
+            initOtherActivity(SettingsActivity.class);
+        } else {
+            logOutUser();
         }
         binding.drawerLayout.closeDrawer(GravityCompat.START);
         return true;
