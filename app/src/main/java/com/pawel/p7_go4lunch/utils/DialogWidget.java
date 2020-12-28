@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -49,5 +51,17 @@ public class DialogWidget extends AppCompatDialogFragment {
             throw new ClassCastException(context.toString()
                     + "must implement DialogWidgetListener");
         }
+    }
+
+    /**
+     * Set color of negative and positive buttons in alertDialog.
+     */
+    @Override
+    public void onStart() {
+        super.onStart();
+        Button positive = ((AlertDialog) getDialog()).getButton(AlertDialog.BUTTON_POSITIVE);
+        positive.setTextColor(Color.RED);
+        Button negative = ((AlertDialog) getDialog()).getButton(AlertDialog.BUTTON_NEGATIVE);
+        negative.setTextColor(Color.BLUE);
     }
 }

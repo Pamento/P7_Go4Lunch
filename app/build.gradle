@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
+// Apply the Crashlytics Gradle plugin
+apply plugin: 'com.google.firebase.crashlytics'
 
 def localProperties = new Properties()
 localProperties.load(new FileInputStream(rootProject.file("local.properties")))
@@ -51,23 +53,34 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment:2.3.2'
     implementation 'androidx.navigation:navigation-ui:2.3.2'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation platform('com.google.firebase:firebase-bom:26.1.1')
+    // FIREBASE
+    implementation platform('com.google.firebase:firebase-bom:26.2.0')
     //https://firebase.google.com/support/release-notes/android#bom_v25-12-0
+    implementation 'com.google.firebase:firebase-auth'
+    // crashlytics
+    implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics'
-    implementation platform('com.google.firebase:firebase-bom:26.1.1')
-    implementation 'com.google.firebase:firebase-auth'
-    implementation platform('com.google.firebase:firebase-bom:26.1.1')
-    implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.firebaseui:firebase-ui-firestore:5.0.0'
     implementation 'com.firebaseui:firebase-ui-auth:6.4.0'
     implementation 'com.facebook.android:facebook-android-sdk:5.15.3'
     implementation 'androidx.preference:preference:1.1.1'
 
-    /// GOOGLE MAPS
+    // GOOGLE MAPS
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-location:17.1.0'
     implementation 'com.google.android.libraries.places:places:2.4.0'
     def multidex_version = "2.0.1"
     implementation "androidx.multidex:multidex:$multidex_version"
+
+    // RETROFIT
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'
+    // GSON
+    implementation 'com.google.code.gson:gson:2.8.6'
+    // RXJAVA
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.16'
 
     testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
