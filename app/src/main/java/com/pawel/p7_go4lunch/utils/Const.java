@@ -12,4 +12,12 @@ public class Const {
     public static final int LOCATION_PERMISSION_REQUEST_CODE = 9003;
 
     public static final float DEFAULT_ZOOM = 15f;
+
+    // GOOGLE __Service
+    public static final String GOOGLE_API_URL = "https://maps.googleapis.com/";
+
+    // FIREBASE __Service
+    public static final String COLLECTION_USERS = "users";
+    public static final String COLLECTION_FAVORITES_RESTAURANTS = "restaurants";
+    public static final String COLLECTION_CHOSEN_RESTAURANTS = "restaurants";
 }

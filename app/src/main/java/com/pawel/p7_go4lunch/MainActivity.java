@@ -20,10 +20,13 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.pawel.p7_go4lunch.dataServices.repositorys.FirebaseUserRepository;
 import com.pawel.p7_go4lunch.databinding.ActivityMainBinding;
+import com.pawel.p7_go4lunch.model.User;
 import com.pawel.p7_go4lunch.utils.Const;
 import com.pawel.p7_go4lunch.utils.LocalAppSettings;
 import com.pawel.p7_go4lunch.utils.ViewWidgets;
+import com.pawel.p7_go4lunch.viewModels.MainActivityViewModel;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,6 +36,8 @@ import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -44,6 +49,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "TESTING_MAPS";
+    private MainActivityViewModel mMainActivityViewModel;
     private ActivityMainBinding binding;
     private View view;
     //private SharedPreferences mPrefs;
@@ -65,7 +71,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setNavigationDrawer();
         // retrieve the settings from Settings Activity
         mPrefs = new LocalAppSettings(this);
-
+        mMainActivityViewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
+        mMainActivityViewModel.init();
         if (isCurrentUserLogged()){
             getLocationPermission();
             if (isMapsServiceOk() && mLocationPermissionGranted) {
@@ -218,8 +225,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
-                //FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                ViewWidgets.showSnackBar(0, view, getString(R.string.login_succeed));
+                FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                String uid = firebaseUser.getUid() == null ? "" : firebaseUser.getUid();
+                String name = firebaseUser.getUid() == null ? "" : firebaseUser.getDisplayName();
+                String email = firebaseUser.getUid() == null ? "" : firebaseUser.getEmail();
+                String urlImage = firebaseUser.getUid() == null ? "" : firebaseUser.getPhotoUrl().toString();
+                mMainActivityViewModel.createUser(uid,name,email,urlImage);
+                ViewWidgets.showSnackBar(0, view, getString(R.string.login_succeed)+uid+"_"+name+"_"+email+"_"+urlImage);
             } else {
                 // Sign in failed. If response is null the user canceled the
                 // sign-in flow using the back background_facebook_btn. Otherwise check
