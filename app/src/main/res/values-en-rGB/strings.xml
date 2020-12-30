@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <string name="app_name">Go4Lunch</string>
+
     <string name="facebook_application_id" translatable="false">429297778093935</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fb429297778093935</string>
 
     <!-- Functional strings for open and close the navigation drawer -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-
-    <string name="app_name">Go4Lunch</string>
     <string name="nav_bottom_map_view" translatable="false">Map View</string>
     <string name="nav_bottom_list_view" translatable="false">List View</string>
     <string name="nav_bottom_workmates" translatable="false">Workmates</string>

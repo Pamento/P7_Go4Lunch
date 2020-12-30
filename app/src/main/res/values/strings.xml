@@ -1,4 +1,7 @@
 <resources>
+
+    <string name="app_name">Go4Lunch</string>
+
     <!-- Facebook application ID and custom URL scheme (app ID prefixed by 'fb'). -->
     <!-- <string name="facebook_app_id">429297778093935</string>
     <string name="fb_login_protocol_scheme">fb429297778093935</string> -->
@@ -8,8 +11,6 @@
     <!-- Functional strings for open and close the navigation drawer -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-
-    <string name="app_name">Go4Lunch</string>
     <string name="nav_bottom_map_view" translatable="false">Carte</string>
     <string name="nav_bottom_list_view" translatable="false">Liste</string>
     <string name="nav_bottom_workmates" translatable="false">Collègues</string>

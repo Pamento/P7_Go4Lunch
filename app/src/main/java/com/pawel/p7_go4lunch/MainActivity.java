@@ -226,10 +226,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
                 FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                String uid = firebaseUser.getUid() == null ? "" : firebaseUser.getUid();
-                String name = firebaseUser.getUid() == null ? "" : firebaseUser.getDisplayName();
-                String email = firebaseUser.getUid() == null ? "" : firebaseUser.getEmail();
-                String urlImage = firebaseUser.getUid() == null ? "" : firebaseUser.getPhotoUrl().toString();
+                assert firebaseUser != null;
+                String uid = firebaseUser.getUid();
+                String name = firebaseUser.getDisplayName() == null ? "" : firebaseUser.getDisplayName();
+                String email = firebaseUser.getEmail() == null ? "" : firebaseUser.getEmail();
+                String urlImage = firebaseUser.getPhotoUrl() == null ? "" : firebaseUser.getPhotoUrl().toString();
                 mMainActivityViewModel.createUser(uid,name,email,urlImage);
                 ViewWidgets.showSnackBar(0, view, getString(R.string.login_succeed)+uid+"_"+name+"_"+email+"_"+urlImage);
             } else {

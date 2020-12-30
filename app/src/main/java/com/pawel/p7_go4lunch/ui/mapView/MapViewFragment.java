@@ -119,6 +119,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
             }
         } catch (SecurityException e) {
             Log.e(TAG, "getCurrentDeviceLocation: Security Exception " + e.getMessage() );
+        } catch (NullPointerException n) {
+            Log.e(TAG, "getCurrentDeviceLocation: ",n );
         }
     }
 
