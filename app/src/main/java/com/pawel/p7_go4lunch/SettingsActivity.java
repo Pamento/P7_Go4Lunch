@@ -1,27 +1,20 @@
 package com.pawel.p7_go4lunch;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
-import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.pawel.p7_go4lunch.databinding.SettingsActivityBinding;
+import com.pawel.p7_go4lunch.utils.Const;
 import com.pawel.p7_go4lunch.utils.DialogWidget;
 import com.pawel.p7_go4lunch.utils.ViewWidgets;
 
 public class SettingsActivity extends AppCompatActivity implements DialogWidget.DialogWidgetListener {
 
-    public static final String DELETE_ALERT_DIALOG = "delete_alert_dialog";
     SettingsActivityBinding binding;
     View mView;
 
@@ -47,8 +40,12 @@ public class SettingsActivity extends AppCompatActivity implements DialogWidget.
     }
 
     private void openDialog() {
-        DialogWidget dialog = new DialogWidget();
-        dialog.show(getSupportFragmentManager(), DELETE_ALERT_DIALOG);
+        String title = getString(R.string.delete_account_title);
+        String message = getString(R.string.delete_account_message);
+        String positiveBtn = getString(R.string.btn_ok);
+        String negativeBtn = getString(R.string.btn_cancel);
+        DialogWidget dialog = new DialogWidget(true, getBaseContext(), title,message,negativeBtn,positiveBtn);
+        dialog.show(getSupportFragmentManager(), Const.DELETE_ALERT_DIALOG);
     }
 
     @Override
@@ -60,6 +57,10 @@ public class SettingsActivity extends AppCompatActivity implements DialogWidget.
 //                    NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
 //                    navController.navigate(R.id.navigation_map_view);
 //                });
+    }
+
+    @Override
+    public void OnNegativeBtnAlertDialogClick() {
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {

@@ -13,11 +13,29 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
+import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.pawel.p7_go4lunch.R;
+
+import java.util.Objects;
 
 public class DialogWidget extends AppCompatDialogFragment {
     private DialogWidgetListener listener;
     private AlertDialog.Builder ADBuilder;
+    private boolean modeDialog = false;
+    private final Context mContext;
+    private final String mTitle;
+    private final String mMessage;
+    private final String mNegativeBtnTx;
+    private final String mPositiveBtnTx;
+
+    public DialogWidget(boolean modeDialog, Context context, String title, String message, String negativeBtnTx, String positiveBtnTx) {
+        this.modeDialog = modeDialog;
+        mContext = context;
+        mTitle = title;
+        mMessage = message;
+        mNegativeBtnTx = negativeBtnTx;
+        mPositiveBtnTx = positiveBtnTx;
+    }
 
     @NonNull
     @Override
@@ -25,12 +43,12 @@ public class DialogWidget extends AppCompatDialogFragment {
         Activity activity = getActivity();
         if (activity != null) {
             ADBuilder = new AlertDialog.Builder(activity);
-            ADBuilder.setTitle(R.string.alert_title)
-                    .setMessage(R.string.alert_message)
-                    .setNegativeButton(R.string.btn_cancel, (dialog, which) -> {
-                        // do nothing
+            ADBuilder.setTitle(mTitle)
+                    .setMessage(mMessage)
+                    .setNegativeButton(mNegativeBtnTx, (dialog, which) -> {
+                        listener.OnNegativeBtnAlertDialogClick();
                     })
-                    .setPositiveButton(R.string.btn_ok, (dialog, which) -> {
+                    .setPositiveButton(mPositiveBtnTx, (dialog, which) -> {
                         listener.OnPositiveBtnAlertDialogClick();
                     });
         }
@@ -40,16 +58,18 @@ public class DialogWidget extends AppCompatDialogFragment {
 
     public interface DialogWidgetListener {
         void OnPositiveBtnAlertDialogClick();
+        void OnNegativeBtnAlertDialogClick();
     }
+
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
-            listener = (DialogWidgetListener) context;
+            listener = (DialogWidgetListener) mContext;
         } catch (ClassCastException cce) {
-            throw new ClassCastException(context.toString()
-                    + "must implement DialogWidgetListener");
+            throw new ClassCastException(cce.toString()
+                    + " must implement DialogWidgetListener");
         }
     }
 
@@ -59,9 +79,18 @@ public class DialogWidget extends AppCompatDialogFragment {
     @Override
     public void onStart() {
         super.onStart();
-        Button positive = ((AlertDialog) getDialog()).getButton(AlertDialog.BUTTON_POSITIVE);
-        positive.setTextColor(Color.RED);
-        Button negative = ((AlertDialog) getDialog()).getButton(AlertDialog.BUTTON_NEGATIVE);
-        negative.setTextColor(Color.BLUE);
+        int positive;
+        int negative;
+        if (modeDialog) {
+            positive = Color.RED;
+            negative = Color.BLUE;
+        } else {
+            positive = Color.BLUE;
+            negative = Color.BLACK;
+        }
+        Button positiveBtn = ((AlertDialog) Objects.requireNonNull(getDialog())).getButton(AlertDialog.BUTTON_POSITIVE);
+        positiveBtn.setTextColor(positive);
+        Button negativeBtn = ((AlertDialog) Objects.requireNonNull(getDialog())).getButton(AlertDialog.BUTTON_NEGATIVE);
+        negativeBtn.setTextColor(negative);
     }
 }

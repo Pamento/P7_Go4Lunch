@@ -32,6 +32,7 @@
 
     <!-- Fragment map view -->
     <string name="current_location_not_found">Unable to get current location.</string>
+    <string name="error_get_map">Google Map unavailable.</string>
 
     <!-- Login Firebase -->
     <string name="slogan">Find a nice restaurant and invite your co-workers for lunch!</string>
@@ -78,13 +79,22 @@
     <string name="perimeter_research">Perimeter of recherche</string>
 
     <!-- View Widgets -->
-    <string name="snack_action_btn">Ok</string>
+    <string name="snack_action_btn">OK</string>
     <string name="thanks">Thank you</string>
 
     <!-- AlertDialog widget -->
-    <string name="alert_title">Deletion of account !</string>
-    <string name="alert_message">Are You want to definitely delete your account ?</string>
+    <string name="delete_account_title">Deletion of account !</string>
+    <string name="delete_account_message">Are You want to definitely delete your account ?</string>
     <string name="btn_ok">Delete it</string>
     <string name="btn_cancel">Cancel</string>
     <string name="cancel_message">Deletion of account is canceled.</string>
+
+    <!-- AlertDialog delete account -->
+    <string name="ask_location_account_title">Localisation permissions.</string>
+    <string name="ask_location_account_message">To find the restaurant near by you, the app needs access to your location.</string>
+    <string name="btn_allow">Paramètres</string>
+    <string name="btn_denny">Annuler</string>
+
+    <!-- gps request in MapViewFragment -->
+    <string name="fail_ask_gps_signal">Please check with Google Maps if your position is called correctly by Your phone.</string>
 </resources>

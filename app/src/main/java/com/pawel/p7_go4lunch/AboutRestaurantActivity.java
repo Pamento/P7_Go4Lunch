@@ -10,6 +10,7 @@ import android.os.Bundle;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.pawel.p7_go4lunch.databinding.ActivityAboutRestaurantBinding;
+import com.pawel.p7_go4lunch.utils.ViewWidgets;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -248,6 +249,7 @@ public class AboutRestaurantActivity extends AppCompatActivity {
                 }
             }
         } else {
+            ViewWidgets.showSnackBar(0,view,"Numero est incorrect.");
             //Toast.makeText(MainActivity.this, "Phone number is incorrect", Toast.LENGTH_SHORT).show();
         }
     }

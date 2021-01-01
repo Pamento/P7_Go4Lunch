@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/nav_drawer_header_height"
+    android:id="@+id/drawer_header"
     android:theme="@style/ThemeOverlay.AppCompat.Dark"
     tools:context=".MainActivity">
 
@@ -14,6 +15,7 @@
         android:scaleType="centerCrop" />
 
     <RelativeLayout
+        android:id="@+id/drawer_header_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -51,14 +53,13 @@
 
         <TextView
             android:id="@+id/nav_drawer_user_email"
-            android:layout_width="128dp"
-            android:layout_height="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="@dimen/size_n"
-            android:layout_marginEnd="@dimen/size_m"
             android:layout_marginBottom="@dimen/size_b"
             android:layout_toEndOf="@+id/nav_drawer_user_image"
-            tools:text="android@cam.andro" />
+            tools:text="android@com.andromeda" />
 
     </RelativeLayout>
 

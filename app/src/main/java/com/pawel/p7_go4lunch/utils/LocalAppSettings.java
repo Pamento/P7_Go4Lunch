@@ -7,10 +7,10 @@ import androidx.preference.PreferenceManager;
 
 public class LocalAppSettings {
 
-    private boolean notification;
-    private String hour;
-    private boolean localisation;
-    private String perimeter;
+    private final boolean notification;
+    private final String hour;
+    private final boolean localisation;
+    private final String perimeter;
 
 
     public LocalAppSettings(Activity activity) {
@@ -33,8 +33,12 @@ public class LocalAppSettings {
         return localisation;
     }
 
-    public String getPerimeter() {
-        if (perimeter.equals("max")) perimeter = String.valueOf(Const.DEFAULT_ZOOM);
-        return perimeter;
+    private int getRadius() {
+        if (perimeter.equals("max")) return 6000;
+        else return Integer.getInteger(perimeter);
+    }
+    public float getPerimeter() {
+        if (perimeter.equals("max")) return Const.DEFAULT_ZOOM;
+        else return 15f;
     }
 }

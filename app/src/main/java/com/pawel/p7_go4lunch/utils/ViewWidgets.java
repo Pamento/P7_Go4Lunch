@@ -20,8 +20,8 @@ public abstract class ViewWidgets {
             Snackbar snackbar = Snackbar
                     .make(view, message, Snackbar.LENGTH_INDEFINITE)
                     .setAction(R.string.snack_action_btn, v -> {
-                        Snackbar snackBarError = Snackbar.make(view, R.string.thanks, Snackbar.LENGTH_SHORT);
-                        snackBarError.show();
+//                        Snackbar snackBarError = Snackbar.make(view, R.string.thanks, Snackbar.LENGTH_SHORT);
+//                        snackBarError.show();
                     })
                     .setActionTextColor(Color.WHITE);
 

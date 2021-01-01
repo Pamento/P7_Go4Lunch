@@ -8,10 +8,10 @@
         <item>Illimité</item>
     </string-array>
     <string-array name="perimeter_values">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>5</item>
+        <item>1000</item>
+        <item>2000</item>
+        <item>3000</item>
+        <item>5000</item>
         <item>max</item>
     </string-array>
 
