@@ -182,6 +182,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
     private boolean isDeviceLocationEnabled() {
         LocationManager lm = (LocationManager) requireContext().getSystemService(Context.LOCATION_SERVICE);
         try {
+            assert lm != null;
             return lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
         } catch (Exception ex) {
             Log.i(TAG, "deviceLocationEnabled: error " + ex);
@@ -302,14 +303,13 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Const.REQUEST_CHECK_SETTINGS) {
-            Log.i(TAG2, "onActivityResult: " + data.toString());
+            Log.i(TAG2, "onActivityResult: " + data);
         }
         ViewWidgets.showSnackBar(1, view, getString(R.string.fail_ask_gps_signal));
     }
 
     private void startLocationUpdates() {
-        if (fusedLocationProviderClient == null)
-            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(mActivity);
+        if (fusedLocationProviderClient == null) setFusedLocationProviderClient();
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(requireActivity(), Const.PERMISSIONS, Const.LOCATION_PERMISSION_REQUEST_CODE);
@@ -320,7 +320,12 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
     }
 
     private void stopLocationUpdates() {
+        if (fusedLocationProviderClient == null) setFusedLocationProviderClient();
         fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+    }
+
+    private void setFusedLocationProviderClient() {
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(mActivity);
     }
 
     @Override

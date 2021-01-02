@@ -35,8 +35,12 @@
             android:id="@+id/nav_drawer_user_image"
             android:layout_width="@dimen/size_h"
             android:layout_height="@dimen/size_h"
+            android:layout_alignParentStart="true"
             android:layout_alignParentBottom="true"
-            android:layout_margin="@dimen/size_s"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="@dimen/size_s"
+            android:layout_marginEnd="@dimen/size_s"
+            android:layout_marginBottom="@dimen/size_n"
             android:contentDescription="@string/menu_persona_description"
             android:src="@drawable/ic_persona_placeholder" />
 
@@ -47,6 +51,7 @@
             android:layout_alignTop="@+id/nav_drawer_user_image"
             android:layout_marginStart="@dimen/size_n"
             android:layout_marginBottom="@dimen/size_s"
+            android:layout_marginTop="@dimen/size_s"
             android:layout_toEndOf="@+id/nav_drawer_user_image"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             tools:text="John Travolta" />
@@ -55,9 +60,9 @@
             android:id="@+id/nav_drawer_user_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/nav_drawer_user_full_name"
             android:layout_marginStart="@dimen/size_n"
-            android:layout_marginBottom="@dimen/size_b"
+            android:layout_marginTop="2dp"
             android:layout_toEndOf="@+id/nav_drawer_user_image"
             tools:text="android@com.andromeda" />
 

@@ -138,8 +138,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             //TODO add action
             Log.i(TAG2, "onOptionsItemSelected: ");
             ViewWidgets.showSnackBar(0, view, "Search");
-        }
-        return super.onOptionsItemSelected(item);
+            return true;
+        } else return super.onOptionsItemSelected(item);
     }
 
     private void setNavigationDrawer() {
