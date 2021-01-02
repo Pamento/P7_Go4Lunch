@@ -23,7 +23,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -194,7 +193,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
         AlertDialog dialog = new AlertDialog.Builder(requireContext())
                 .setTitle(R.string.ask_location_account_title)
                 .setMessage(R.string.ask_location_account_message)
-                .setPositiveButton(R.string.btn_allow,
+                .setPositiveButton(R.string.btn_goto_ask_persmissions,
                         (paramDialogInterface, paramInt) -> requireContext().startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
                 .setNegativeButton(R.string.btn_denny, null).create();
 
@@ -207,7 +206,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
         AlertDialog dialog = new AlertDialog.Builder(requireContext())
                 .setTitle(R.string.ask_location_account_title)
                 .setMessage(R.string.ask_location_account_message)
-                .setPositiveButton(R.string.btn_allow,
+                .setPositiveButton(R.string.btn_goto_ask_persmissions,
                         (paramDialogInterface, paramInt) -> getLocationPermission())
 //        (paramDialogInterface, paramInt) -> requireContext().startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
                 .setNegativeButton(R.string.btn_denny, null).create();

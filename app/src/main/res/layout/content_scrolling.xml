@@ -84,9 +84,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/call"
+                app:drawableTopCompat="@drawable/ic_local_phone_primary_36"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:drawableTopCompat="@drawable/ic_local_phone_primary_36" />
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <TextView
                 android:id="@+id/about_the_rest_tx_like"

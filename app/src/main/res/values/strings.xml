@@ -94,7 +94,8 @@
     <!-- AlertDialog delete account -->
     <string name="ask_location_account_title">Permissions du localisations</string>
     <string name="ask_location_account_message">Pour retrouver les restaurant près de vous, l\'applie a besoin d\'acces a votre position.</string>
-    <string name="btn_allow">Paramètres</string>
+    <string name="btn_goto_ask_persmissions">Permissions</string>
+    <string name="btn_goto_phone_settings">Paramètres</string>
     <string name="btn_denny">Annuler</string>
 
     <!-- gps request in MapViewFragment -->
