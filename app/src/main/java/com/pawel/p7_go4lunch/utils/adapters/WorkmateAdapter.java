@@ -18,8 +18,8 @@ import com.pawel.p7_go4lunch.databinding.ItemWorkmateBinding;
 import com.pawel.p7_go4lunch.model.User;
 
 public class WorkmateAdapter extends FirestoreRecyclerAdapter<User, WorkmateAdapter.WorkmateViewHolder> {
-    private static final String TAG = "WORKMATE";
-    OnItemClickListener onItemClickListener;
+
+    public OnItemClickListener onItemClickListener;
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
      * FirestoreRecyclerOptions} for configuration options.
@@ -28,7 +28,6 @@ public class WorkmateAdapter extends FirestoreRecyclerAdapter<User, WorkmateAdap
      */
     public WorkmateAdapter(@NonNull FirestoreRecyclerOptions options) {
         super(options);
-        Log.i(TAG, "WorkmateAdapter: CONSTRUCTOR");
     }
 
     @NonNull
@@ -47,12 +46,10 @@ public class WorkmateAdapter extends FirestoreRecyclerAdapter<User, WorkmateAdap
                 .error(R.drawable.persona_placeholder_gray)
                 .into(holder.workmateImage);
         holder.description.setText(user.getName());
-        Log.i(TAG, "onBindViewHolder: HOLDER");
     }
 
 
-    class WorkmateViewHolder extends RecyclerView.ViewHolder {
-        private static final String TAG = "WORKMATE";
+    public class WorkmateViewHolder extends RecyclerView.ViewHolder {
         ImageView workmateImage;
         TextView description;
 
@@ -60,7 +57,6 @@ public class WorkmateAdapter extends FirestoreRecyclerAdapter<User, WorkmateAdap
             super(vBinding.getRoot());
             workmateImage = vBinding.workmateImg;
             description = vBinding.workmateDescription;
-            Log.i(TAG, "WorkmateViewHolder: ");
             vBinding.workmateCardView.setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION &&  onItemClickListener != null) {

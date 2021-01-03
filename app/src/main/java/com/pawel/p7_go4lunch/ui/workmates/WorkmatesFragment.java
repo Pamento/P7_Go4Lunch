@@ -1,9 +1,7 @@
 package com.pawel.p7_go4lunch.ui.workmates;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -38,7 +36,7 @@ public class WorkmatesFragment extends Fragment {
                 ViewModelProviders.of(this).get(WorkmatesViewModel.class);
         mBinding = FragmentWorkmatesBinding.inflate(inflater,container,false);
         mView = mBinding.getRoot();
-        Log.i(TAG, "onCreateView: mView " + mView);
+        setProgressBar();
         setWorkmatesRecyclerView();
 //        final TextView textView = root.findViewById(R.id.text_notifications);
 //        mWorkmatesViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
@@ -49,17 +47,20 @@ public class WorkmatesFragment extends Fragment {
 //        });
         return mView;
     }
+    public void setProgressBar() {
+        mBinding.workmatesProgressBar.setVisibility(View.VISIBLE);
+    }
 
     private void setWorkmatesRecyclerView() {
-        Query query = firebaseUserCollection.orderBy("email", Query.Direction.DESCENDING);
+        Query query = firebaseUserCollection.orderBy(Const.FIREBASE_ADAPTER_QUERY_EMAIL, Query.Direction.DESCENDING);
         FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
                 .setQuery(query,User.class)
                 .build();
+
         mWorkmateAdapter = new WorkmateAdapter(options);
         // TODO set onClickListener
         mWorkmateAdapter.setOnItemClickListener(documentSnapshot -> {
             String itemId = documentSnapshot.getId();
-            Log.i(TAG, "setWorkmatesRecyclerView: itemId of CARDview " + itemId);
             //String itemId = documentSnapshot.get("email");
             if (itemId.isEmpty()) {
                 ViewWidgets.showSnackBar(0,mView,"CardView non ID");
@@ -69,23 +70,19 @@ public class WorkmatesFragment extends Fragment {
                 // itemID give the id of user in firebaseCollection("users");
             }
         });
-        Log.i(TAG, "setWorkmatesRecyclerView: START + adapter " + mWorkmateAdapter);
-        mBinding.workmatesRecyclerView.setHasFixedSize(true);
-        mBinding.workmatesRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         mBinding.workmatesRecyclerView.setAdapter(mWorkmateAdapter);
+        mBinding.workmatesRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        Log.i(TAG, "onStart: ");
         mWorkmateAdapter.startListening();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Log.i(TAG, "onStop: ");
         mWorkmateAdapter.stopListening();
     }
 
@@ -93,7 +90,6 @@ public class WorkmatesFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.i(TAG, "onDestroyView: ");
         mBinding = null;
     }
 }

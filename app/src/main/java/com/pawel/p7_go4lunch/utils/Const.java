@@ -25,6 +25,7 @@ public class Const {
     public static final String COLLECTION_USERS = "users";
     public static final String COLLECTION_FAVORITES_RESTAURANTS = "restaurants";
     public static final String COLLECTION_CHOSEN_RESTAURANTS = "restaurants";
+    public static final String FIREBASE_ADAPTER_QUERY_EMAIL = "email";
 
     // DIALOGS
     /**

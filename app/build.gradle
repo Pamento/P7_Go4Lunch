@@ -60,9 +60,9 @@ dependencies {
     // crashlytics
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics'
-    implementation 'com.firebaseui:firebase-ui-firestore:5.0.0'
+    implementation 'com.firebaseui:firebase-ui-firestore:6.3.0'
     implementation 'com.firebaseui:firebase-ui-auth:6.4.0'
-    implementation 'com.facebook.android:facebook-android-sdk:5.15.3'
+    implementation 'com.facebook.android:facebook-android-sdk:7.1.0'
     implementation 'androidx.preference:preference:1.1.1'
 
     // GOOGLE MAPS
