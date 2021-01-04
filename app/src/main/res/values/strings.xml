@@ -30,7 +30,7 @@
 
     <!-- Main Activity __menu_toolbar -->
     <string name="search">recherche</string>
-    <string name="search_hint">Nom de restaurant</string>
+    <string name="search_hint">Cherche un restaurant</string>
 
     <!-- Fragment map view -->
     <string name="current_location_not_found">Impossible d\'obtenir la position actuelle.</string>
@@ -101,4 +101,8 @@
     <!-- gps request in MapViewFragment -->
     <string name="fail_ask_gps_signal">Veuillez vérifier avec Google Maps si votre position est correctement appelée par votre téléphone.</string>
 
+    <!-- Workmates list -->
+    <string name="workmate_anonymous">Collègue</string>
+    <string name="workmate_eat_at">%s mange à (%s)</string>
+    <string name="workmate_not_decide">%s n\'a pas encore décidé</string>
 </resources>

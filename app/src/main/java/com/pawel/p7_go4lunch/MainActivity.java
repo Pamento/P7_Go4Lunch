@@ -232,7 +232,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 FirebaseUser firebaseUser = getCurrentUser();
                 assert firebaseUser != null;
                 String uid = firebaseUser.getUid();
-                String name = firebaseUser.getDisplayName() == null ? "" : firebaseUser.getDisplayName();
+                String name = firebaseUser.getDisplayName() == null ? getResources().getString(R.string.workmate_anonymous) : firebaseUser.getDisplayName();
                 String email = firebaseUser.getEmail() == null ? "" : firebaseUser.getEmail();
                 String urlImage = firebaseUser.getPhotoUrl() == null ? "" : firebaseUser.getPhotoUrl().toString();
                 mMainActivityViewModel.createUser(uid, name, email, urlImage);

@@ -48,4 +48,13 @@
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:textSize">18sp</item>
     </style>
+    
+    <style name="TextNormalBlack" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="TextItalicGrayLight" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/quantum_grey600</item>
+        <item name="android:textStyle">italic</item>
+    </style>
 </resources>

@@ -2,10 +2,13 @@ package com.pawel.p7_go4lunch.ui.workmates;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,6 +17,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.pawel.p7_go4lunch.R;
 import com.pawel.p7_go4lunch.databinding.FragmentWorkmatesBinding;
 import com.pawel.p7_go4lunch.model.User;
 import com.pawel.p7_go4lunch.utils.Const;
@@ -29,6 +33,20 @@ public class WorkmatesFragment extends Fragment {
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private final CollectionReference firebaseUserCollection = db.collection(Const.COLLECTION_USERS);
     private WorkmateAdapter mWorkmateAdapter;
+
+    // To disable SearchView Widget 1 step
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+    // To disable SearchView Widget 2 step
+    @Override
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
+        MenuItem item = menu.findItem(R.id.toolbar_search_icon);
+        if (item != null ) item.setVisible(false);
+        menu.clear();
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -70,6 +88,7 @@ public class WorkmatesFragment extends Fragment {
                 // itemID give the id of user in firebaseCollection("users");
             }
         });
+        mBinding.workmatesProgressBar.setVisibility(View.GONE);
         mBinding.workmatesRecyclerView.setAdapter(mWorkmateAdapter);
         mBinding.workmatesRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
     }
