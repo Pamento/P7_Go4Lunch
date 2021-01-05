@@ -105,4 +105,5 @@
     <string name="workmate_anonymous">Collègue</string>
     <string name="workmate_eat_at">%s mange à (%s)</string>
     <string name="workmate_not_decide">%s n\'a pas encore décidé</string>
+    <string name="workmates_message_empty_recycler_view">Désolé, il y a une erreur.\nVeuillez réessayer ultérieurement.</string>
 </resources>

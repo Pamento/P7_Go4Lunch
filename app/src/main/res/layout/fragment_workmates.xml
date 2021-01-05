@@ -20,7 +20,9 @@
     <RelativeLayout
         android:id="@+id/workmates_layout_progressBar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        tools:visibility="gone">
 
         <ProgressBar
             android:id="@+id/workmates_progressBar"
@@ -29,5 +31,23 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:visibility="gone" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/workmates_error_non_data"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:background="@android:color/white"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/workmates_error_non_data_tx"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="@dimen/size_b"
+            android:text="@string/workmates_message_empty_recycler_view"
+            style="@style/fullScreenErrorMessage" />
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
