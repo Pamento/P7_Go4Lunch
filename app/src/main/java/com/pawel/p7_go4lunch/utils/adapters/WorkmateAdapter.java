@@ -1,15 +1,13 @@
 package com.pawel.p7_go4lunch.utils.adapters;
 
 import android.content.Context;
-import android.os.Build;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.widget.TextViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -17,13 +15,14 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.DocumentSnapshot;
 import android.content.res.Resources;
+
 import com.pawel.p7_go4lunch.R;
 import com.pawel.p7_go4lunch.databinding.ItemWorkmateBinding;
 import com.pawel.p7_go4lunch.model.User;
 
 public class WorkmateAdapter extends FirestoreRecyclerAdapter<User, WorkmateAdapter.WorkmateViewHolder> {
 
-    public OnItemClickListener onItemClickListener;
+    private OnItemClickListener mOnItemClickListener;
     private Context mContext;
     private Resources mResources;
     private TextView mTextView;
@@ -34,8 +33,9 @@ public class WorkmateAdapter extends FirestoreRecyclerAdapter<User, WorkmateAdap
      *
      * @param options
      */
-    public WorkmateAdapter(@NonNull FirestoreRecyclerOptions options) {
+    public WorkmateAdapter(@NonNull FirestoreRecyclerOptions options, OnItemClickListener onItemClickListener) {
         super(options);
+        mOnItemClickListener = onItemClickListener;
     }
 
     @NonNull
@@ -44,7 +44,7 @@ public class WorkmateAdapter extends FirestoreRecyclerAdapter<User, WorkmateAdap
         ItemWorkmateBinding binding = ItemWorkmateBinding.inflate(LayoutInflater.from(parent.getContext()),parent,false);
         mContext = parent.getContext();
         mResources = parent.getResources();
-        return new WorkmateViewHolder(binding);
+        return new WorkmateViewHolder(binding, mOnItemClickListener);
     }
 
     @Override
@@ -59,10 +59,12 @@ public class WorkmateAdapter extends FirestoreRecyclerAdapter<User, WorkmateAdap
             beOrNotToBe = String.format(mResources.getString(R.string.workmate_not_decide),user.getName());
         }
 
+//        Glide.with(holder.workmateImage.getContext())
         Glide.with(holder.workmateImage.getContext())
                 .load(user.getUrlImage())
-                .circleCrop()
                 .error(R.drawable.persona_placeholder_gray)
+                .placeholder(R.drawable.persona_placeholder_gray)
+                .circleCrop()
                 .into(holder.workmateImage);
         holder.description.setText(beOrNotToBe);
         if (workmateEatAt) holder.description.setTextAppearance(mContext, R.style.TextNormalBlack);
@@ -88,20 +90,28 @@ public class WorkmateAdapter extends FirestoreRecyclerAdapter<User, WorkmateAdap
 
 
     // ...............................................................WorkmateViewHolder.class
-    public class WorkmateViewHolder extends RecyclerView.ViewHolder {
+    public class WorkmateViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView workmateImage;
         TextView description;
+        OnItemClickListener mOnItemClickListener;
 
-        public WorkmateViewHolder(@NonNull ItemWorkmateBinding vBinding) {
+        public WorkmateViewHolder(@NonNull ItemWorkmateBinding vBinding, OnItemClickListener onItemClickListener) {
             super(vBinding.getRoot());
             workmateImage = vBinding.workmateImg;
             description = vBinding.workmateDescription;
-            vBinding.workmateCardView.setOnClickListener(v -> {
-                int position = getAdapterPosition();
-                if (position != RecyclerView.NO_POSITION &&  onItemClickListener != null) {
-                    onItemClickListener.onItemClick(getSnapshots().getSnapshot(position));
-                }
-            });
+            mOnItemClickListener = onItemClickListener;
+//            vBinding.workmateCardView.setOnClickListener(v -> {
+//                int position = getAdapterPosition();
+//                if (position != RecyclerView.NO_POSITION &&  onItemClickListener != null) {
+//                    onItemClickListener.onItemClick(getSnapshots().getSnapshot(position));
+//                }
+//            });
+        }
+
+        @Override
+        public void onClick(View v) {
+            int position = getAdapterPosition();
+            mOnItemClickListener.onItemClick(getSnapshots().getSnapshot(position));
         }
     }
 
@@ -109,7 +119,7 @@ public class WorkmateAdapter extends FirestoreRecyclerAdapter<User, WorkmateAdap
         void onItemClick(DocumentSnapshot documentSnapshot);
     }
 
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        this.onItemClickListener = onItemClickListener;
-    }
+//    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+//        this.onItemClickListener = onItemClickListener;
+//    }
 }

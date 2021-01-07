@@ -101,7 +101,7 @@
 
     <!-- Workmates list -->
     <string name="workmate_anonymous">Workmate</string>
-    <string name="workmate_eat_at">%s is eating at (%s)</string>
+    <string name="workmate_eat_at">%1$s is eating at (%2$s)</string>
     <string name="workmate_not_decide">%s hasn\'t decided yet</string>
     <string name="workmates_message_empty_recycler_view">Sorry, there was an error.\nPlease, try again later.</string>
 </resources>

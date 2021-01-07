@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -29,7 +30,7 @@ import com.pawel.p7_go4lunch.utils.Const;
 import com.pawel.p7_go4lunch.utils.ViewWidgets;
 import com.pawel.p7_go4lunch.utils.adapters.WorkmateAdapter;
 
-public class WorkmatesFragment extends Fragment {
+public class WorkmatesFragment extends Fragment implements WorkmateAdapter.OnItemClickListener {
     private static final String TAG = "Firestore";
 
     private WorkmatesViewModel mWorkmatesViewModel;
@@ -87,6 +88,7 @@ public class WorkmatesFragment extends Fragment {
                 Log.e(TAG, "Error getting documents: ", task.getException());
             } else {
                 boolean isEmpty = task.getResult().isEmpty();
+                Log.i(TAG, "setWorkmatesRecyclerView: query isEmpty? false when run: " + isEmpty);
             }
         });
 
@@ -94,40 +96,38 @@ public class WorkmatesFragment extends Fragment {
                 .setQuery(query, User.class)
                 .build();
 
-        mWorkmateAdapter = new WorkmateAdapter(options);
-        // TODO set onClickListener
-        mWorkmateAdapter.setOnItemClickListener(documentSnapshot -> {
-            String itemId = documentSnapshot.getId();
-            //String itemId = documentSnapshot.get("email");
-            if (itemId.isEmpty()) {
-                ViewWidgets.showSnackBar(0, mView, "CardView non ID");
-            } else {
-                ViewWidgets.showSnackBar(0, mView, "CardView ID: " + itemId);
-                // TODO go to Chat by calling action (Start Intent)
-                // itemID give the id of user in firebaseCollection("users");
-            }
-        });
+        mWorkmateAdapter = new WorkmateAdapter(options,this);
         mBinding.workmatesProgressBar.setVisibility(View.GONE);
         mBinding.workmatesRecyclerView.setAdapter(mWorkmateAdapter);
         mBinding.workmatesRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
     }
 
     @Override
+    public void onItemClick(DocumentSnapshot documentSnapshot) {
+        String itemId = documentSnapshot.getId();
+        //String itemId = documentSnapshot.get("email");
+        if (itemId.isEmpty()) {
+            ViewWidgets.showSnackBar(0, mView, "CardView non ID");
+        } else {
+            ViewWidgets.showSnackBar(0, mView, "CardView ID: " + itemId);
+            // TODO go to Chat by calling action (Start Intent)
+            // itemID give the id of user in firebaseCollection("users");
+        }
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         mWorkmateAdapter.startListening();
-        firestoreUserColRef.addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                if (error != null) {
-                    Log.e(TAG, "onEvent: ", error );
-                }
-                if (!value.isEmpty()) {
-                    // How to skip call second time the Users from firebase ?
-                    // How to pass QuerySnapshot in to query ?
-                    // For this moment we call again setWorkmatesRecyclerView();
-                    setWorkmatesRecyclerView();
-                }
+        firestoreUserColRef.addSnapshotListener(getActivity(), (value, error) -> {
+            if (error != null) {
+                Log.e(TAG, "onEvent: ", error );
+            }
+            if (!value.isEmpty()) {
+                // How to skip call second time the Users from firebase ?
+                // How to pass QuerySnapshot in to query ?
+                // For this moment we call again setWorkmatesRecyclerView();
+                setWorkmatesRecyclerView();
             }
         });
     }

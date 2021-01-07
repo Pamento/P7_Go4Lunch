@@ -166,10 +166,9 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
                         mMapViewViewModel.setUpCurrentLocation(latLng);
                     } else {
                         Log.i(TAG, "getCurrentDeviceLocation: else createLocationRequest.");
-                        createLocationRequest();
-                        getCurrentDeviceLocation();
                         // TODO add https://developer.android.com/training/location/request-updates
-                        ViewWidgets.showSnackBar(1, view, getString(R.string.current_location_not_found));
+                        createLocationRequest();
+                        //ViewWidgets.showSnackBar(1, view, getString(R.string.current_location_not_found));
                     }
                 });
             }
