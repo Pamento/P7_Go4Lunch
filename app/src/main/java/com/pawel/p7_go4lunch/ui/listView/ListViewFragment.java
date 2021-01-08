@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.pawel.p7_go4lunch.R;
 
@@ -20,8 +20,7 @@ public class ListViewFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        mListViewViewModel =
-                ViewModelProviders.of(this).get(ListViewViewModel.class);
+        mListViewViewModel = new ViewModelProvider(this).get(ListViewViewModel.class);
         View root = inflater.inflate(R.layout.fragment_list_view, container, false);
         final TextView textView = root.findViewById(R.id.text_dashboard);
         mListViewViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {

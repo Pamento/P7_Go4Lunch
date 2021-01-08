@@ -19,3 +19,17 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# If you use Glide in your project, maybe you need to uncomment this line
+# See more informations on https://github.com/bumptech/glide
+#-keep public class * implements com.bumptech.glide.module.GlideModule
+#-keep class * extends com.bumptech.glide.module.AppGlideModule {
+# <init>(...);
+#}
+#-keep public enum com.bumptech.glide.load.ImageHeaderParser$** {
+#  **[] $VALUES;
+#  public *;
+#}
+#-keep class com.bumptech.glide.load.data.ParcelFileDescriptorRewinder$InternalRewinder {
+#  *** rewind();
+#}

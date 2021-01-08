@@ -26,6 +26,7 @@ public class Const {
     public static final String COLLECTION_FAVORITES_RESTAURANTS = "restaurants";
     public static final String COLLECTION_CHOSEN_RESTAURANTS = "restaurants";
     public static final String FIREBASE_ADAPTER_QUERY_EMAIL = "email";
+    public static final String FIREBASE_ADAPTER_QUERY_RESTAURANT = "userRestaurant";
 
     // DIALOGS
     /**

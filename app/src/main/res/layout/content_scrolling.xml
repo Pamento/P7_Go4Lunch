@@ -4,15 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".AboutRestaurantActivity"
     tools:showIn="@layout/activity_about_restaurant">
 
-<!--    <TextView-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_margin="@dimen/text_margin"-->
-<!--        android:text="@string/large_text" />-->
+    <!--    <TextView-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_margin="@dimen/text_margin"-->
+    <!--        android:text="@string/large_text" />-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -78,7 +79,7 @@
             android:paddingHorizontal="@dimen/size_x"
             android:paddingVertical="@dimen/size_n">
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/about_the_rest_tx_call"
                 style="@style/about_the_restaurant"
                 android:layout_width="wrap_content"
@@ -86,41 +87,51 @@
                 android:text="@string/call"
                 app:drawableTopCompat="@drawable/ic_local_phone_primary_36"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/about_the_rest_tx_like"
                 style="@style/about_the_restaurant"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/size_n"
                 android:text="@string/like"
+                app:drawableTopCompat="@drawable/ic_star_primary_36"
                 app:layout_constraintEnd_toStartOf="@+id/about_the_rest_tx_website"
                 app:layout_constraintStart_toEndOf="@+id/about_the_rest_tx_call"
-                app:layout_constraintTop_toTopOf="parent"
-                app:drawableTopCompat="@drawable/ic_star_primary_36"
-                android:paddingHorizontal="@dimen/size_n" />
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/about_the_rest_tx_website"
                 style="@style/about_the_restaurant"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/website"
+                app:drawableTopCompat="@drawable/ic_glob_primary_36"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:drawableTopCompat="@drawable/ic_glob_primary_36" />
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@android:color/holo_orange_light" />
+            android:background="@color/colorPrimary" />
+
+        <TextView
+            android:id="@+id/about_the_rest_workmates_list_empty"
+            style="@style/fullScreenErrorMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/size_x"
+            android:text="@string/about_restaurant_workmates_empty_list"
+            android:visibility="gone" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/about_the_rest_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/item_workmate" />
     </LinearLayout>
 
 

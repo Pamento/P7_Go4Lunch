@@ -32,9 +32,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
-import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -64,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(view);
         setSupportActionBar(binding.toolbar);
         setNavigationDrawer();
-        mMainActivityViewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
+        mMainActivityViewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
         mMainActivityViewModel.init();
         if (isCurrentUserLogged()) {
             if (isMapsServiceOk()) {

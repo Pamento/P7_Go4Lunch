@@ -23,7 +23,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -66,7 +66,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        mMapViewViewModel = ViewModelProviders.of(this).get(MapViewViewModel.class);
+        mMapViewViewModel = new ViewModelProvider(this).get(MapViewViewModel.class);
         setUpViewWithViewModel();
         mBinding = FragmentMapViewBinding.inflate(inflater, container, false);
         view = mBinding.getRoot();

@@ -106,4 +106,6 @@
     <string name="workmate_eat_at">%1$s mange à (%2$s)</string>
     <string name="workmate_not_decide">%s n\'a pas encore décidé</string>
     <string name="workmates_message_empty_recycler_view">Désolé, il y a une erreur.\nVeuillez réessayer ultérieurement.</string>
+    <string name="about_restaurant_workmate_going_there">%s y vas!</string>
+    <string name="about_restaurant_workmates_empty_list">Personne n\'a encore rejoint cet endroit.</string>
 </resources>

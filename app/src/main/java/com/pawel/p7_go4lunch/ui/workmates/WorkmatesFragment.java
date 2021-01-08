@@ -12,17 +12,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.pawel.p7_go4lunch.R;
 import com.pawel.p7_go4lunch.databinding.FragmentWorkmatesBinding;
 import com.pawel.p7_go4lunch.model.User;
@@ -58,8 +55,7 @@ public class WorkmatesFragment extends Fragment implements WorkmateAdapter.OnIte
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        mWorkmatesViewModel =
-                ViewModelProviders.of(this).get(WorkmatesViewModel.class);
+        mWorkmatesViewModel = new ViewModelProvider(this).get(WorkmatesViewModel.class);
         mBinding = FragmentWorkmatesBinding.inflate(inflater, container, false);
         mView = mBinding.getRoot();
         setProgressBar();
@@ -94,9 +90,10 @@ public class WorkmatesFragment extends Fragment implements WorkmateAdapter.OnIte
 
         FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
                 .setQuery(query, User.class)
+                .setLifecycleOwner(this)
                 .build();
 
-        mWorkmateAdapter = new WorkmateAdapter(options,this);
+        mWorkmateAdapter = new WorkmateAdapter(options,this,1);
         mBinding.workmatesProgressBar.setVisibility(View.GONE);
         mBinding.workmatesRecyclerView.setAdapter(mWorkmateAdapter);
         mBinding.workmatesRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
