@@ -28,7 +28,7 @@ import com.pawel.p7_go4lunch.utils.ViewWidgets;
 import com.pawel.p7_go4lunch.utils.adapters.WorkmateAdapter;
 
 public class WorkmatesFragment extends Fragment implements WorkmateAdapter.OnItemClickListener {
-    private static final String TAG = "Firestore";
+    private static final String TAG = "workmate";
 
     private WorkmatesViewModel mWorkmatesViewModel;
     private FragmentWorkmatesBinding mBinding;

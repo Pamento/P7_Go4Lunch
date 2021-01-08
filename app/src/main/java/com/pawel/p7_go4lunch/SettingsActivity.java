@@ -1,8 +1,10 @@
 package com.pawel.p7_go4lunch;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.Preference;
@@ -32,7 +34,18 @@ public class SettingsActivity extends AppCompatActivity implements DialogWidget.
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeButtonEnabled(true);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        // This value is about "home" id: https://developer.android.com/reference/android/R.id#home
+        if (item.getItemId() == 16908332) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public void deleteUserAccount(View view) {

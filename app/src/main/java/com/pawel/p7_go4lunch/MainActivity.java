@@ -1,15 +1,12 @@
 package com.pawel.p7_go4lunch;
 
-import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -44,7 +41,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final String TAG = "TESTING_MAPS";
+    private static final String TAG = "WORKMATE";
     private static final String TAG2 = "TOOLBAR_SEARCH";
     private MainActivityViewModel mMainActivityViewModel;
     private ActivityMainBinding binding;
@@ -201,7 +198,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     // ____________ Firebase Authentication builder _____________________
     private void startSignInActivity() {
         Log.i(TAG, "startSignInActivity: START");
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         AuthMethodPickerLayout customLayout = new AuthMethodPickerLayout
                 .Builder(R.layout.login_firebase)
                 .setGoogleButtonId(R.id.google_btn)

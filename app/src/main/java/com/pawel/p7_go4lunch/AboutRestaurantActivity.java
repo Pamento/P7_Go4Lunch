@@ -36,7 +36,7 @@ import android.view.WindowManager;
 import java.util.Objects;
 
 public class AboutRestaurantActivity extends AppCompatActivity implements WorkmateAdapter.OnItemClickListener {
-    private static final String TAG = "RESTAURANT";
+    private static final String TAG = "workmate";
     View view;
     ActivityAboutRestaurantBinding mBinding;
     // TODO get restaurantID.
