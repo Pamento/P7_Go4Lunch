@@ -11,31 +11,22 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.pawel.p7_go4lunch.R;
 import com.pawel.p7_go4lunch.databinding.FragmentWorkmatesBinding;
 import com.pawel.p7_go4lunch.model.User;
-import com.pawel.p7_go4lunch.utils.Const;
-import com.pawel.p7_go4lunch.utils.ViewWidgets;
 import com.pawel.p7_go4lunch.utils.adapters.WorkmateAdapter;
 
 public class WorkmatesFragment extends Fragment implements WorkmateAdapter.OnItemClickListener {
     private static final String TAG = "workmate";
 
-    private WorkmatesViewModel mWorkmatesViewModel;
+    private WorkmatesViewModel mWorkmatesVM;
     private FragmentWorkmatesBinding mBinding;
-    private FragmentActivity mFragmentActivity;
     private View mView;
-    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private final CollectionReference firestoreUserColRef = db.collection(Const.COLLECTION_USERS);
     private WorkmateAdapter mWorkmateAdapter;
 
     // To disable SearchView Widget 1 step
@@ -55,7 +46,8 @@ public class WorkmatesFragment extends Fragment implements WorkmateAdapter.OnIte
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        mWorkmatesViewModel = new ViewModelProvider(this).get(WorkmatesViewModel.class);
+        mWorkmatesVM = new ViewModelProvider(this).get(WorkmatesViewModel.class);
+        mWorkmatesVM.init();
         mBinding = FragmentWorkmatesBinding.inflate(inflater, container, false);
         mView = mBinding.getRoot();
         setProgressBar();
@@ -75,25 +67,22 @@ public class WorkmatesFragment extends Fragment implements WorkmateAdapter.OnIte
     }
 
     private void setWorkmatesRecyclerView() {
-        Query query = firestoreUserColRef.orderBy(Const.FIREBASE_ADAPTER_QUERY_EMAIL, Query.Direction.DESCENDING);
-        Log.i(TAG, "setWorkmatesRecyclerView: QUERY " + query);
-        query.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful() && task.getResult().isEmpty()) {
-                mBinding.workmatesProgressBar.setVisibility(View.GONE);
-                mBinding.workmatesErrorNonData.setVisibility(View.VISIBLE);
-                Log.e(TAG, "Error getting documents: ", task.getException());
-            } else {
-                boolean isEmpty = task.getResult().isEmpty();
-                Log.i(TAG, "setWorkmatesRecyclerView: query isEmpty? false when run: " + isEmpty);
-            }
-        });
-
+        mWorkmatesVM.getAllUsersFromCollection().get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult().isEmpty()) {
+                        mBinding.workmatesProgressBar.setVisibility(View.GONE);
+                        mBinding.workmatesErrorNonData.setVisibility(View.VISIBLE);
+                        Log.e(TAG, "Error getting documents: ", task.getException());
+                    } else {
+                        boolean isEmpty = task.getResult().isEmpty();
+                        Log.i(TAG, "setWorkmatesRecyclerView: query isEmpty? false when run: " + isEmpty);
+                    }
+                });
         FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
-                .setQuery(query, User.class)
+                .setQuery(mWorkmatesVM.getAllUsersFromCollection(), User.class)
                 .setLifecycleOwner(this)
                 .build();
-
-        mWorkmateAdapter = new WorkmateAdapter(options,this,1);
+        mWorkmateAdapter = new WorkmateAdapter(options, this, 1);
         mBinding.workmatesProgressBar.setVisibility(View.GONE);
         mBinding.workmatesRecyclerView.setAdapter(mWorkmateAdapter);
         mBinding.workmatesRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -104,9 +93,9 @@ public class WorkmatesFragment extends Fragment implements WorkmateAdapter.OnIte
         String itemId = documentSnapshot.getId();
         //String itemId = documentSnapshot.get("email");
         if (itemId.isEmpty()) {
-            ViewWidgets.showSnackBar(0, mView, "CardView non ID");
+            Log.i(TAG, "onItemClick: WorkmateID: null");
         } else {
-            ViewWidgets.showSnackBar(0, mView, "CardView ID: " + itemId);
+            Log.i(TAG, "onItemClick: WorkmateID: " + itemId);
             // TODO go to Chat by calling action (Start Intent)
             // itemID give the id of user in firebaseCollection("users");
         }
@@ -116,17 +105,6 @@ public class WorkmatesFragment extends Fragment implements WorkmateAdapter.OnIte
     public void onStart() {
         super.onStart();
         mWorkmateAdapter.startListening();
-        firestoreUserColRef.addSnapshotListener(getActivity(), (value, error) -> {
-            if (error != null) {
-                Log.e(TAG, "onEvent: ", error );
-            }
-            if (!value.isEmpty()) {
-                // How to skip call second time the Users from firebase ?
-                // How to pass QuerySnapshot in to query ?
-                // For this moment we call again setWorkmatesRecyclerView();
-                setWorkmatesRecyclerView();
-            }
-        });
     }
 
     @Override

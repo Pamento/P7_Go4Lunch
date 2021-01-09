@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -25,16 +26,15 @@ import com.pawel.p7_go4lunch.model.User;
 
 public class WorkmateAdapter extends FirestoreRecyclerAdapter<User, WorkmateAdapter.WorkmateViewHolder> {
     private static final String TAG = "workmate";
-    private OnItemClickListener mOnItemClickListener;
+    private final OnItemClickListener mOnItemClickListener;
     private Context mContext;
     private Resources mResources;
-    private TextView mTextView;
-    private int mMode;
     /**
-     * @var mode:
-     * 1 for RecyclerView with all Workmates
-     * 2 for RecyclerView with one specific restaurant chosen
+     * @field int mode:
+     * 1 - for RecyclerView with all Workmates
+     * 2 - for RecyclerView with one specific restaurant chosen
      */
+    private final int mMode;
 
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
@@ -63,7 +63,7 @@ public class WorkmateAdapter extends FirestoreRecyclerAdapter<User, WorkmateAdap
         Log.i(TAG, "onBindViewHolder: user.getUserRestaurant(): " + user.getUserRestaurant());
         // TODO add logic for add restaurant name.
         boolean workmateEatAt = false;
-        String beOrNotToBe = "";
+        String beOrNotToBe;
         if (user.getUserRestaurant() != null) {
             if (mMode == 1) {
                 beOrNotToBe = String.format(mResources.getString(R.string.workmate_eat_at), user.getName(), user.getUserRestaurant().getName());
@@ -86,13 +86,10 @@ public class WorkmateAdapter extends FirestoreRecyclerAdapter<User, WorkmateAdap
         requestOptions = requestOptions.error(R.drawable.persona_placeholder_gray);
         requestOptions = requestOptions.circleCrop();
 
-//        Glide.with(holder.workmateImage.getContext())
         Glide.with(holder.workmateImage.getContext())
                 .load(user.getUrlImage())
                 .apply(requestOptions)
                 .into(holder.workmateImage);
-
-//        Glide.with(holder.workmateImage.getContext())
 //        Glide.with(holder.workmateImage.getContext())
 //                .load(user.getUrlImage())
 //                .error(R.drawable.persona_placeholder_gray)
@@ -125,7 +122,7 @@ public class WorkmateAdapter extends FirestoreRecyclerAdapter<User, WorkmateAdap
     // ...............................................................WorkmateViewHolder.class
     public class WorkmateViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView workmateImage;
-        TextView description;
+        AppCompatTextView description;
         OnItemClickListener mOnItemClickListener;
 
         public WorkmateViewHolder(@NonNull ItemWorkmateBinding vBinding, OnItemClickListener onItemClickListener) {

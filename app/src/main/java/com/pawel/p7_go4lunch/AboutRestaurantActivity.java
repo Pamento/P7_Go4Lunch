@@ -19,6 +19,7 @@ import com.pawel.p7_go4lunch.model.User;
 import com.pawel.p7_go4lunch.utils.Const;
 import com.pawel.p7_go4lunch.utils.ViewWidgets;
 import com.pawel.p7_go4lunch.utils.adapters.WorkmateAdapter;
+import com.pawel.p7_go4lunch.viewModels.AboutRestaurantViewModel;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -26,6 +27,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
@@ -37,8 +39,9 @@ import java.util.Objects;
 
 public class AboutRestaurantActivity extends AppCompatActivity implements WorkmateAdapter.OnItemClickListener {
     private static final String TAG = "workmate";
-    View view;
-    ActivityAboutRestaurantBinding mBinding;
+    private AboutRestaurantViewModel mAboutRestaurantVM;
+    private View view;
+    private ActivityAboutRestaurantBinding mBinding;
     // TODO get restaurantID.
     private int restaurantID;
     private boolean hasImage = false;
@@ -63,6 +66,8 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mAboutRestaurantVM = new ViewModelProvider(this).get(AboutRestaurantViewModel.class);
+        mAboutRestaurantVM.init();
         mBinding = com.pawel.p7_go4lunch.databinding.ActivityAboutRestaurantBinding
                 .inflate(getLayoutInflater());
         view = mBinding.getRoot();
@@ -92,8 +97,8 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
     }
 
     private void setRecyclerViewWorkmates() {
-        Log.i(TAG, "setRecyclerViewWorkmates: ");
-        /**
+        Log.i(TAG, "setRecyclerViewWorkmates: START ");
+        /*
          * TODO get the RestaurantName from
          * - extra of intent (click on mark google maps or on list of restaurants)
          * - currentUser choice of restaurant
@@ -110,23 +115,24 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
          * float user_rating = intent.getFloatExtra("USER_RATING");
           */
         String restaurantName = "RestaurantName";
-        // TODO when restaurantName set, than set query below.
-//        Query query = firestoreUserColRef.whereNotEqualTo("userRestaurant", false)
-//                .whereEqualTo("name", restaurantName)
-//                .orderBy(Const.FIREBASE_ADAPTER_QUERY_RESTAURANT, Query.Direction.DESCENDING);
-        Query query = firestoreUserColRef.orderBy(Const.FIREBASE_ADAPTER_QUERY_EMAIL, Query.Direction.DESCENDING);
-        query.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful() && task.getResult().isEmpty()) {
-                //mBinding.abInclude.setVisibility(View.GONE);
-                mBinding.abInclude.aboutTheRestWorkmatesListEmpty.setVisibility(View.VISIBLE);
-                Log.e(TAG, "Error getting documents: ", task.getException());
-            } else {
-                boolean isEmpty = task.getResult().isEmpty();
-                Log.i(TAG, "setWorkmatesRecyclerView: query isEmpty? false when run: " + isEmpty);
-            }
-        });
+        // TODO when restaurantName set, than set query below in AboutRestaurantViewModel
+//        mAboutRestaurantVM.getSelectedUsersFromCollection(restaurantName).get()
+//                .addOnCompleteListener(task -> {
+//            if (task.isSuccessful() && task.getResult().isEmpty()) {
+//                // TODO mBinding.abInclude.progressBar.setVisibility(View.GONE);
+//                mBinding.abInclude.aboutTheRestWorkmatesListEmpty.setVisibility(View.VISIBLE);
+//                Log.e(TAG, "Error getting documents: ", task.getException());
+//            } else {
+//                boolean isEmpty = task.getResult().isEmpty();
+//                Log.i(TAG, "setWorkmatesRecyclerView: query isEmpty? false when run: " + isEmpty);
+//            }
+//        });
+//        FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
+//                .setQuery(mAboutRestaurantVM.getSelectedUsersFromCollection(), User.class)
+//                .setLifecycleOwner(this)
+//                .build();
         FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
-                .setQuery(query, User.class)
+                .setQuery(mAboutRestaurantVM.getAllUsersFromCollection(), User.class)
                 .setLifecycleOwner(this)
                 .build();
         mWorkmateAdapter = new WorkmateAdapter(options,this,2);

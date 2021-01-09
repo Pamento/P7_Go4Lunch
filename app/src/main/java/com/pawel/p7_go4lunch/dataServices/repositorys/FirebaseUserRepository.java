@@ -4,14 +4,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.pawel.p7_go4lunch.model.FavoritesRestaurants;
 import com.pawel.p7_go4lunch.model.Restaurant;
 import com.pawel.p7_go4lunch.model.User;
 import com.pawel.p7_go4lunch.utils.Const;
-
-import java.util.List;
-
-import javax.annotation.Nullable;
 
 public class FirebaseUserRepository {
 
@@ -42,6 +39,16 @@ public class FirebaseUserRepository {
     // ................................................................................... GET
     public Task<DocumentSnapshot> getUser(String uid) {
         return userRepository.document(uid).get();
+    }
+
+    public Query getAllUsersFromCollection() {
+        return userRepository.orderBy(Const.FIREBASE_ADAPTER_QUERY_EMAIL, Query.Direction.DESCENDING);
+    }
+
+    public Query getSelectedUsersFromCollection(String restaurantName) {
+        return userRepository.whereNotEqualTo("userRestaurant", null)
+                .whereArrayContains("name", restaurantName);
+                //.whereEqualTo("name", restaurantName);
     }
 
     // ................................................................................... UPDATE
