@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/error_no_data"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="?attr/actionBarSize"
+    android:background="@android:color/white"
+    android:visibility="gone">
+
+    <TextView
+        android:id="@+id/error_non_data_tx"
+        style="@style/FullScreenErrorMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="@dimen/size_b"
+        android:text="@string/workmates_message_empty_recycler_view" />
+</RelativeLayout>

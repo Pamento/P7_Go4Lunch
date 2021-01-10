@@ -16,7 +16,6 @@ import com.pawel.p7_go4lunch.databinding.FragmentListViewBinding;
 import com.pawel.p7_go4lunch.model.Restaurant;
 import com.pawel.p7_go4lunch.utils.Const;
 import com.pawel.p7_go4lunch.utils.adapters.RestaurantAdapter;
-import com.pawel.p7_go4lunch.utils.adapters.WorkmateAdapter;
 
 import java.util.ArrayList;
 
@@ -30,7 +29,7 @@ public class ListViewFragment extends Fragment implements RestaurantAdapter.OnIt
                              ViewGroup container, Bundle savedInstanceState) {
         mListViewVM = new ViewModelProvider(this).get(ListViewViewModel.class);
         mListViewVM.init();
-        // TODO mListViewVM.getRestaurants();
+        // TODO mRestaurants = mListViewVM.getRestaurants();
         setProgressBar();
         setRecyclerView();
         mBinding = FragmentListViewBinding.inflate(inflater, container, false);
@@ -44,15 +43,15 @@ public class ListViewFragment extends Fragment implements RestaurantAdapter.OnIt
         return mBinding.getRoot();
     }
 
-    private void setProgressBar() { mBinding.restaurantListProgressBar.setVisibility(View.VISIBLE); }
+    private void setProgressBar() { mBinding.restaurantProgressBar.progressBarLayout.setVisibility(View.VISIBLE); }
 
     private void setRecyclerView() {
         if (mRestaurants.isEmpty()) {
-            mBinding.restaurantListProgressBar.setVisibility(View.GONE);
-            mBinding.restaurantErrorNonData.setVisibility(View.VISIBLE);
+            mBinding.restaurantProgressBar.progressBarLayout.setVisibility(View.GONE);
+            mBinding.restaurantFullscreenNoData.errorNoData.setVisibility(View.VISIBLE);
         } else {
             RestaurantAdapter adapter = new RestaurantAdapter(mRestaurants ,this);
-            mBinding.restaurantListProgressBar.setVisibility(View.GONE);
+            mBinding.restaurantProgressBar.progressBarLayout.setVisibility(View.GONE);
             mBinding.restaurantRecyclerView.setAdapter(adapter);
             mBinding.restaurantRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         }

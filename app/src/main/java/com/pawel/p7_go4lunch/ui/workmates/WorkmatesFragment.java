@@ -63,15 +63,15 @@ public class WorkmatesFragment extends Fragment implements WorkmateAdapter.OnIte
     }
 
     public void setProgressBar() {
-        mBinding.workmatesProgressBar.setVisibility(View.VISIBLE);
+        mBinding.workmatesProgressBar.progressBarLayout.setVisibility(View.VISIBLE);
     }
 
     private void setWorkmatesRecyclerView() {
         mWorkmatesVM.getAllUsersFromCollection().get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult().isEmpty()) {
-                        mBinding.workmatesProgressBar.setVisibility(View.GONE);
-                        mBinding.workmatesErrorNonData.setVisibility(View.VISIBLE);
+                        mBinding.workmatesProgressBar.progressBarLayout.setVisibility(View.GONE);
+                        mBinding.workmatesErrorNoData.errorNoData.setVisibility(View.VISIBLE);
                         Log.e(TAG, "Error getting documents: ", task.getException());
                     } else {
                         boolean isEmpty = task.getResult().isEmpty();
@@ -83,7 +83,7 @@ public class WorkmatesFragment extends Fragment implements WorkmateAdapter.OnIte
                 .setLifecycleOwner(this)
                 .build();
         mWorkmateAdapter = new WorkmateAdapter(options, this, 1);
-        mBinding.workmatesProgressBar.setVisibility(View.GONE);
+        mBinding.workmatesProgressBar.progressBarLayout.setVisibility(View.GONE);
         mBinding.workmatesRecyclerView.setAdapter(mWorkmateAdapter);
         mBinding.workmatesRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
     }
