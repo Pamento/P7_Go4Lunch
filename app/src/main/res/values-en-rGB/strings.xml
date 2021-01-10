@@ -106,4 +106,7 @@
     <string name="workmates_message_empty_recycler_view">Sorry, there was an error.\nPlease, try again later.</string>
     <string name="about_restaurant_workmate_going_there">%s is joining!</string>
     <string name="about_restaurant_workmates_empty_list">No One joining this place yet.</string>
+
+    <!-- Restaurant list (RecyclerView) -->
+    <string name="workmate_number">(%s)</string>
 </resources>

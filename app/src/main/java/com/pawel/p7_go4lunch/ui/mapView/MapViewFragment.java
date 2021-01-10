@@ -157,7 +157,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
             } else {
                 // TODO check if device has location & network enabled (Kitkat & above)
                 Task<Location> getLocation = fusedLocationProviderClient.getLastLocation();
-                getLocation.addOnCompleteListener((OnCompleteListener<Location>) task -> {
+                getLocation.addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null) {
                         currentLocation = (Location) task.getResult();
                         LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
@@ -198,8 +198,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
                 .setNegativeButton(R.string.btn_denny, null).create();
 
         dialog.show();
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorPrimaryDark));
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorAccent));
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor( requireContext(), R.color.colorPrimaryDark));
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent));
     }
 
     private void askActivateDeviceLocation() {
@@ -212,8 +212,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
                 .setNegativeButton(R.string.btn_denny, null).create();
 
         dialog.show();
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorPrimaryDark));
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorAccent));
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(requireContext(), R.color.colorPrimaryDark));
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent));
     }
 
     private void moveCamera(LatLng latLng, float zoom) {

@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatTextView;
@@ -63,7 +62,7 @@ public class WorkmateAdapter extends FirestoreRecyclerAdapter<User, WorkmateAdap
         Log.i(TAG, "onBindViewHolder: user.getUserRestaurant(): " + user.getUserRestaurant());
         // TODO add logic for add restaurant name.
         boolean workmateEatAt = false;
-        String beOrNotToBe;
+        String beOrNotToBe = "";
         if (user.getUserRestaurant() != null) {
             if (mMode == 1) {
                 beOrNotToBe = String.format(mResources.getString(R.string.workmate_eat_at), user.getName(), user.getUserRestaurant().getName());
@@ -72,10 +71,7 @@ public class WorkmateAdapter extends FirestoreRecyclerAdapter<User, WorkmateAdap
             }
         } else {
             // TODO this conditions is it to adapt after add GoogleApi Places services we don't needed
-            if (mMode == 2) {
-                beOrNotToBe = "";
-            }
-            else {
+            if (mMode == 1) {
                 beOrNotToBe = String.format(mResources.getString(R.string.workmate_not_decide), user.getName());
                 workmateEatAt = true;
             }
@@ -130,12 +126,7 @@ public class WorkmateAdapter extends FirestoreRecyclerAdapter<User, WorkmateAdap
             workmateImage = vBinding.workmateImg;
             description = vBinding.workmateDescription;
             mOnItemClickListener = onItemClickListener;
-//            vBinding.workmateCardView.setOnClickListener(v -> {
-//                int position = getAdapterPosition();
-//                if (position != RecyclerView.NO_POSITION &&  onItemClickListener != null) {
-//                    onItemClickListener.onItemClick(getSnapshots().getSnapshot(position));
-//                }
-//            });
+            vBinding.getRoot().setOnClickListener(this);
         }
 
         @Override
@@ -148,8 +139,4 @@ public class WorkmateAdapter extends FirestoreRecyclerAdapter<User, WorkmateAdap
     public interface OnItemClickListener {
         void onItemClick(DocumentSnapshot documentSnapshot);
     }
-
-//    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-//        this.onItemClickListener = onItemClickListener;
-//    }
 }

@@ -38,4 +38,7 @@ public class Const {
     // ask location permission dialog
     public static final String PERMISSIONS_ALERT_DIALOG = "permissions_alert_dialog";
 
+    // AboutRestaurantActivity
+    public static final String EXTRA_KEY_RESTAURANT = "extra_key_restaurant";
+
 }

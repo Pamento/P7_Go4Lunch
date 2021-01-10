@@ -22,8 +22,7 @@
         android:id="@+id/workmates_layout_progressBar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize"
-        tools:visibility="gone">
+        android:layout_marginTop="?attr/actionBarSize">
 
         <ProgressBar
             android:id="@+id/workmates_progressBar"
@@ -49,6 +48,6 @@
             android:layout_centerHorizontal="true"
             android:layout_margin="@dimen/size_b"
             android:text="@string/workmates_message_empty_recycler_view"
-            style="@style/fullScreenErrorMessage" />
+            style="@style/FullScreenErrorMessage" />
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

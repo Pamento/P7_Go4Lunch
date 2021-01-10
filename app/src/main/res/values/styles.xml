@@ -44,7 +44,7 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <!-- Test of the button call, like, website on about the restaurant activity  -->
-    <style name="about_the_restaurant">
+    <style name="AboutTheRestaurant">
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:textSize">18sp</item>
     </style>
@@ -58,7 +58,16 @@
         <item name="android:textStyle">italic</item>
     </style>
 
-    <style name="fullScreenErrorMessage" parent="@style/TextAppearance.AppCompat.Headline">
+    <style name="FullScreenErrorMessage" parent="@style/TextAppearance.AppCompat.Headline">
         <item name="android:textColor">@android:color/holo_red_dark</item>
+    </style>
+
+    <style name="ErrorTextStyle" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@android:color/holo_red_dark</item>
+    </style>
+
+    <style name="RestaurantName" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">@dimen/size_text_nn</item>
     </style>
 </resources>

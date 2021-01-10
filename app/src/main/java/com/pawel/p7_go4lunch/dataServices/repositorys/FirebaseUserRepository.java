@@ -47,8 +47,9 @@ public class FirebaseUserRepository {
 
     public Query getSelectedUsersFromCollection(String restaurantName) {
         return userRepository.whereNotEqualTo("userRestaurant", null)
-                .whereArrayContains("name", restaurantName);
-                //.whereEqualTo("name", restaurantName);
+                .whereEqualTo("name", restaurantName);
+                //.whereArrayContains("name", restaurantName);
+                //.orderBy(Const.FIREBASE_ADAPTER_QUERY_RATING, Query.Direction.DESCENDING);
     }
 
     // ................................................................................... UPDATE

@@ -6,7 +6,7 @@
     <!-- Navigation drawer -->
     <dimen name="nav_drawer_header_height">176dp</dimen>
 
-    <!-- dimensions of the layouts -->
+    <!-- Dimensions of the layouts -->
     <dimen name="size_t">4dp</dimen>
     <dimen name="size_s">8dp</dimen>
     <dimen name="size_n">16dp</dimen>
@@ -15,12 +15,18 @@
     <dimen name="size_x">40dp</dimen>
     <dimen name="size_h">64dp</dimen>
 
+    <!-- Dimensions in sp -->
     <dimen name="size_text_n">16sp</dimen>
+    <dimen name="size_text_nn">18sp</dimen>
     <dimen name="size_text_m">24sp</dimen>
     <dimen name="size_text_logo">32sp</dimen>
+
+    <!-- Dimensions different -->
     <dimen name="app_bar_height">180dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="image_size">60dp</dimen>
-
+    <dimen name="item_image_size">68dp</dimen>
+    <dimen name="max_width_restaurant_name">230dp</dimen>
+    <dimen name="max_width_restaurant_address">250dp</dimen>
 </resources>

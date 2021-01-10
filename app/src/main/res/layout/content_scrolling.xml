@@ -81,7 +81,7 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/about_the_rest_tx_call"
-                style="@style/about_the_restaurant"
+                style="@style/AboutTheRestaurant"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/call"
@@ -91,7 +91,7 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/about_the_rest_tx_like"
-                style="@style/about_the_restaurant"
+                style="@style/AboutTheRestaurant"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="@dimen/size_n"
@@ -103,7 +103,7 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/about_the_rest_tx_website"
-                style="@style/about_the_restaurant"
+                style="@style/AboutTheRestaurant"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/website"
@@ -120,7 +120,7 @@
 
         <TextView
             android:id="@+id/about_the_rest_workmates_list_empty"
-            style="@style/fullScreenErrorMessage"
+            style="@style/FullScreenErrorMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/size_x"

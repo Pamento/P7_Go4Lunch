@@ -108,4 +108,7 @@
     <string name="workmates_message_empty_recycler_view">Désolé, il y a une erreur.\nVeuillez réessayer ultérieurement.</string>
     <string name="about_restaurant_workmate_going_there">%s y vas!</string>
     <string name="about_restaurant_workmates_empty_list">Personne n\'a encore rejoint cet endroit.</string>
+
+    <!-- Restaurant list (RecyclerView) -->
+    <string name="workmate_number">(%s)</string>
 </resources>
