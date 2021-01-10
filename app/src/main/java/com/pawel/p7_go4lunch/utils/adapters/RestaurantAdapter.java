@@ -10,11 +10,10 @@ import androidx.appcompat.widget.AppCompatRatingBar;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.pawel.p7_go4lunch.R;
 import com.pawel.p7_go4lunch.databinding.ItemRestaurantBinding;
 import com.pawel.p7_go4lunch.model.Restaurant;
+import com.pawel.p7_go4lunch.utils.GlideApp;
 
 import java.util.ArrayList;
 
@@ -46,12 +45,10 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
         holder.restaurantWorkmatesNumber.setText("");
         holder.restaurantRatingBar.setRating(0.1f);
         // Restaurant image
-        RequestOptions rOptions = new RequestOptions();
-        rOptions = rOptions.placeholder(R.drawable.restaurant_default);
-        rOptions = rOptions.error(R.drawable.restaurant_default);
-        Glide.with(holder.restaurantImage.getContext())
+        GlideApp.with(holder.restaurantImage.getContext())
                 .load(url)// TODO pass getUrl() directly here
-                .apply(rOptions)
+                .placeholder(R.drawable.restaurant_default)
+                .error(R.drawable.restaurant_default)
                 .into(holder.restaurantImage);
     }
 

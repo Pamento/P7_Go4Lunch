@@ -11,8 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -22,6 +20,7 @@ import android.content.res.Resources;
 import com.pawel.p7_go4lunch.R;
 import com.pawel.p7_go4lunch.databinding.ItemWorkmateBinding;
 import com.pawel.p7_go4lunch.model.User;
+import com.pawel.p7_go4lunch.utils.GlideApp;
 
 public class WorkmateAdapter extends FirestoreRecyclerAdapter<User, WorkmateAdapter.WorkmateViewHolder> {
     private static final String TAG = "workmate";
@@ -76,22 +75,12 @@ public class WorkmateAdapter extends FirestoreRecyclerAdapter<User, WorkmateAdap
                 workmateEatAt = true;
             }
         }
-
-        RequestOptions requestOptions = new RequestOptions();
-        requestOptions = requestOptions.placeholder(R.drawable.persona_placeholder_gray);
-        requestOptions = requestOptions.error(R.drawable.persona_placeholder_gray);
-        requestOptions = requestOptions.circleCrop();
-
-        Glide.with(holder.workmateImage.getContext())
+        GlideApp.with(holder.workmateImage.getContext())
                 .load(user.getUrlImage())
-                .apply(requestOptions)
+                .error(R.drawable.persona_placeholder_gray)
+                .placeholder(R.drawable.persona_placeholder_gray)
+                .circleCrop()
                 .into(holder.workmateImage);
-//        Glide.with(holder.workmateImage.getContext())
-//                .load(user.getUrlImage())
-//                .error(R.drawable.persona_placeholder_gray)
-//                .placeholder(R.drawable.persona_placeholder_gray)
-//                .circleCrop()
-//                .into(holder.workmateImage);
         holder.description.setText(beOrNotToBe);
         if (workmateEatAt)
             holder.description.setTextAppearance(mContext, R.style.TextItalicGrayLight);

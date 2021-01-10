@@ -9,7 +9,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
@@ -21,6 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.pawel.p7_go4lunch.databinding.ActivityMainBinding;
 import com.pawel.p7_go4lunch.databinding.NavigationDrawerHeaderBinding;
 import com.pawel.p7_go4lunch.utils.Const;
+import com.pawel.p7_go4lunch.utils.GlideApp;
 import com.pawel.p7_go4lunch.utils.ViewWidgets;
 import com.pawel.p7_go4lunch.viewModels.MainActivityViewModel;
 
@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             FirebaseUser user = getCurrentUser();
             View drawerHeader = binding.navDrawerView.getHeaderView(0);
             NavigationDrawerHeaderBinding headerBinding = NavigationDrawerHeaderBinding.bind(drawerHeader);
-            Glide.with(this)
+            GlideApp.with(this)
                     .load(getCurrentUser().getPhotoUrl())
                     .error(R.drawable.ic_persona_placeholder)
                     .placeholder(R.drawable.ic_persona_placeholder)
