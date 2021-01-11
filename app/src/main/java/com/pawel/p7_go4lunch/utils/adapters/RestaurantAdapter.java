@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder> {
 
-    private ArrayList<Restaurant> mRestaurants = new ArrayList<>();
+    private final ArrayList<Restaurant> mRestaurants;
     private final OnItemRestaurantListClickListener mListClickListener;
 
     public RestaurantAdapter(ArrayList<Restaurant> restaurants, OnItemRestaurantListClickListener listClickListener) {

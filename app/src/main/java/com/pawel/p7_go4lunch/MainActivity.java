@@ -1,13 +1,14 @@
 package com.pawel.p7_go4lunch;
 
 import android.app.Dialog;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI;
@@ -41,8 +42,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final String TAG = "WORKMATE";
-    private static final String TAG2 = "TOOLBAR_SEARCH";
+    private static final String TAG = "SEARCH";
     private MainActivityViewModel mMainActivityViewModel;
     private ActivityMainBinding binding;
     private View view;
@@ -104,27 +104,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     // ____________ Toolbar search _____________________
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        String searchHint = getString(R.string.search_hint);
         getMenuInflater().inflate(R.menu.toolbar_search_menu, menu);
-        MenuItem menuItem = menu.findItem(R.id.toolbar_search_icon);
-        SearchView searchView = (SearchView) menuItem.getActionView();
-        searchView.setQueryHint(searchHint);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                //TODO "search" get value and do actions with
-                ViewWidgets.showSnackBar(0, view, "submit research");
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                //TODO "search" get value and do actions with
-                Toast.makeText(MainActivity.this, "searching", Toast.LENGTH_LONG).show();
-                return false;
-            }
-        });
-        return true;
+        setSearch(menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     // ____________ Toolbar search on result _____________________
@@ -132,10 +114,51 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.toolbar_search_icon) {
             //TODO add action
-            Log.i(TAG2, "onOptionsItemSelected: ");
+            Log.i(TAG, "onOptionsItemSelected: ");
             ViewWidgets.showSnackBar(0, view, "Search");
             return true;
         } else return super.onOptionsItemSelected(item);
+    }
+
+
+    private void setSearch(Menu menu) {
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        final SearchView searchView = (SearchView) menu.findItem(R.id.toolbar_search_icon).getActionView();
+//        final MenuItem searchMenuItem = menu.findItem(R.id.toolbar_search_icon);
+        assert searchManager != null;
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        //searchView.setIconifiedByDefault(false);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // do whatever you want with this changed text
+                Log.i(TAG, "XXXX __onQueryTextChange: " + newText);
+
+                if ((newText.length() > 0) && (newText.length() % 3 == 0)) {
+                    Log.i(TAG, "onQueryTextChange: ___________________________________________ " + newText.length());
+                }
+                return true; // signal that we consumed this event
+            }
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // do whatever you want with this submitted query
+
+                Log.i(TAG, "XXXX ...onQueryTextSubmit: " + query);
+
+                return true; // signal that we consumed this event
+            }
+        });
+        Log.i(TAG, "setSearchWidget: START ");
+        // Get the intent, verify the action and get the query
+        Intent intent = getIntent();
+        Log.i(TAG, "setSearchWidget: intent.getAction(): " + intent.getAction());
+        Log.i(TAG, "setSearchWidget: intent.ACTION: " + Intent.ACTION_SEARCH);
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            Log.i(TAG, "setSearchWidget: SEARCH_QUERY: " + query);
+            //doMySearch(query);
+        }
     }
 
     private void setNavigationDrawer() {

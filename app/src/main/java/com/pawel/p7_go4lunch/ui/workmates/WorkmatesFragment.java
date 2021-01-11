@@ -17,7 +17,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.pawel.p7_go4lunch.R;
+import com.pawel.p7_go4lunch.databinding.ErrorNoDataFullscreenMessageBinding;
 import com.pawel.p7_go4lunch.databinding.FragmentWorkmatesBinding;
+import com.pawel.p7_go4lunch.databinding.ProgressBarBinding;
 import com.pawel.p7_go4lunch.model.User;
 import com.pawel.p7_go4lunch.utils.adapters.WorkmateAdapter;
 
@@ -26,6 +28,8 @@ public class WorkmatesFragment extends Fragment implements WorkmateAdapter.OnIte
 
     private WorkmatesViewModel mWorkmatesVM;
     private FragmentWorkmatesBinding mBinding;
+    private ProgressBarBinding mBarBinding;
+    private ErrorNoDataFullscreenMessageBinding mErrorMessageBinding;
     private View mView;
     private WorkmateAdapter mWorkmateAdapter;
 
@@ -49,6 +53,8 @@ public class WorkmatesFragment extends Fragment implements WorkmateAdapter.OnIte
         mWorkmatesVM = new ViewModelProvider(this).get(WorkmatesViewModel.class);
         mWorkmatesVM.init();
         mBinding = FragmentWorkmatesBinding.inflate(inflater, container, false);
+        mBarBinding = mBinding.workmatesProgressBar;
+        mErrorMessageBinding = mBinding.workmatesErrorNoData;
         mView = mBinding.getRoot();
         setProgressBar();
         setWorkmatesRecyclerView();
@@ -63,15 +69,15 @@ public class WorkmatesFragment extends Fragment implements WorkmateAdapter.OnIte
     }
 
     public void setProgressBar() {
-        mBinding.workmatesProgressBar.progressBarLayout.setVisibility(View.VISIBLE);
+        mBarBinding.progressBar.setVisibility(View.VISIBLE);
     }
 
     private void setWorkmatesRecyclerView() {
         mWorkmatesVM.getAllUsersFromCollection().get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult().isEmpty()) {
-                        mBinding.workmatesProgressBar.progressBarLayout.setVisibility(View.GONE);
-                        mBinding.workmatesErrorNoData.errorNoData.setVisibility(View.VISIBLE);
+                        mBarBinding.progressBar.setVisibility(View.GONE);
+                        mErrorMessageBinding.errorNoData.setVisibility(View.VISIBLE);
                         Log.e(TAG, "Error getting documents: ", task.getException());
                     } else {
                         boolean isEmpty = task.getResult().isEmpty();

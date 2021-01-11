@@ -7,6 +7,8 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+
+
     <!-- Style for the layout of NoActionBar -->
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>

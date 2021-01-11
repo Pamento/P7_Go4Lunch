@@ -17,12 +17,10 @@
 
     <include
         android:id="@+id/restaurant_progress_bar"
-        layout="@layout/progress_bar"
-        android:visibility="gone"/>
+        layout="@layout/progress_bar"/>
 
     <include
         android:id="@+id/restaurant_fullscreen_no_data"
-        layout="@layout/error_no_data_fullscreen_message"
-        android:visibility="gone"/>
+        layout="@layout/error_no_data_fullscreen_message"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
