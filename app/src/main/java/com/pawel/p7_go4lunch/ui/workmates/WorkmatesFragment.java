@@ -123,6 +123,8 @@ public class WorkmatesFragment extends Fragment implements WorkmateAdapter.OnIte
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        mBarBinding = null;
+        mErrorMessageBinding = null;
         mBinding = null;
     }
 }

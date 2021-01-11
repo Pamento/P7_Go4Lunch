@@ -88,4 +88,12 @@ public class ListViewFragment extends Fragment implements RestaurantAdapter.OnIt
         intent.putExtra(Const.EXTRA_KEY_RESTAURANT, restaurant.getPlaceId());
         startActivity(intent);
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        progressBarBiding = null;
+        errorBinding = null;
+        mBinding = null;
+    }
 }

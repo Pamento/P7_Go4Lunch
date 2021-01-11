@@ -1,28 +1,32 @@
 package com.pawel.p7_go4lunch.model.googleApiPlaces;
 
-
-import android.location.Location;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 public class Geometry {
-    private Viewport viewport;
-    private Location location;
 
-    public Viewport getViewport() {
-        return viewport;
-    }
+    @SerializedName("location")
+    @Expose
+    private RestaurantResult.Location location;
+    @SerializedName("viewport")
+    @Expose
+    private RestaurantResult.Viewport viewport;
 
-    public void setViewport(Viewport viewport) {
-        this.viewport = viewport;
-    }
-
-    public Location getLocation() {
+    public RestaurantResult.Location getLocation() {
         return location;
     }
 
-    public void setLocation(Location location) {
+    public void setLocation(RestaurantResult.Location location) {
         this.location = location;
     }
 
+    public RestaurantResult.Viewport getViewport() {
+        return viewport;
+    }
+
+    public void setViewport(RestaurantResult.Viewport viewport) {
+        this.viewport = viewport;
+    }
     @Override
     public String toString() {
         return "ClassGeometry [viewport = " + viewport + ", location = " + location + "]";
