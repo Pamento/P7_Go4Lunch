@@ -7,24 +7,24 @@ public class Geometry {
 
     @SerializedName("location")
     @Expose
-    private RestaurantResult.Location location;
+    private Location location;
     @SerializedName("viewport")
     @Expose
-    private RestaurantResult.Viewport viewport;
+    private Viewport viewport;
 
-    public RestaurantResult.Location getLocation() {
+    public Location getLocation() {
         return location;
     }
 
-    public void setLocation(RestaurantResult.Location location) {
+    public void setLocation(Location location) {
         this.location = location;
     }
 
-    public RestaurantResult.Viewport getViewport() {
+    public Viewport getViewport() {
         return viewport;
     }
 
-    public void setViewport(RestaurantResult.Viewport viewport) {
+    public void setViewport(Viewport viewport) {
         this.viewport = viewport;
     }
     @Override

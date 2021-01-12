@@ -3,7 +3,6 @@ package com.pawel.p7_go4lunch.model.googleApiPlaces;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.pawel.p7_go4lunch.utils.Result;
 
 public class RestaurantResult {
 
@@ -15,7 +14,7 @@ public class RestaurantResult {
     private String nextPageToken;
     @SerializedName("results")
     @Expose
-    private List<Result> results = null;
+    private List<Results> results = null;
     @SerializedName("status")
     @Expose
     private String status;
@@ -36,11 +35,11 @@ public class RestaurantResult {
         this.nextPageToken = nextPageToken;
     }
 
-    public List<Result> getResults() {
+    public List<Results> getResults() {
         return results;
     }
 
-    public void setResults(List<Result> results) {
+    public void setResults(List<Results> results) {
         this.results = results;
     }
 
@@ -52,4 +51,13 @@ public class RestaurantResult {
         this.status = status;
     }
 
+    @Override
+    public String toString() {
+        return "RestaurantResult{" +
+                "htmlAttributions=" + htmlAttributions +
+                ", nextPageToken='" + nextPageToken + '\'' +
+                ", results=" + results +
+                ", status='" + status + '\'' +
+                '}';
+    }
 }

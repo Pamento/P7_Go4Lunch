@@ -17,7 +17,7 @@
 
     <!-- Main Activity -->
     <string name="login_succeed" translatable="false">Authentification réussite !</string>
-    <string name="login_filed" translatable="false">Erreur d\'authentification&#8230;</string>
+    <string name="login_filed" translatable="false">Erreur d\'authentification&#8230;Veuillez réessayer ultérieurement.</string>
     <string name="your_lunch" translatable="false">Mon restaurant</string>
     <string name="sidebar_menu_settings" translatable="false">Paramètres</string>
     <string name="sidebar_menu_logout" translatable="false">Se déconnecter</string>
@@ -93,7 +93,7 @@
 
     <!-- AlertDialog delete account -->
     <string name="ask_location_account_title">Permissions du localisations</string>
-    <string name="ask_location_account_message">Pour retrouver les restaurant près de vous, l\'applie a besoin d\'acces a votre position.</string>
+    <string name="ask_location_account_message">Pour retrouver les restaurant près de vous, l\'applie a besoin d\'acces a votre position.\nVous pouvez activer la localisation d\'appareil dans les paramètres du système du smartphone.</string>
     <string name="btn_goto_ask_persmissions">Permissions</string>
     <string name="btn_goto_phone_settings">Paramètres</string>
     <string name="btn_denny">Annuler</string>
@@ -111,4 +111,10 @@
 
     <!-- Restaurant list (RecyclerView) -->
     <string name="workmate_number">(%s)</string>
+
+    <!-- PermissionUtils.java : dialog explain way need permission -->
+    <string name="permission_required_toast">Une autorisation de localisation est requise pour Go4Lunch.</string>
+    <string name="permission_rationale_location">L\'accès au service de localisation est nécessaire pour vous présenter les restaurants localisés au toure de vous.</string>
+    <string name="location_permission_denied">Cette application Go4Lunch nécessite une autorisation de localisation pour activer la recherche des restaurants. Veuillez réessayer et accorder l\'accès pour utiliser l\'emplacement. \nSi l\'autorisation a été définitivement refusée, elle peut être activée à partir des paramètres système &gt; Apps &gt;.</string>
+
 </resources>

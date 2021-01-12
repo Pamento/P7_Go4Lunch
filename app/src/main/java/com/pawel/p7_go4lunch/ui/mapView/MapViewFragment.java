@@ -2,15 +2,12 @@ package com.pawel.p7_go4lunch.ui.mapView;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Looper;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,9 +15,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -39,45 +34,49 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.pawel.p7_go4lunch.MainActivity;
 import com.pawel.p7_go4lunch.R;
 import com.pawel.p7_go4lunch.databinding.FragmentMapViewBinding;
 import com.pawel.p7_go4lunch.utils.Const;
 import com.pawel.p7_go4lunch.utils.LocalAppSettings;
+import com.pawel.p7_go4lunch.utils.LocationUtils;
+import com.pawel.p7_go4lunch.utils.PermissionUtils;
 import com.pawel.p7_go4lunch.utils.ViewWidgets;
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback, com.google.android.gms.location.LocationListener {
 
-    private MapViewViewModel mMapViewViewModel;
+    private MapViewViewModel mMapViewVM;
     private FragmentMapViewBinding mBinding;
     private View view;
     private GoogleMap mMap;
     private FragmentActivity mFragmentActivity;
-    public static boolean mLocationPermissionGranted = false;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
     private LocalAppSettings mPrefs;
+    private MainActivity mainActivity;
     private Activity mActivity;
     private Location currentLocation;
-    private static final String TAG = "TESTING_MAPS";
+    private static final String TAG = "SEARCH";
     private static final String TAG2 = "ASK_LOCATION";
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        mMapViewViewModel = new ViewModelProvider(this).get(MapViewViewModel.class);
+        mMapViewVM = new ViewModelProvider(this).get(MapViewViewModel.class);
         setUpViewWithViewModel();
         mBinding = FragmentMapViewBinding.inflate(inflater, container, false);
         view = mBinding.getRoot();
         mActivity = getActivity();
+        mainActivity = (MainActivity) getParentFragment().getActivity();
         if ((mActivity != null) && (mPrefs == null)) getLocalAppSettings(mActivity);
         initMap();
         return view;
     }
 
     private void setUpViewWithViewModel() {
-        mMapViewViewModel.getLatLng().observe(
+        Log.i(TAG, "setUpViewWithViewModel: FIRED");
+        mMapViewVM.getLatLng().observe(
                 getViewLifecycleOwner(), latLng -> moveCamera(latLng, mPrefs.getPerimeter()));
     }
 
@@ -91,26 +90,25 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.mMap = googleMap;
-        mMapViewViewModel.setGoogleMap(googleMap);
-        getLocationPermission();
-        if (mLocationPermissionGranted) initMapRestaurant();
+        mMapViewVM.setGoogleMap(googleMap);
+        MainActivity.getLocationPermission(mainActivity);
+        // if permissionDenied is not denied (= false): initMapRestaurant();
+        if (!MainActivity.permissionDenied) initMapRestaurant();
     }
 
     private void initMapRestaurant() {
         // for save Google Map in case of device rotation
         if (mMap == null) {
-            mMapViewViewModel.getGoogleMap().observe(getViewLifecycleOwner(), googleMap -> mMap = googleMap);
+            mMapViewVM.getGoogleMap().observe(getViewLifecycleOwner(), googleMap -> mMap = googleMap);
         }
-        // TODO re thing the way to check permissions location
-        if (mLocationPermissionGranted) {
+        if (!MainActivity.permissionDenied) {
             getCurrentDeviceLocation();
-
             // TODO move onClickListener after locationPermission granted
             mBinding.fabCurrentLocation.setOnClickListener(v -> {
+                Log.i(TAG, "initMapRestaurant: FAB_OnClick");
                 getCurrentDeviceLocation();
                 if (currentLocation != null) {
-                    //moveCamera();
-                    ViewWidgets.showSnackBar(0, view, ": " + currentLocation);
+                    Log.i(TAG, "initMapRestaurant: FAB : " + currentLocation);
                 } else {
                     ViewWidgets.showSnackBar(0, view, "No Data Location");
                 }
@@ -142,19 +140,22 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
 //                return true;
 //            });
         } else {
-            askActivateDeviceLocation();
-            // TODO show dialog with explain wy need location
+            PermissionUtils.PermissionDeniedDialog.newInstance(false).show(mFragmentActivity.getSupportFragmentManager(), "dialog");
         }
     }
 
+    /**
+     * @fun getCurrentDeviceLocation use FusedLocationProviderClient to get lastLocation and if
+     * this is not available the function start LocationRequest.
+     * More info on https://developer.android.com/training/location/request-updates
+     */
     //@TargetApi(Build.VERSION_CODES.KITKAT)
     private void getCurrentDeviceLocation() {
-        if (isDeviceLocationEnabled()) {
+        Log.i(TAG, "getCurrentDeviceLocation: START ");
+        if (LocationUtils.isDeviceLocationEnabled(requireContext())) {
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(mActivity);
-            if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(requireActivity(), Const.PERMISSIONS, Const.LOCATION_PERMISSION_REQUEST_CODE);
-            } else {
+            if (ActivityCompat.checkSelfPermission(mActivity, Const.PERMISSIONS[0]) == PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(mActivity, Const.PERMISSIONS[1]) == PackageManager.PERMISSION_GRANTED) {
                 // TODO check if device has location & network enabled (Kitkat & above)
                 Task<Location> getLocation = fusedLocationProviderClient.getLastLocation();
                 getLocation.addOnCompleteListener(task -> {
@@ -163,92 +164,29 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
                         LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
                         Log.i(TAG, "getCurrentDeviceLocation: " + task.getResult());
                         ViewWidgets.showSnackBar(0, view, "lat-lng " + currentLocation);
-                        mMapViewViewModel.setUpCurrentLocation(latLng);
+                        mMapViewVM.setUpCurrentLocation(latLng);
                     } else {
                         Log.i(TAG, "getCurrentDeviceLocation: else createLocationRequest.");
-                        // TODO add https://developer.android.com/training/location/request-updates
                         createLocationRequest();
-                        //ViewWidgets.showSnackBar(1, view, getString(R.string.current_location_not_found));
                     }
                 });
             }
         } else {
-            askSetDeviceLocation();
+//            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O_MR1) {
+                    //getFragmentManager is deprecated
+//                LocationUtils.LocationDisabledDialog.newInstance().show(getFragmentManager(), "dialog");
+//            } else {
+            LocationUtils.LocationDisabledDialog.newInstance().show(mFragmentActivity.getSupportFragmentManager(), "dialog");
+            //}
+
         }
 
-    }
-
-    private boolean isDeviceLocationEnabled() {
-        LocationManager lm = (LocationManager) requireContext().getSystemService(Context.LOCATION_SERVICE);
-        try {
-            assert lm != null;
-            return lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        } catch (Exception ex) {
-            Log.i(TAG, "deviceLocationEnabled: error " + ex);
-        }
-        return false;
-    }
-
-    private void askSetDeviceLocation() {
-        AlertDialog dialog = new AlertDialog.Builder(requireContext())
-                .setTitle(R.string.ask_location_account_title)
-                .setMessage(R.string.ask_location_account_message)
-                .setPositiveButton(R.string.btn_goto_ask_persmissions,
-                        (paramDialogInterface, paramInt) -> requireContext().startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
-                .setNegativeButton(R.string.btn_denny, null).create();
-
-        dialog.show();
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor( requireContext(), R.color.colorPrimaryDark));
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent));
-    }
-
-    private void askActivateDeviceLocation() {
-        AlertDialog dialog = new AlertDialog.Builder(requireContext())
-                .setTitle(R.string.ask_location_account_title)
-                .setMessage(R.string.ask_location_account_message)
-                .setPositiveButton(R.string.btn_goto_ask_persmissions,
-                        (paramDialogInterface, paramInt) -> getLocationPermission())
-//        (paramDialogInterface, paramInt) -> requireContext().startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
-                .setNegativeButton(R.string.btn_denny, null).create();
-
-        dialog.show();
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(requireContext(), R.color.colorPrimaryDark));
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent));
     }
 
     private void moveCamera(LatLng latLng, float zoom) {
+        Log.i(TAG, "moveCamera: FIRED");
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
         mMap.animateCamera(CameraUpdateFactory.zoomIn());
-    }
-
-    private void getLocationPermission() {
-        if (ContextCompat.checkSelfPermission(requireContext(), Const.PERMISSIONS[0]) == PackageManager.PERMISSION_GRANTED) {
-            if (ContextCompat.checkSelfPermission(requireContext(), Const.PERMISSIONS[1]) == PackageManager.PERMISSION_GRANTED) {
-                mLocationPermissionGranted = true;
-            } else {
-                ActivityCompat.requestPermissions(requireActivity(), Const.PERMISSIONS, Const.LOCATION_PERMISSION_REQUEST_CODE);
-            }
-        } else {
-            ActivityCompat.requestPermissions(requireActivity(), Const.PERMISSIONS, Const.LOCATION_PERMISSION_REQUEST_CODE);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        mLocationPermissionGranted = false;
-        if (requestCode == Const.LOCATION_PERMISSION_REQUEST_CODE) {
-            if (grantResults.length > 0) {
-                for (int grantResult : grantResults) {
-                    if (grantResult != PackageManager.PERMISSION_GRANTED) {
-                        mLocationPermissionGranted = false;
-                        askActivateDeviceLocation();
-                        return;
-                    }
-                    mLocationPermissionGranted = true;
-                    initMapRestaurant();
-                }
-            }
-        }
     }
 
 
@@ -265,6 +203,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
     }
 
     protected void createLocationRequest() {
+        Log.i(TAG, "createLocationRequest: ");
         locationRequest = LocationRequest.create();
         locationRequest.setInterval(10000);
         locationRequest.setFastestInterval(5000);
@@ -278,7 +217,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
 
         task.addOnSuccessListener(locationSettingsResponse -> {
             startLocationUpdates();
-            Log.i(TAG2, "onSuccess: response " + locationSettingsResponse.toString());
+            Log.i(TAG, "onSuccess: response " + locationSettingsResponse.toString());
         });
         task.addOnFailureListener(e -> {
             if (e instanceof ResolvableApiException) {
@@ -302,12 +241,13 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Const.REQUEST_CHECK_SETTINGS) {
-            Log.i(TAG2, "onActivityResult: " + data);
+            Log.i(TAG, "onActivityResult: " + data);
         }
         ViewWidgets.showSnackBar(1, view, getString(R.string.fail_ask_gps_signal));
     }
 
     private void startLocationUpdates() {
+        Log.i(TAG, "startLocationUpdates: START ");
         if (fusedLocationProviderClient == null) setFusedLocationProviderClient();
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {

@@ -19,7 +19,7 @@ public class Const {
     public static final int REQUEST_CHECK_SETTINGS = 9004;
 
     // GOOGLE __Service
-    public static final String GOOGLE_BASE_URL = "https://maps.googleapis.com/";
+    public static final String GOOGLE_BASE_URL = "https://maps.googleapis.com/maps/api/place/";
 
     // FIREBASE __Service
     public static final String COLLECTION_USERS = "users";
