@@ -2,6 +2,7 @@ package com.pawel.p7_go4lunch.model;
 
 import com.google.firebase.firestore.ServerTimestamp;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.Location;
+import com.pawel.p7_go4lunch.model.googleApiPlaces.OpeningHours;
 
 import java.util.Date;
 import java.util.List;
@@ -16,6 +17,8 @@ public class Restaurant {
     private String name;
     private String address;
     @Nullable
+    private OpeningHours openingHours;
+    @Nullable
     private String image;
     private double rating;
     @Nullable
@@ -28,12 +31,14 @@ public class Restaurant {
     public Restaurant() {}
 
     public Restaurant(String placeId, Location location, String name, String address,
+                      @Nullable OpeningHours openingHours,
                       @Nullable String image, double rating, @Nullable String phoneNumber, @Nullable String website,
                       @Nullable List<User> userList) {
         this.placeId = placeId;
         this.location = location;
         this.name = name;
         this.address = address;
+        this.openingHours = openingHours;
         this.image = image;
         this.rating = rating;
         this.phoneNumber = phoneNumber;
@@ -61,6 +66,11 @@ public class Restaurant {
 
     public String getAddress() {
         return address;
+    }
+
+    @Nullable
+    public OpeningHours getOpeningHours() {
+        return openingHours;
     }
 
     @Nullable
@@ -108,6 +118,10 @@ public class Restaurant {
         this.address = address;
     }
 
+    public void setOpeningHours(@Nullable OpeningHours openingHours) {
+        this.openingHours = openingHours;
+    }
+
     public void setImage(@Nullable String image) {
         this.image = image;
     }
@@ -126,5 +140,22 @@ public class Restaurant {
 
     public void setUserList(@Nullable List<User> userList) {
         this.userList = userList;
+    }
+
+    @Override
+    public String toString() {
+        return "Restaurant{" +
+                "placeId='" + placeId + '\'' +
+                ", dateCreated=" + dateCreated +
+                ", location=" + location +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", openingHours='" + openingHours + '\'' +
+                ", image='" + image + '\'' +
+                ", rating=" + rating +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", website='" + website + '\'' +
+                ", userList=" + userList +
+                '}';
     }
 }

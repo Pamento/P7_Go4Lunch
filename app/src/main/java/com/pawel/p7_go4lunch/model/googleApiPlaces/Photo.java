@@ -1,11 +1,10 @@
 package com.pawel.p7_go4lunch.model.googleApiPlaces;
 
-import java.util.Arrays;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Photos {
+public class Photo {
 
     @SerializedName("height")
     @Expose
@@ -52,8 +51,4 @@ public class Photos {
         this.width = width;
     }
 
-    @Override
-    public String toString() {
-        return "ClassPhotos [photo_reference = " + photoReference + ", width = " + width + ", html_attributions = " + htmlAttributions.toString() + ", height = " + height + "]";
-    }
 }

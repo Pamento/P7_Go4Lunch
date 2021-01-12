@@ -34,6 +34,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
 import com.pawel.p7_go4lunch.MainActivity;
 import com.pawel.p7_go4lunch.R;
@@ -96,6 +97,14 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
         if (!MainActivity.permissionDenied) initMapRestaurant();
     }
 
+    /**
+     * This is where we can add markers or lines, add listeners or move the camera.
+     * In this case, we just add a marker near Africa.
+     * Override
+     * public void onMapReady(GoogleMap map) {
+     * map.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+     * }
+     */
     private void initMapRestaurant() {
         // for save Google Map in case of device rotation
         if (mMap == null) {
@@ -151,7 +160,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
      */
     //@TargetApi(Build.VERSION_CODES.KITKAT)
     private void getCurrentDeviceLocation() {
-        Log.i(TAG, "getCurrentDeviceLocation: START ");
+        Log.i(TAG, "getCurrentDeviceLocation: FIRED ");
         if (LocationUtils.isDeviceLocationEnabled(requireContext())) {
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(mActivity);
             if (ActivityCompat.checkSelfPermission(mActivity, Const.PERMISSIONS[0]) == PackageManager.PERMISSION_GRANTED
@@ -166,14 +175,13 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
                         ViewWidgets.showSnackBar(0, view, "lat-lng " + currentLocation);
                         mMapViewVM.setUpCurrentLocation(latLng);
                     } else {
-                        Log.i(TAG, "getCurrentDeviceLocation: else createLocationRequest.");
                         createLocationRequest();
                     }
                 });
             }
         } else {
 //            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O_MR1) {
-                    //getFragmentManager is deprecated
+            //getFragmentManager is deprecated
 //                LocationUtils.LocationDisabledDialog.newInstance().show(getFragmentManager(), "dialog");
 //            } else {
             LocationUtils.LocationDisabledDialog.newInstance().show(mFragmentActivity.getSupportFragmentManager(), "dialog");

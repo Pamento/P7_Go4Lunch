@@ -42,7 +42,7 @@
             app:summaryOff="@string/notification_inactive"/>
 
         <ListPreference
-            app:defaultValue="max"
+            app:defaultValue="1000"
             app:dependency="localisation"
             app:entries="@array/perimeter_entries"
             app:entryValues="@array/perimeter_values"
