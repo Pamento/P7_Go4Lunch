@@ -9,11 +9,14 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.pawel.p7_go4lunch.dataServices.repositorys.FirebaseUserRepository;
 
 public class MainActivityViewModel extends ViewModel {
-    private static final String TAG = "TESTING_MAPS";
 
-    private FirebaseUserRepository mFirebaseUserRepository;
+    private final FirebaseUserRepository mFirebaseUserRepository;
     public void init() {
-        mFirebaseUserRepository = FirebaseUserRepository.getInstance();
+        //mFirebaseUserRepository = FirebaseUserRepository.getInstance();
+    }
+
+    public MainActivityViewModel(FirebaseUserRepository firebaseUserRepository) {
+        mFirebaseUserRepository = firebaseUserRepository;
     }
 
     public void createUser(String uri, String name, String email, String urlImage) {
@@ -21,11 +24,6 @@ public class MainActivityViewModel extends ViewModel {
     }
 
     protected OnFailureListener onFailureListener(){
-        return new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.e(TAG, "onFailure: ",e );
-            }
-        };
+        return e -> Log.e("TESTING_MAPS", "onFailure: ",e );
     }
 }

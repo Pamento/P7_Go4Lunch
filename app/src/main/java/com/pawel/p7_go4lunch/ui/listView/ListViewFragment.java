@@ -21,6 +21,8 @@ import com.pawel.p7_go4lunch.databinding.ProgressBarBinding;
 import com.pawel.p7_go4lunch.model.Restaurant;
 import com.pawel.p7_go4lunch.utils.Const;
 import com.pawel.p7_go4lunch.utils.adapters.RestaurantAdapter;
+import com.pawel.p7_go4lunch.utils.di.Injection;
+import com.pawel.p7_go4lunch.viewModels.ViewModelFactory;
 
 import java.util.ArrayList;
 
@@ -34,8 +36,7 @@ public class ListViewFragment extends Fragment implements RestaurantAdapter.OnIt
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        mListViewVM = new ViewModelProvider(this).get(ListViewViewModel.class);
-        mListViewVM.init();
+        initListViewModel();
         // TODO mRestaurants = mListViewVM.getRestaurants();
         mBinding = FragmentListViewBinding.inflate(inflater, container, false);
         bindIncludesLayouts();
@@ -49,6 +50,12 @@ public class ListViewFragment extends Fragment implements RestaurantAdapter.OnIt
         setProgressBar();
         setRecyclerView();
         return mBinding.getRoot();
+    }
+
+    private void initListViewModel() {
+        ViewModelFactory vmf = Injection.sViewModelFactory();
+        mListViewVM = new ViewModelProvider(this, vmf).get(ListViewViewModel.class);
+        mListViewVM.init();
     }
 
     private void bindIncludesLayouts() {

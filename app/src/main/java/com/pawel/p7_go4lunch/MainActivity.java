@@ -29,7 +29,9 @@ import com.pawel.p7_go4lunch.utils.Const;
 import com.pawel.p7_go4lunch.utils.GlideApp;
 import com.pawel.p7_go4lunch.utils.PermissionUtils;
 import com.pawel.p7_go4lunch.utils.ViewWidgets;
+import com.pawel.p7_go4lunch.utils.di.Injection;
 import com.pawel.p7_go4lunch.viewModels.MainActivityViewModel;
+import com.pawel.p7_go4lunch.viewModels.ViewModelFactory;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -67,13 +69,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initMainViewModel();
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         view = binding.getRoot();
         setContentView(view);
         setSupportActionBar(binding.toolbar);
         setNavigationDrawer();
-        mMainActivityViewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
-        mMainActivityViewModel.init();
         if (isCurrentUserLogged()) {
             if (isMapsServiceOk()) {
                 startMainActivity();
@@ -83,6 +84,12 @@ public class MainActivity extends AppCompatActivity
         } else {
             startSignInActivity();
         }
+    }
+
+    private void initMainViewModel() {
+        ViewModelFactory vmf = Injection.sViewModelFactory();
+        mMainActivityViewModel = new ViewModelProvider(this, vmf).get(MainActivityViewModel.class);
+        mMainActivityViewModel.init();
     }
 
     // Check if service Google Maps is available

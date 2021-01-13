@@ -4,12 +4,19 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.firestore.Query;
 import com.pawel.p7_go4lunch.dataServices.repositorys.FirebaseUserRepository;
+import com.pawel.p7_go4lunch.dataServices.repositorys.GooglePlaceRepository;
 
 public class AboutRestaurantViewModel extends ViewModel {
 
-    private FirebaseUserRepository mFirebaseUserRepository;
+    private final GooglePlaceRepository mGooglePlaceRepository;
+    private final FirebaseUserRepository mFirebaseUserRepository;
+
+    public AboutRestaurantViewModel(GooglePlaceRepository googlePlaceRepository, FirebaseUserRepository firebaseUserRepository) {
+        mGooglePlaceRepository = googlePlaceRepository;
+        mFirebaseUserRepository = firebaseUserRepository;
+    }
+
     public void init() {
-        mFirebaseUserRepository = FirebaseUserRepository.getInstance();
     }
 
     public Query getAllUsersFromCollection() {

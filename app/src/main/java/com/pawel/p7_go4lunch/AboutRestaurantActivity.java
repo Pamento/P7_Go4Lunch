@@ -19,7 +19,9 @@ import com.pawel.p7_go4lunch.model.User;
 import com.pawel.p7_go4lunch.utils.Const;
 import com.pawel.p7_go4lunch.utils.ViewWidgets;
 import com.pawel.p7_go4lunch.utils.adapters.WorkmateAdapter;
+import com.pawel.p7_go4lunch.utils.di.Injection;
 import com.pawel.p7_go4lunch.viewModels.AboutRestaurantViewModel;
+import com.pawel.p7_go4lunch.viewModels.ViewModelFactory;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -66,8 +68,7 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAboutRestaurantVM = new ViewModelProvider(this).get(AboutRestaurantViewModel.class);
-        mAboutRestaurantVM.init();
+        initAboutRestaurantViewModel();
         mBinding = com.pawel.p7_go4lunch.databinding.ActivityAboutRestaurantBinding
                 .inflate(getLayoutInflater());
         view = mBinding.getRoot();
@@ -94,6 +95,12 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
             Window w = getWindow();
             w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         }
+    }
+
+    private void initAboutRestaurantViewModel() {
+        ViewModelFactory vmf = Injection.sViewModelFactory();
+        mAboutRestaurantVM = new ViewModelProvider(this, vmf).get(AboutRestaurantViewModel.class);
+        mAboutRestaurantVM.init();
     }
 
     private void setRecyclerViewWorkmates() {

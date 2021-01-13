@@ -7,9 +7,13 @@ import com.pawel.p7_go4lunch.dataServices.repositorys.FirebaseUserRepository;
 
 public class WorkmatesViewModel extends ViewModel {
 
-    private FirebaseUserRepository mFirebaseUserRepository;
+    private final FirebaseUserRepository mFirebaseUserRepository;
+
+    public WorkmatesViewModel(FirebaseUserRepository firebaseUserRepository) {
+        mFirebaseUserRepository = firebaseUserRepository;
+    }
+
     public void init() {
-        mFirebaseUserRepository = FirebaseUserRepository.getInstance();
     }
 
     public Query getAllUsersFromCollection() {

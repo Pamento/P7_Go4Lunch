@@ -34,7 +34,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
 import com.pawel.p7_go4lunch.MainActivity;
 import com.pawel.p7_go4lunch.R;
@@ -44,6 +43,8 @@ import com.pawel.p7_go4lunch.utils.LocalAppSettings;
 import com.pawel.p7_go4lunch.utils.LocationUtils;
 import com.pawel.p7_go4lunch.utils.PermissionUtils;
 import com.pawel.p7_go4lunch.utils.ViewWidgets;
+import com.pawel.p7_go4lunch.utils.di.Injection;
+import com.pawel.p7_go4lunch.viewModels.ViewModelFactory;
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback, com.google.android.gms.location.LocationListener {
 
@@ -64,10 +65,10 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        mMapViewVM = new ViewModelProvider(this).get(MapViewViewModel.class);
-        setUpViewWithViewModel();
+        initMapViewModel();
         mBinding = FragmentMapViewBinding.inflate(inflater, container, false);
         view = mBinding.getRoot();
+        onViewModelReady();
         mActivity = getActivity();
         mainActivity = (MainActivity) getParentFragment().getActivity();
         if ((mActivity != null) && (mPrefs == null)) getLocalAppSettings(mActivity);
@@ -75,7 +76,13 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
         return view;
     }
 
-    private void setUpViewWithViewModel() {
+    private void initMapViewModel() {
+        ViewModelFactory vmf = Injection.sViewModelFactory();
+        mMapViewVM = new ViewModelProvider(this, vmf).get(MapViewViewModel.class);
+        mMapViewVM.init();
+    }
+
+    private void onViewModelReady() {
         Log.i(TAG, "setUpViewWithViewModel: FIRED");
         mMapViewVM.getLatLng().observe(
                 getViewLifecycleOwner(), latLng -> moveCamera(latLng, mPrefs.getPerimeter()));

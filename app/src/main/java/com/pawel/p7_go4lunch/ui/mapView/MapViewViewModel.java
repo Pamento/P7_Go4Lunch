@@ -6,14 +6,24 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.pawel.p7_go4lunch.dataServices.repositorys.FirebaseChosenRestaurants;
+import com.pawel.p7_go4lunch.dataServices.repositorys.GooglePlaceRepository;
 
 
 public class MapViewViewModel extends ViewModel {
 
-    private final MutableLiveData<LatLng> mCurrentLocation;
-    private final MutableLiveData<GoogleMap> mGoogleMap;
+    private final GooglePlaceRepository mGooglePlaceRepository;
+    private final FirebaseChosenRestaurants mFirebaseChosenRestaurants;
 
-    public MapViewViewModel() {
+    private MutableLiveData<LatLng> mCurrentLocation;
+    private MutableLiveData<GoogleMap> mGoogleMap;
+
+    public MapViewViewModel(GooglePlaceRepository googlePlaceRepository, FirebaseChosenRestaurants firebaseChosenRestaurants) {
+        mGooglePlaceRepository = googlePlaceRepository;
+        mFirebaseChosenRestaurants = firebaseChosenRestaurants;
+    }
+
+    public void init() {
         mCurrentLocation = new MutableLiveData<>();
         mGoogleMap = new MutableLiveData<>();
     }

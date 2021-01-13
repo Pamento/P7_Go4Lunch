@@ -41,6 +41,7 @@ public class SettingsActivity extends AppCompatActivity implements DialogWidget.
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         // This value is about "home" id: https://developer.android.com/reference/android/R.id#home
+        // Command if (item.getItemId() == R.id.home) don't give expected result.
         if (item.getItemId() == 16908332) {
             onBackPressed();
             return true;
