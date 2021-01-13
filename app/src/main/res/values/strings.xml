@@ -1,6 +1,7 @@
 <resources>
 
     <string name="app_name">Go4Lunch</string>
+    <string name="app_language">fr</string>
 
     <!-- Facebook application ID and custom URL scheme (app ID prefixed by 'fb'). -->
     <!-- <string name="facebook_app_id">429297778093935</string>

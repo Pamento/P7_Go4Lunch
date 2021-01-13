@@ -7,6 +7,7 @@ import com.pawel.p7_go4lunch.dataServices.RetrofitClient;
 import com.pawel.p7_go4lunch.model.Restaurant;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.RestaurantResult;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.Result;
+import com.pawel.p7_go4lunch.utils.Const;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,7 @@ public class GooglePlaceRepository {
     public List<Restaurant> getRestaurants() {
         return mRestaurants;
     }
+
     public Observable<RestaurantResult> streamFetchRestaurantsPlaces(String location, int radius, String key) {
         return mGooglePlaceAPIService.getNearbyRestaurants(location, radius, key)
                 .subscribeOn(Schedulers.io())
@@ -59,38 +61,43 @@ public class GooglePlaceRepository {
         return streamFetchRestaurantsPlaces(location, radius, key)
                 .map(RestaurantResult::getResults)
                 .concatMap(results -> {
-                    fitRestaurantsList(results);
+                    fitRestaurantsList(results, key);
                     return Observable.fromIterable(results)
-                            .concatMap(result -> streamFetchRestaurantsDetails(result.getPlaceId(),key));
+                            .concatMap(result -> streamFetchRestaurantsDetails(result.getPlaceId(), key));
                 }).toList().toObservable();
     }
 
-    private void fitRestaurantsList(List<Result> results) {
+    private void fitRestaurantsList(List<Result> results, String key) {
         boolean isEmpty = false;
         if (mRestaurants.isEmpty()) isEmpty = true;
         Log.i("REQUEST", "fitRestaurantsList: ");
         if (results != null) {
-            for (Result result: results) {
+            for (Result result : results) {
                 Restaurant restaurant = new Restaurant();
                 restaurant.setPlaceId(result.getPlaceId());
                 restaurant.setName(result.getName());
                 restaurant.setAddress(result.getVicinity());
                 restaurant.setLocation(result.getGeometry().getLocation());
                 restaurant.setOpeningHours(result.getOpeningHours());
-                restaurant.setImage(result.getPhotos().get(0).getPhotoReference());
+                restaurant.setImage(getPhoto(result.getPhotos().get(0).getPhotoReference(), key));
                 restaurant.setRating(result.getRating());
-                restaurant.setPhoneNumber(result.getFormattedPhoneNumber());
+                restaurant.setPhoneNumber(result.getInternationalPhoneNumber());
                 restaurant.setWebsite(result.getWebsite());
                 if (isEmpty) {
                     mRestaurants.add(restaurant);
                 } else {
-                    for (Restaurant restau : mRestaurants) {
-                        if (restau.getPlaceId().equals(restaurant.getPlaceId())) {
+                    for (Restaurant restaur : mRestaurants) {
+                        if (restaur.getPlaceId().equals(restaurant.getPlaceId())) {
                             mRestaurants.set(mRestaurants.indexOf(restaurant), restaurant);
                         }
                     }
                 }
+                Log.i("REQUEST", "fitRestaurantsList: 1_restaurant: \n" + restaurant.toString());
             }
         }
+    }
+
+    public String getPhoto(String photoReference, String key) {
+        return "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + photoReference + "&key=" + key;
     }
 }

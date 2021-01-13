@@ -1,6 +1,7 @@
 package com.pawel.p7_go4lunch.dataServices;
 
 import com.pawel.p7_go4lunch.R;
+import com.pawel.p7_go4lunch.model.googleApiPlaces.Photo;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.RestaurantResult;
 
 import io.reactivex.Observable;
@@ -41,13 +42,16 @@ public interface GooglePlaceAPI {
 //    @GET("details/json?")
 //    Observable<RestaurantResult> getDetailRestaurants (@Query("place_id") String placeId,
 //                                                 @Query("key") String key);
-    @GET("place/details/json?fields=vicinity,name,place_id,id,geometry,opening_hours,international_phone_number,website,rating,utc_offset,photos")
+//    @GET("details/json?fields=vicinity,name,place_id,id,geometry,opening_hours,international_phone_number,website,rating,utc_offset,photos")
+    @GET("details/json?fields=international_phone_number,website")
     Observable<RestaurantResult> getDetailsOfRestaurant(@Query("place_id") String placeId,
                                                         @Query("key") String key);
 
 
     /**
      * Request HTTP in Json (autocomplete) for Restaurants
+     * <p>
+     * example:   https://maps.googleapis.com/maps/api/place/queryautocomplete/json?key=YOUR_API_KEY&language=fr&input=pizza+near%20par
      *
      * @param key   String API key
      * @param input String from EditText
@@ -55,6 +59,7 @@ public interface GooglePlaceAPI {
      */
     @GET("queryautocomplete/json?")
     Observable<RestaurantResult> getAutocompleteRestaurants(@Query("key") String key,
+                                                            @Query("language") String language,
                                                             @Query("input") String input,
                                                             @Query("location") String location,
                                                             @Query("radius") int radius);
