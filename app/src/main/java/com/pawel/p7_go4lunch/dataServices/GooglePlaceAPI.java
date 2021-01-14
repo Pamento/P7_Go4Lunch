@@ -3,6 +3,7 @@ package com.pawel.p7_go4lunch.dataServices;
 import com.pawel.p7_go4lunch.R;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.Photo;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.RestaurantResult;
+import com.pawel.p7_go4lunch.model.googleApiPlaces.SingleRestaurant;
 
 import io.reactivex.Observable;
 import retrofit2.Call;
@@ -44,7 +45,7 @@ public interface GooglePlaceAPI {
 //                                                 @Query("key") String key);
 //    @GET("details/json?fields=vicinity,name,place_id,id,geometry,opening_hours,international_phone_number,website,rating,utc_offset,photos")
     @GET("details/json?fields=international_phone_number,website")
-    Observable<RestaurantResult> getDetailsOfRestaurant(@Query("place_id") String placeId,
+    Observable<SingleRestaurant> getDetailsOfRestaurant(@Query("place_id") String placeId,
                                                         @Query("key") String key);
 
 

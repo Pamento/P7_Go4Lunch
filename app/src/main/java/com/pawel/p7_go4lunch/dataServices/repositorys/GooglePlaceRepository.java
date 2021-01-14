@@ -7,7 +7,7 @@ import com.pawel.p7_go4lunch.dataServices.RetrofitClient;
 import com.pawel.p7_go4lunch.model.Restaurant;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.RestaurantResult;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.Result;
-import com.pawel.p7_go4lunch.utils.Const;
+import com.pawel.p7_go4lunch.model.googleApiPlaces.SingleRestaurant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,11 +25,13 @@ public class GooglePlaceRepository {
     private static volatile GooglePlaceRepository instance;
     private final GooglePlaceAPI mGooglePlaceAPIService;
     private final List<Restaurant> mRestaurants = new ArrayList<>();
+    private static String currentLocation;
 
     public GooglePlaceRepository() {
         mGooglePlaceAPIService = getGooglePlaceApiService();
     }
 
+    // ................................................................. GETTERS
     public static GooglePlaceRepository getInstance() {
         if (instance == null) instance = new GooglePlaceRepository();
         return instance;
@@ -43,6 +45,12 @@ public class GooglePlaceRepository {
         return mRestaurants;
     }
 
+    // .........................................................................SETTERS
+    public static void setCurrentLocation(String currentLocation) {
+        GooglePlaceRepository.currentLocation = currentLocation;
+    }
+
+    // .........................................................................STREAMS
     public Observable<RestaurantResult> streamFetchRestaurantsPlaces(String location, int radius, String key) {
         return mGooglePlaceAPIService.getNearbyRestaurants(location, radius, key)
                 .subscribeOn(Schedulers.io())
@@ -50,51 +58,47 @@ public class GooglePlaceRepository {
                 .timeout(10, TimeUnit.SECONDS);
     }
 
-    public Observable<RestaurantResult> streamFetchRestaurantsDetails(String placeId, String key) {
+    public Observable<SingleRestaurant> streamFetchRestaurantsDetails(String placeId, String key) {
         return mGooglePlaceAPIService.getDetailsOfRestaurant(placeId, key)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .timeout(10, TimeUnit.SECONDS);
+                .timeout(10, TimeUnit.SECONDS)
+                .map(singleRestaurant -> {
+                    fitRestaurantsList(singleRestaurant.getResult(), key);
+                    return singleRestaurant;
+                });
     }
 
-    public ObservableSource<List<RestaurantResult>> streamCombinePlacesAndDetails(String location, int radius, String key) {
+    public ObservableSource<List<SingleRestaurant>> streamCombinePlacesAndDetails(String location, int radius, String key) {
         return streamFetchRestaurantsPlaces(location, radius, key)
                 .map(RestaurantResult::getResults)
-                .concatMap(results -> {
-                    fitRestaurantsList(results, key);
-                    return Observable.fromIterable(results)
-                            .concatMap(result -> streamFetchRestaurantsDetails(result.getPlaceId(), key));
-                }).toList().toObservable();
+                .concatMap(results -> Observable.fromIterable(results)
+                        .concatMap(result -> streamFetchRestaurantsDetails(result.getPlaceId(), key))
+                        .toList().toObservable());
     }
 
-    private void fitRestaurantsList(List<Result> results, String key) {
-        boolean isEmpty = false;
-        if (mRestaurants.isEmpty()) isEmpty = true;
+    // ................................................................. UTILS FUNCTIONS
+    private void fitRestaurantsList(Result result, String key) {
+        mRestaurants.add(createRestaurant(result, key));
+    }
+
+    public Restaurant createRestaurant(Result result, String key) {
         Log.i("REQUEST", "fitRestaurantsList: ");
-        if (results != null) {
-            for (Result result : results) {
-                Restaurant restaurant = new Restaurant();
-                restaurant.setPlaceId(result.getPlaceId());
-                restaurant.setName(result.getName());
-                restaurant.setAddress(result.getVicinity());
-                restaurant.setLocation(result.getGeometry().getLocation());
-                restaurant.setOpeningHours(result.getOpeningHours());
-                restaurant.setImage(getPhoto(result.getPhotos().get(0).getPhotoReference(), key));
-                restaurant.setRating(result.getRating());
-                restaurant.setPhoneNumber(result.getInternationalPhoneNumber());
-                restaurant.setWebsite(result.getWebsite());
-                if (isEmpty) {
-                    mRestaurants.add(restaurant);
-                } else {
-                    for (Restaurant restaur : mRestaurants) {
-                        if (restaur.getPlaceId().equals(restaurant.getPlaceId())) {
-                            mRestaurants.set(mRestaurants.indexOf(restaurant), restaurant);
-                        }
-                    }
-                }
-                Log.i("REQUEST", "fitRestaurantsList: 1_restaurant: \n" + restaurant.toString());
-            }
+        Restaurant restaurant = new Restaurant();
+        if (result != null) {
+            restaurant.setPlaceId(result.getPlaceId());
+            restaurant.setName(result.getName());
+            restaurant.setAddress(result.getVicinity());
+            restaurant.setLocation(result.getGeometry().getLocation());
+            restaurant.setOpeningHours(result.getOpeningHours());
+            restaurant.setImage(getPhoto(result.getPhotos().get(0).getPhotoReference(), key));
+            restaurant.setRating(result.getRating());
+            restaurant.setPhoneNumber(result.getInternationalPhoneNumber());
+            restaurant.setWebsite(result.getWebsite());
+            Log.i("REQUEST", "fitRestaurantsList: restaurants(" + mRestaurants.size() + "); 1_restaurant: \n" + restaurant.toString());
+            return restaurant;
         }
+        return null;
     }
 
     public String getPhoto(String photoReference, String key) {

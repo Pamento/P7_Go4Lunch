@@ -59,7 +59,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
     private LocalAppSettings mPrefs;
     private MainActivity mainActivity;
     private Activity mActivity;
-    private Location currentLocation;
+    private String currentLocation;
     private static final String TAG = "SEARCH";
     private static final String TAG2 = "ASK_LOCATION";
 
@@ -170,21 +170,23 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
         Log.i(TAG, "getCurrentDeviceLocation: FIRED ");
         if (LocationUtils.isDeviceLocationEnabled(requireContext())) {
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(mActivity);
-            if (ActivityCompat.checkSelfPermission(mActivity, Const.PERMISSIONS[0]) == PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(mActivity, Const.PERMISSIONS[1]) == PackageManager.PERMISSION_GRANTED) {
+            try {
                 // TODO check if device has location & network enabled (Kitkat & above)
                 Task<Location> getLocation = fusedLocationProviderClient.getLastLocation();
                 getLocation.addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null) {
-                        currentLocation = (Location) task.getResult();
-                        LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                        Location location = task.getResult();
+                        currentLocation = location.getLatitude() + "," + location.getLongitude();
+                        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                         Log.i(TAG, "getCurrentDeviceLocation: " + task.getResult());
-                        ViewWidgets.showSnackBar(0, view, "lat-lng " + currentLocation);
-                        mMapViewVM.setUpCurrentLocation(latLng);
+                        mMapViewVM.setUpCurrentLocation(currentLocation);
+                        mMapViewVM.setUpCurrentLatLng(latLng);
                     } else {
                         createLocationRequest();
                     }
                 });
+            } catch (SecurityException e) {
+                e.getMessage();
             }
         } else {
 //            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O_MR1) {
@@ -195,7 +197,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
             //}
 
         }
-
     }
 
     private void moveCamera(LatLng latLng, float zoom) {
@@ -203,7 +204,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
         mMap.animateCamera(CameraUpdateFactory.zoomIn());
     }
-
 
     private void getLocalAppSettings(Activity activity) {
         mPrefs = new LocalAppSettings(activity);
@@ -294,7 +294,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
                 }
                 for (Location location : locationResult.getLocations()) {
                     Log.i(TAG2, "onLocationResult: " + location);
-                    currentLocation = location;
+                    currentLocation = location.getLatitude() + "," + location.getLongitude();
                     // Update UI with location data
                     // ...
                 }
@@ -317,5 +317,11 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
     @Override
     public void onLocationChanged(Location location) {
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mMapViewVM.disposeDisposable();
     }
 }
