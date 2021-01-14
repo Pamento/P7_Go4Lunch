@@ -41,5 +41,5 @@
         app:elevation="6dp"
         android:contentDescription="@string/app_name"
         android:visibility="gone"
-        tools:visibility="visible" />
+        tools:visibility="visible"/>
 </FrameLayout>

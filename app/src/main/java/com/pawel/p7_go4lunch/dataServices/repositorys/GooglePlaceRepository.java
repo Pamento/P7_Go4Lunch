@@ -2,12 +2,14 @@ package com.pawel.p7_go4lunch.dataServices.repositorys;
 
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.pawel.p7_go4lunch.dataServices.GooglePlaceAPI;
 import com.pawel.p7_go4lunch.dataServices.RetrofitClient;
 import com.pawel.p7_go4lunch.model.Restaurant;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.RestaurantResult;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.Result;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.SingleRestaurant;
+import com.pawel.p7_go4lunch.utils.WasCalled;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +18,6 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class GooglePlaceRepository {
@@ -25,7 +25,8 @@ public class GooglePlaceRepository {
     private static volatile GooglePlaceRepository instance;
     private final GooglePlaceAPI mGooglePlaceAPIService;
     private final List<Restaurant> mRestaurants = new ArrayList<>();
-    private static String currentLocation;
+    private static String mCurrentLocation;
+    private static LatLng initialLatLng;
 
     public GooglePlaceRepository() {
         mGooglePlaceAPIService = getGooglePlaceApiService();
@@ -45,9 +46,17 @@ public class GooglePlaceRepository {
         return mRestaurants;
     }
 
+    public LatLng getInitialLatLng() {
+        return initialLatLng;
+    }
+
     // .........................................................................SETTERS
-    public static void setCurrentLocation(String currentLocation) {
-        GooglePlaceRepository.currentLocation = currentLocation;
+    public void setCurrentLocation(String currentLocation) {
+        GooglePlaceRepository.mCurrentLocation = currentLocation;
+    }
+
+    public void setInitialLatLng(LatLng latLng) {
+        GooglePlaceRepository.initialLatLng = latLng;
     }
 
     // .........................................................................STREAMS
@@ -79,11 +88,20 @@ public class GooglePlaceRepository {
 
     // ................................................................. UTILS FUNCTIONS
     private void fitRestaurantsList(Result result, String key) {
-        mRestaurants.add(createRestaurant(result, key));
+        if (WasCalled.restaurantsList()) {
+            for (Restaurant res : mRestaurants) {
+                if (res.getPlaceId().equals((result).getPlaceId())) {
+                    mRestaurants.set(mRestaurants.indexOf(res), createRestaurant(result,key));
+                } else {
+                    mRestaurants.add(createRestaurant(result, key));
+                }
+            }
+        } else {
+            mRestaurants.add(createRestaurant(result, key));
+        }
     }
 
     public Restaurant createRestaurant(Result result, String key) {
-        Log.i("REQUEST", "fitRestaurantsList: ");
         Restaurant restaurant = new Restaurant();
         if (result != null) {
             restaurant.setPlaceId(result.getPlaceId());

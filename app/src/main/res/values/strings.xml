@@ -99,7 +99,7 @@
     <string name="btn_goto_phone_settings">Paramètres</string>
     <string name="btn_denny">Annuler</string>
 
-    <!-- gps request in MapViewFragment -->
+    <!-- GPS request in MapViewFragment -->
     <string name="fail_ask_gps_signal">Veuillez vérifier avec Google Maps si votre position est correctement appelée par votre téléphone.</string>
 
     <!-- Workmates list -->

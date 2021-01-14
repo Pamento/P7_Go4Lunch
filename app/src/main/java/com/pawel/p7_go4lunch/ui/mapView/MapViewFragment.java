@@ -43,6 +43,7 @@ import com.pawel.p7_go4lunch.utils.LocalAppSettings;
 import com.pawel.p7_go4lunch.utils.LocationUtils;
 import com.pawel.p7_go4lunch.utils.PermissionUtils;
 import com.pawel.p7_go4lunch.utils.ViewWidgets;
+import com.pawel.p7_go4lunch.utils.WasCalled;
 import com.pawel.p7_go4lunch.utils.di.Injection;
 import com.pawel.p7_go4lunch.viewModels.ViewModelFactory;
 
@@ -68,7 +69,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
         initMapViewModel();
         mBinding = FragmentMapViewBinding.inflate(inflater, container, false);
         view = mBinding.getRoot();
-        onViewModelReady();
         mActivity = getActivity();
         mainActivity = (MainActivity) getParentFragment().getActivity();
         if ((mActivity != null) && (mPrefs == null)) getLocalAppSettings(mActivity);
@@ -82,10 +82,18 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
         mMapViewVM.init();
     }
 
-    private void onViewModelReady() {
+    private void onViewModelReadySetObservers() {
         Log.i(TAG, "setUpViewWithViewModel: FIRED");
-        mMapViewVM.getLatLng().observe(
-                getViewLifecycleOwner(), latLng -> moveCamera(latLng, mPrefs.getPerimeter()));
+        mBinding.fabCurrentLocation.setVisibility(View.VISIBLE);
+        mBinding.fabCurrentLocation.setOnClickListener(v -> {
+            Log.i(TAG, "initMapRestaurant: FAB_OnClick");
+            if (getCurrentDeviceLocation()) {
+                moveCamera(mMapViewVM.getLatLng(), mPrefs.getPerimeter());
+                Log.i(TAG, "initMapRestaurant: FAB : " + currentLocation);
+            } else {
+                ViewWidgets.showSnackBar(0, view, getResources().getString(R.string.current_location_not_found));
+            }
+        });
     }
 
     private void initMap() {
@@ -101,7 +109,11 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
         mMapViewVM.setGoogleMap(googleMap);
         MainActivity.getLocationPermission(mainActivity);
         // if permissionDenied is not denied (= false): initMapRestaurant();
-        if (!MainActivity.permissionDenied) initMapRestaurant();
+        if (!MainActivity.permissionDenied) {
+            initMapRestaurant();
+        } else {
+            PermissionUtils.PermissionDeniedDialog.newInstance(false).show(mFragmentActivity.getSupportFragmentManager(), "dialog");
+        }
     }
 
     /**
@@ -113,36 +125,30 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
      * }
      */
     private void initMapRestaurant() {
+        Log.i(TAG, "initMapRestaurant: START");
         // for save Google Map in case of device rotation
         if (mMap == null) {
-            mMapViewVM.getGoogleMap().observe(getViewLifecycleOwner(), googleMap -> mMap = googleMap);
-        }
-        if (!MainActivity.permissionDenied) {
-            getCurrentDeviceLocation();
-            // TODO move onClickListener after locationPermission granted
-            mBinding.fabCurrentLocation.setOnClickListener(v -> {
-                Log.i(TAG, "initMapRestaurant: FAB_OnClick");
-                getCurrentDeviceLocation();
-                if (currentLocation != null) {
-                    Log.i(TAG, "initMapRestaurant: FAB : " + currentLocation);
-                } else {
-                    ViewWidgets.showSnackBar(0, view, "No Data Location");
+            mMapViewVM.getGoogleMap().observe(getViewLifecycleOwner(), googleMap -> {
+                mMap = googleMap;
+                if (getCurrentDeviceLocation()) {
+                    if (mMapViewVM.getCurrentLocation() != null) moveCamera(mMapViewVM.getLatLng(), mPrefs.getPerimeter());
+                    onViewModelReadySetObservers();
                 }
             });
-
-            // get automatically & unrepentantly of user will the position of device
-            //getCurrentDeviceLocation();
-            // recheck permissions for settings  for maps below
+        }
+        // get automatically & unrepentantly of user will the position of device
+        //getCurrentDeviceLocation();
+        // recheck permissions for settings  for maps below
 //            if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION)
 //                    != PackageManager.PERMISSION_GRANTED
 //                    && ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_COARSE_LOCATION)
 //                    != PackageManager.PERMISSION_GRANTED) {
 //                return;
 //            }
-            // Set blue point (mark) of user position. "true" is visible; "false" is hidden.
-            //mMap.setMyLocationEnabled(true);
-            // Disable icon of the center location
-            mMap.getUiSettings().setMyLocationButtonEnabled(false);
+        // Set blue point (mark) of user position. "true" is visible; "false" is hidden.
+        //mMap.setMyLocationEnabled(true);
+        // Disable icon of the center location
+        mMap.getUiSettings().setMyLocationButtonEnabled(false);
 //            Log.i(TAG, "onMapReady: mMap " + mMap);
 //            LatLng testPosition = new LatLng(37, -121);
 //            LatLng sydney = new LatLng(34, -118);
@@ -155,9 +161,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
 //                Log.i(TAG, "onMarkerClick: " + marker.toString());
 //                return true;
 //            });
-        } else {
-            PermissionUtils.PermissionDeniedDialog.newInstance(false).show(mFragmentActivity.getSupportFragmentManager(), "dialog");
-        }
+
     }
 
     /**
@@ -166,7 +170,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
      * More info on https://developer.android.com/training/location/request-updates
      */
     //@TargetApi(Build.VERSION_CODES.KITKAT)
-    private void getCurrentDeviceLocation() {
+    private boolean getCurrentDeviceLocation() {
+        final boolean[] res = {false};
         Log.i(TAG, "getCurrentDeviceLocation: FIRED ");
         if (LocationUtils.isDeviceLocationEnabled(requireContext())) {
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(mActivity);
@@ -181,6 +186,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
                         Log.i(TAG, "getCurrentDeviceLocation: " + task.getResult());
                         mMapViewVM.setUpCurrentLocation(currentLocation);
                         mMapViewVM.setUpCurrentLatLng(latLng);
+                        res[0] = true;
                     } else {
                         createLocationRequest();
                     }
@@ -188,6 +194,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
             } catch (SecurityException e) {
                 e.getMessage();
             }
+            res[0] = true;
         } else {
 //            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O_MR1) {
             //getFragmentManager is deprecated
@@ -195,8 +202,9 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
 //            } else {
             LocationUtils.LocationDisabledDialog.newInstance().show(mFragmentActivity.getSupportFragmentManager(), "dialog");
             //}
-
+            res[0] = false;
         }
+        return res[0];
     }
 
     private void moveCamera(LatLng latLng, float zoom) {
@@ -206,6 +214,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
     }
 
     private void getLocalAppSettings(Activity activity) {
+        Log.i(TAG, "getLocalAppSettings: FIRED");
         mPrefs = new LocalAppSettings(activity);
     }
 
@@ -316,7 +325,17 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
 
     @Override
     public void onLocationChanged(Location location) {
-
+        // TODO if currentLocation is set by RequestLocation then the if/else below is never true.
+        // TODO : need to set type initialLocation.
+        LatLng currentLatLng = mMapViewVM.getInitialLatLng();
+        Location oldLocation = null;
+        oldLocation.setLatitude(currentLatLng.latitude);
+        oldLocation.setLongitude(currentLatLng.longitude);
+        if (oldLocation.distanceTo(location) >= 300) {
+            // We reset the limit guard of initial location
+            WasCalled.resetLocationWasCalled();
+            // TODO run new restaurantRequest
+        }
     }
 
     @Override

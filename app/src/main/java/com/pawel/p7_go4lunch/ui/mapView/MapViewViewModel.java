@@ -10,6 +10,7 @@ import com.pawel.p7_go4lunch.dataServices.repositorys.FirebaseChosenRestaurants;
 import com.pawel.p7_go4lunch.dataServices.repositorys.GooglePlaceRepository;
 import com.pawel.p7_go4lunch.model.Restaurant;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.SingleRestaurant;
+import com.pawel.p7_go4lunch.utils.WasCalled;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,10 +27,10 @@ public class MapViewViewModel extends ViewModel {
     private final FirebaseChosenRestaurants mFirebaseChosenRestaurants;
     private final CompositeDisposable mDisposable = new CompositeDisposable();
 
-    private MutableLiveData<LatLng> mCurrentLatLng;
     private MutableLiveData<GoogleMap> mGoogleMap;
     private List<Restaurant> mMiddleRestaurants = new ArrayList<>();
 
+    private LatLng mCurrentLatLng;
     private String mCurrentLocation;
     private List<Restaurant> mRestaurants;
 
@@ -55,12 +56,16 @@ public class MapViewViewModel extends ViewModel {
         return mRestaurants;
     }
 
-    public LiveData<LatLng> getLatLng() {
+    public LatLng getLatLng() {
         return mCurrentLatLng;
     }
 
     public String getCurrentLocation() {
         return mCurrentLocation;
+    }
+
+    public LatLng getInitialLatLng() {
+        return mGooglePlaceRepository.getInitialLatLng();
     }
 
     public LiveData<GoogleMap> getGoogleMap() {
@@ -69,10 +74,14 @@ public class MapViewViewModel extends ViewModel {
 
     // ................................................................. SETTERS
     public void setUpCurrentLatLng(LatLng latLng) {
-        mCurrentLatLng.setValue(latLng);
+        mCurrentLatLng = latLng;
+        if (!WasCalled.isLocationWasCalled()) {
+            mGooglePlaceRepository.setInitialLatLng(latLng);
+        }
     }
 
     public void setUpCurrentLocation(String currentLocation) {
+        mGooglePlaceRepository.setCurrentLocation(currentLocation);
         mCurrentLocation = currentLocation;
     }
 
@@ -87,6 +96,7 @@ public class MapViewViewModel extends ViewModel {
         }
     }
 
+    // ................................................................. UTILS FUNCTIONS
     private Observer<List<SingleRestaurant>> restaurantsRequestObserver(String key) {
         return new Observer<List<SingleRestaurant>>() {
             @Override
