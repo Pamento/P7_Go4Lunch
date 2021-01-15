@@ -25,6 +25,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.FirebaseUserMetadata;
 import com.pawel.p7_go4lunch.databinding.ActivityMainBinding;
 import com.pawel.p7_go4lunch.databinding.NavigationDrawerHeaderBinding;
+import com.pawel.p7_go4lunch.model.FavoritesRestaurants;
+import com.pawel.p7_go4lunch.model.Restaurant;
 import com.pawel.p7_go4lunch.utils.Const;
 import com.pawel.p7_go4lunch.utils.GlideApp;
 import com.pawel.p7_go4lunch.utils.PermissionUtils;
@@ -45,6 +47,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -303,7 +306,7 @@ public class MainActivity extends AppCompatActivity
         AuthUI.getInstance().signOut(this).addOnSuccessListener(this, aVoid ->
         {
             if (getCurrentUser() == null) {
-                ViewWidgets.showSnackBar(0, view, "Action to logout");
+                ViewWidgets.showSnackBar(0, view, getString(R.string.logout_successful));
                 // TODO manage action
 //                Intent intent = new Intent(MainActivity.this);
 //                startActivity(intent);
@@ -333,8 +336,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     public static void getLocationPermission(MainActivity mainActivity) {
+        Log.i(TAG, "getLocationPermission: ");
         for (String permission : Const.PERMISSIONS) {
-            PermissionUtils.requestPermission(mainActivity, Const.LOCATION_PERMISSION_REQUEST_CODE, permission, false);
+            PermissionUtils.requestPermissionAboveApiM(mainActivity, Const.LOCATION_PERMISSION_REQUEST_CODE, permission, false);
         }
     }
 

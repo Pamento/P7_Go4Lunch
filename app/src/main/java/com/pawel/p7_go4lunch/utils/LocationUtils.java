@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,13 +12,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.Task;
 import com.pawel.p7_go4lunch.R;
+import com.pawel.p7_go4lunch.model.googleApiPlaces.Location;
 
 public abstract class LocationUtils {
+
+    //private static LiveData<Location> data = new MutableLiveData<>();
     private static final String TAG = "SEARCH";
 //    public static Location getCurrentDeviceLocation(Context context) {
 //        Log.i(TAG, "LOCATION _getCurrentDeviceLocation: " + context);

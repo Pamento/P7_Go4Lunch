@@ -41,6 +41,9 @@
     <string name="btn_text_facebook">Sign in with Facebook</string>
     <string name="btn_text_email">Sign in with email</string>
 
+    <!-- Log out -->
+    <string name="logout_successful">Vous êtes maintenant déconnecté.</string>
+
     <!-- About the restaurant activity -->
     <string name="action_settings">Settings</string>
     <string name="call">CALL</string>
@@ -50,6 +53,13 @@
     <string name="star2">Star two</string>
     <string name="star3">Star tree</string>
     <string name="title_activity_about_restaurant">About the restaurant</string>
+    <string name="invalid_phone_number">Invalid phone number.</string>
+    <string name="invalid_http_address">Sorry. Web address is invalid.</string>
+    <string name="permission_call_denided">Understand. The Go4Lunch app does not have permission to call the restaurant.</string>
+    <string name="save_choice_restaurant">Saved successfully.</string>
+    <string name="cancel_choice_restaurnat">OK, your choice is canceled.</string>
+    <string name="name_restaurant_absent">Missing name</string>
+    <string name="address_restaurant_absent">Missing address</string>
 
     <!-- Settings Activity -->
     <string name="title_activity_settings">Settings</string>

@@ -7,6 +7,10 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.pawel.p7_go4lunch.dataServices.repositorys.FirebaseUserRepository;
+import com.pawel.p7_go4lunch.model.FavoritesRestaurants;
+import com.pawel.p7_go4lunch.model.Restaurant;
+
+import java.util.List;
 
 public class MainActivityViewModel extends ViewModel {
 

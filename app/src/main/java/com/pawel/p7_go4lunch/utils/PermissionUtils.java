@@ -10,6 +10,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.DialogFragment;
+
 import android.widget.Toast;
 
 import com.pawel.p7_go4lunch.R;
@@ -20,13 +21,12 @@ import org.jetbrains.annotations.NotNull;
  * Utility class for access to runtime permissions.
  */
 public abstract class PermissionUtils {
-
     /**
      * Requests the fine location permission. If a rationale with an additional explanation should
      * be shown to the user, displays a dialog that triggers the request.
      */
-    public static void requestPermission(AppCompatActivity activity, int requestId,
-                                         String permission, boolean finishActivity) {
+    public static void requestPermissionAboveApiM(AppCompatActivity activity, int requestId,
+                                                  String permission, boolean finishActivity) {
         if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)) {
             // Display a dialog with rationale.
             PermissionUtils.RationaleDialog.newInstance(requestId, finishActivity)
@@ -37,6 +37,11 @@ public abstract class PermissionUtils {
 
         }
     }
+
+/*    public static void requestPermissionBelowApiM(AppCompatActivity activity, int requestId,
+                                                  String permission, boolean finishActivity) {
+        ActivityCompat.requestPermissions(activity, new String[]{permission}, requestId);
+    }*/
 
     /**
      * Checks if the result contains a {@link PackageManager#PERMISSION_GRANTED} result for a

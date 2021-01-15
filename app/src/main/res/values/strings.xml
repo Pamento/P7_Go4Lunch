@@ -33,15 +33,18 @@
     <string name="search">recherche</string>
     <string name="search_hint">Cherche un restaurant</string>
 
-    <!-- Fragment map view -->
-    <string name="current_location_not_found">Impossible d\'obtenir la position actuelle.</string>
-    <string name="error_get_map">Rupture de stock !\nGoogle Map indisponible.</string>
-
     <!-- Login Firebase -->
     <string name="slogan">Trouvez une restaurant sympa et invite tes collèques à dîner!</string>
     <string name="btn_text_google">Connection avec Google</string>
     <string name="btn_text_facebook">Connection avec Facebook</string>
     <string name="btn_text_email">Connection avec email</string>
+
+    <!-- Log out -->
+    <string name="logout_successful">Log out successful.</string>
+
+    <!-- Fragment map view -->
+    <string name="current_location_not_found">Impossible d\'obtenir la position actuelle.</string>
+    <string name="error_get_map">Rupture de stock !\nGoogle Map indisponible.</string>
 
     <!-- About the restaurant activity -->
     <string name="action_settings">Paramètres</string>
@@ -52,6 +55,13 @@
     <string name="star2">Star two</string>
     <string name="star3">Star tree</string>
     <string name="title_activity_about_restaurant"> </string>
+    <string name="invalid_phone_number">Numéro de téléphone invalide</string>
+    <string name="invalid_http_address">Désolé. L\'adresse Web n\'est pas valide.</string>
+    <string name="permission_call_denided">Entendu. L\'app Go4Lunch n\'a pas permission d\'appeler le restaurant.</string>
+    <string name="save_choice_restaurant">Entendu, c\'est enregistré.</string>
+    <string name="cancel_choice_restaurnat">Ok, votre choix est annulé.</string>
+    <string name="name_restaurant_absent">Nom manquant</string>
+    <string name="address_restaurant_absent">Adress manquant</string>
 
     <!-- Settings Activity -->
     <string name="title_activity_settings">Paramètres</string>

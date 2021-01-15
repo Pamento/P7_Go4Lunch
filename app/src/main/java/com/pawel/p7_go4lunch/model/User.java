@@ -14,7 +14,7 @@ public class User {
     @Nullable
     private Restaurant userRestaurant;
     @Nullable
-    private List<FavoritesRestaurants> favoritesRestaurants;
+    private List<String> favoritesRestaurants;
 
     /**
      * Firebase instance need empty constructor
@@ -27,6 +27,15 @@ public class User {
         this.name = name;
         this.email = email;
         UrlImage = urlImage;
+    }
+
+    public User(String uid, String name, String email, @Nullable String urlImage, @Nullable Restaurant userRestaurant, @Nullable List<String> favoritesRestaurants) {
+        this.uid = uid;
+        this.name = name;
+        this.email = email;
+        UrlImage = urlImage;
+        this.userRestaurant = userRestaurant;
+        this.favoritesRestaurants = favoritesRestaurants;
     }
 
     public String getUid() {
@@ -72,11 +81,11 @@ public class User {
     }
 
     @Nullable
-    public List<FavoritesRestaurants> getFavoritesRestaurants() {
+    public List<String> getFavoritesRestaurants() {
         return favoritesRestaurants;
     }
 
-    public void setFavoritesRestaurants(@Nullable List<FavoritesRestaurants> favoritesRestaurants) {
+    public void setFavoritesRestaurants(@Nullable List<String> favoritesRestaurants) {
         this.favoritesRestaurants = favoritesRestaurants;
     }
 }

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Observer;
@@ -118,8 +120,19 @@ public class MapViewFragment extends Fragment
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        Log.i(TAG, "onMapReady: before permission");
         this.mMap = googleMap;
         mMapViewVM.setGoogleMap(googleMap);
+        Log.i(TAG, "onMapReady: after permission");
+        // TODO rebuild logic of check permissions
+//        if (PermissionUtils.isPermissionGranted()) {
+//            ContextCompat.checkSelfPermission()
+//        }
+//        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//
+//        } else {
+//            MainActivity.getLocationPermission(mainActivity);
+//        }
         MainActivity.getLocationPermission(mainActivity);
         // if permissionDenied is not denied (= false): initMapRestaurant();
         if (!MainActivity.permissionDenied) {

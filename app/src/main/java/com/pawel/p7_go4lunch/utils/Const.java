@@ -40,5 +40,7 @@ public class Const {
 
     // AboutRestaurantActivity
     public static final String EXTRA_KEY_RESTAURANT = "extra_key_restaurant";
+    // final variable for makePhoneCall() in AboutRestaurantActivity
+    public static final int REQUEST_CALL = 1;
 
 }

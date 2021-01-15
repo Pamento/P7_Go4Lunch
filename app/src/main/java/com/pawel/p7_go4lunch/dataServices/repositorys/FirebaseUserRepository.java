@@ -5,10 +5,11 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.pawel.p7_go4lunch.model.FavoritesRestaurants;
 import com.pawel.p7_go4lunch.model.Restaurant;
 import com.pawel.p7_go4lunch.model.User;
 import com.pawel.p7_go4lunch.utils.Const;
+
+import java.util.List;
 
 public class FirebaseUserRepository {
 
@@ -31,7 +32,7 @@ public class FirebaseUserRepository {
 
     // ................................................................................... CREATE
     public Task<Void> createUser(String uid, String name,
-                                        String email, String urlImage) {
+                                 String email, String urlImage) {
         User user = new User(uid, name, email, urlImage);
         return userRepository.document(uid).set(user);
     }
@@ -53,13 +54,17 @@ public class FirebaseUserRepository {
     }
 
     // ................................................................................... UPDATE
-    public Task<Void> updateUserRestaurant(String uid, Restaurant chosenRestaurant) {
-        return userRepository.document(uid).update("chosenRestaurant", chosenRestaurant);
+    public void updateUserRestaurant(String uid, Restaurant chosenRestaurant) {
+        userRepository.document(uid).update("chosenRestaurant", chosenRestaurant);
     }
 
-    public Task<Void> updateUserFavoritesRestaurant(String uid, FavoritesRestaurants favoritesRestaurants) {
-        return userRepository.document(uid).update("favoritesRestaurants", favoritesRestaurants);
+    public void updateUserFavoritesRestaurant(String uid, List<String> favoritesRestaurants) {
+        userRepository.document(uid).update("favoritesRestaurants", favoritesRestaurants);
     }
+
+//    public Task<Void> updateUser(String uid, User user) {
+//        return userRepository.document(uid).update(user);
+//    }
 
     // ................................................................................... DELETE
     public Task<Void> deleteUser(String uid) {
