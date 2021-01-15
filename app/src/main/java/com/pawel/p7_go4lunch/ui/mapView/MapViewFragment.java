@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -33,11 +34,17 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
+import com.pawel.p7_go4lunch.AboutRestaurantActivity;
 import com.pawel.p7_go4lunch.MainActivity;
 import com.pawel.p7_go4lunch.R;
 import com.pawel.p7_go4lunch.databinding.FragmentMapViewBinding;
+import com.pawel.p7_go4lunch.model.Restaurant;
 import com.pawel.p7_go4lunch.utils.Const;
 import com.pawel.p7_go4lunch.utils.LocalAppSettings;
 import com.pawel.p7_go4lunch.utils.LocationUtils;
@@ -47,7 +54,12 @@ import com.pawel.p7_go4lunch.utils.WasCalled;
 import com.pawel.p7_go4lunch.utils.di.Injection;
 import com.pawel.p7_go4lunch.viewModels.ViewModelFactory;
 
-public class MapViewFragment extends Fragment implements OnMapReadyCallback, com.google.android.gms.location.LocationListener {
+import java.util.List;
+
+public class MapViewFragment extends Fragment
+        implements OnMapReadyCallback,
+        com.google.android.gms.location.LocationListener,
+        GoogleMap.OnMarkerClickListener {
 
     private MapViewViewModel mMapViewVM;
     private FragmentMapViewBinding mBinding;
@@ -61,6 +73,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
     private MainActivity mainActivity;
     private Activity mActivity;
     private String currentLocation;
+    private List<Restaurant> mRestaurants;
     private static final String TAG = "SEARCH";
     private static final String TAG2 = "ASK_LOCATION";
 
@@ -111,6 +124,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
         // if permissionDenied is not denied (= false): initMapRestaurant();
         if (!MainActivity.permissionDenied) {
             initMapRestaurant();
+            mRestaurants = mMapViewVM.getRestaurants(mPrefs.getRadius(), getString(R.string.google_api_key));
         } else {
             PermissionUtils.PermissionDeniedDialog.newInstance(false).show(mFragmentActivity.getSupportFragmentManager(), "dialog");
         }
@@ -133,6 +147,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
                 if (getCurrentDeviceLocation()) {
                     if (mMapViewVM.getCurrentLocation() != null) moveCamera(mMapViewVM.getLatLng(), mPrefs.getPerimeter());
                     onViewModelReadySetObservers();
+                    setRestaurantMarksOnMap();
                 }
             });
         }
@@ -148,8 +163,20 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
         // Set blue point (mark) of user position. "true" is visible; "false" is hidden.
         //mMap.setMyLocationEnabled(true);
         // Disable icon of the center location
+        /*
+        // TODO on move map on screen of the device we start new request
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
-//            Log.i(TAG, "onMapReady: mMap " + mMap);
+        mMap.setOnCameraMoveListener(() -> {
+            Log.i(TAG, "initMapRestaurant: CAMERA MOVED");
+            // TODO run the function which get new restaurants in new area.
+            mMap.setOnCameraMoveCanceledListener(() -> {
+                Log.i(TAG, "initMapRestaurant: CAMERA _STOPPED");
+                //TODO calculate difference in location like in onLocationChanged listener
+                // and do the actions;
+                });
+            });
+         */
+        //            Log.i(TAG, "onMapReady: mMap " + mMap);
 //            LatLng testPosition = new LatLng(37, -121);
 //            LatLng sydney = new LatLng(34, -118);
 //            mMap.addMarker(new MarkerOptions()
@@ -162,6 +189,47 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
 //                return true;
 //            });
 
+    }
+
+    private void setRestaurantMarksOnMap() {
+        if (mRestaurants == null) {
+            mMapViewVM.getMiddleRestaurants().observe(getViewLifecycleOwner(), restaurants -> {
+                mRestaurants = restaurants;
+                setRestaurantMarksOnMap();
+            });
+        } else {
+            for (Restaurant rst : mRestaurants) {
+                mMap.clear();
+                LatLng latLng = new LatLng(rst.getLocation().getLat(),rst.getLocation().getLng());
+                Marker marker;
+                if (rst.getUserList().isEmpty()) {
+                    marker = mMap.addMarker(new MarkerOptions()
+                            .position(latLng)
+                            .title(rst.getName())
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_orange)));
+                } else {
+                    marker = mMap.addMarker(new MarkerOptions()
+                            .position(latLng)
+                            .title(rst.getName())
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_green)));
+                }
+                marker.setTag(rst.getPlaceId());
+                mMap.setOnMarkerClickListener(this);
+            }
+        }
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        String placeId = marker.getTag().toString();
+        for (Restaurant rst : mRestaurants) {
+            if (rst.getPlaceId().equals(placeId)) {
+                Intent intent = new Intent(getActivity(), AboutRestaurantActivity.class);
+                intent.putExtra(Const.EXTRA_KEY_RESTAURANT, placeId);
+                startActivity(intent);
+            }
+        }
+        return false;
     }
 
     /**
@@ -325,15 +393,18 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, com
 
     @Override
     public void onLocationChanged(Location location) {
+        Log.i(TAG, "onLocationChanged: USER HAS MOVED !____!_____!_____!_____ _________________!!");
         // TODO if currentLocation is set by RequestLocation then the if/else below is never true.
         // TODO : need to set type initialLocation.
-        LatLng currentLatLng = mMapViewVM.getInitialLatLng();
+        LatLng initialLatLng = mMapViewVM.getInitialLatLng();
         Location oldLocation = null;
-        oldLocation.setLatitude(currentLatLng.latitude);
-        oldLocation.setLongitude(currentLatLng.longitude);
+        oldLocation.setLatitude(initialLatLng.latitude);
+        oldLocation.setLongitude(initialLatLng.longitude);
         if (oldLocation.distanceTo(location) >= 300) {
             // We reset the limit guard of initial location
-            WasCalled.resetLocationWasCalled();
+            if (WasCalled.resetLocationWasCalled()) {
+                // TODO something if necessary
+            }
             // TODO run new restaurantRequest
         }
     }

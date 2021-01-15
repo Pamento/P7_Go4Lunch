@@ -1,6 +1,6 @@
 package com.pawel.p7_go4lunch.utils;
 
-public abstract class WasCalled {
+public final class WasCalled {
 
     private static boolean restaurantListCalled = false;
     private static boolean locationWasCalled = false;
@@ -28,7 +28,6 @@ public abstract class WasCalled {
     public static boolean resetLocationWasCalled() {
         locationWasCalled = false;
         iterator2 = 0;
-        if (!locationWasCalled && iterator2 == 0) return true;
-        return false;
+        return !locationWasCalled && iterator2 == 0;
     }
 }

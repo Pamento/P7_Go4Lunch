@@ -33,7 +33,7 @@ public class LocalAppSettings {
         return localisation;
     }
 
-    private int getRadius() {
+    public int getRadius() {
         if (perimeter.equals("max")) return 6000;
         else return Integer.getInteger(perimeter);
     }

@@ -28,7 +28,7 @@ public class MapViewViewModel extends ViewModel {
     private final CompositeDisposable mDisposable = new CompositeDisposable();
 
     private MutableLiveData<GoogleMap> mGoogleMap;
-    private List<Restaurant> mMiddleRestaurants = new ArrayList<>();
+    private MutableLiveData<List<Restaurant>> mMiddleRestaurants = new MutableLiveData<>();
 
     private LatLng mCurrentLatLng;
     private String mCurrentLocation;
@@ -72,6 +72,14 @@ public class MapViewViewModel extends ViewModel {
         return mGoogleMap;
     }
 
+    public MutableLiveData<List<Restaurant>> getMiddleRestaurants() {
+        return mMiddleRestaurants;
+    }
+
+    public void setMiddleRestaurants(MutableLiveData<List<Restaurant>> middleRestaurants) {
+        mMiddleRestaurants = middleRestaurants;
+    }
+
     // ................................................................. SETTERS
     public void setUpCurrentLatLng(LatLng latLng) {
         mCurrentLatLng = latLng;
@@ -108,7 +116,7 @@ public class MapViewViewModel extends ViewModel {
             public void onNext(@NonNull List<SingleRestaurant> singleRestaurants) {
                 for (SingleRestaurant sR : singleRestaurants) {
                     Restaurant rst = mGooglePlaceRepository.createRestaurant(sR.getResult(), key);
-                    mMiddleRestaurants.add(rst);
+                    mRestaurants.add(rst);
                 }
             }
 
@@ -117,9 +125,13 @@ public class MapViewViewModel extends ViewModel {
 
             }
 
+            @SuppressWarnings("unchecked")
             @Override
             public void onComplete() {
                 // TODO send data to complainant
+                if (mGooglePlaceRepository.getRestaurants() != null) {
+                    setMiddleRestaurants((MutableLiveData<List<Restaurant>>) mGooglePlaceRepository.getRestaurants());
+                }
             }
         };
     }
