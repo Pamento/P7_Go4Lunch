@@ -23,6 +23,7 @@ import com.pawel.p7_go4lunch.viewModels.ViewModelFactory;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -71,10 +72,7 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
         }
         getDrawable();
         getUser();
-        getRestaurant();
-        setUiAboutRestaurant();
-        setRecyclerViewWorkmates();
-        setOnClickListeners();
+        if (isCalledFromGoogleMap()) getRestaurantFromGoogleMap();
     }
 
     private void initAboutRestaurantViewModel() {
@@ -91,45 +89,74 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
     }
 
     private void getUser() {
-        if (mAboutRestaurantVM.getUser() != null) mUser = mAboutRestaurantVM.getUser();
-        if (mUser != null) setUpUiUser();
+        mAboutRestaurantVM.getUser().observe(this, user -> {
+            mUser = user;
+            if (!isCalledFromGoogleMap()) {
+                getRestaurantFromUser();
+            }
+        });
     }
 
     // set "Like" star according to choice of user, if it's liked or not it has different star
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void getRestaurant() {
+    private boolean isCalledFromGoogleMap() {
         Bundle extras = getIntent().getExtras();
         Log.i(TAG, "ABOUT ___getRestaurant: extras: " + extras);
-        if (extras != null) {
-            String placeId = extras.getString(Const.EXTRA_KEY_RESTAURANT);
-            mThisRestaurant = mAboutRestaurantVM.getRestaurant(placeId);
-            restaurantId = placeId;
-        } else {
+        if (extras == null) return false;
+        else restaurantId = extras.getString(Const.EXTRA_KEY_RESTAURANT);
+        return true;
+    }
+
+    private void getRestaurantFromGoogleMap() {
+        mAboutRestaurantVM.getRestaurant(restaurantId).observe(this, restaurant -> {
+            mThisRestaurant = restaurant;
+            restaurantId = mThisRestaurant.getPlaceId();
+            updateUI();
+        });
+    }
+
+    private void getRestaurantFromUser() {
+        if (mUser != null && mUser.getUserRestaurant() != null) {
             mThisRestaurant = mUser.getUserRestaurant();
             restaurantId = mUser.getUserRestaurant().getPlaceId();
+            updateUI();
+        } else if (mUser != null && mUser.getUserRestaurant() == null) {
+            mBinding.abInclude.aboutTheRestName.setText(R.string.no_restaurant_data);
+            mBinding.abInclude.aboutTheRestTxCall.setAlpha(0.3f);
+            mBinding.abInclude.aboutTheRestTxLike.setAlpha(0.3f);
+            mBinding.abInclude.aboutTheRestTxWebsite.setAlpha(0.3f);
+            mBinding.aboutRestaurantFab.setVisibility(View.GONE);
         }
+    }
 
+    private void updateUI() {
+        setUpUiUser();
         setRestaurantImage();
+        setUiAboutRestaurant();
+        setRecyclerViewWorkmates();
+        setOnClickListeners();
     }
 
     private void setUiAboutRestaurant() {
-        // name
-        mBinding.abInclude.aboutTheRestName.setText(
-                mThisRestaurant.getName() != null ?
-                        getString(R.string.name_restaurant_absent) : mThisRestaurant.getName());
-        // address
-        mBinding.abInclude.aboutTheRestAddress.setText(
-                mThisRestaurant.getAddress() != null ?
-                        getString(R.string.address_restaurant_absent) : mThisRestaurant.getAddress());
-        // TODO set name, address, stars range. Maybe refactor stars logic.?
-        // rating google in 5 stars convert in 3 stars
-        double starsRange = Math.round(mThisRestaurant.getRating() * 3 / 5);
-        if (starsRange > 0) {
-            mBinding.abInclude.aboutTheRestStar1.setVisibility(View.VISIBLE);
-            if (starsRange > 1) {
-                mBinding.abInclude.aboutTheRestStar2.setVisibility(View.VISIBLE);
-                if (starsRange > 2) {
-                    mBinding.abInclude.aboutTheRestStar3.setVisibility(View.VISIBLE);
+        if (mThisRestaurant != null) {
+            // name
+            mBinding.abInclude.aboutTheRestName.setText(
+                    mThisRestaurant.getName() != null ?
+                            getString(R.string.name_restaurant_absent) : mThisRestaurant.getName());
+            // address
+            mBinding.abInclude.aboutTheRestAddress.setText(
+                    mThisRestaurant.getAddress() != null ?
+                            getString(R.string.address_restaurant_absent) : mThisRestaurant.getAddress());
+            // TODO set name, address, stars range. Maybe refactor stars logic.?
+            // rating google in 5 stars convert in 3 stars
+            double starsRange = Math.round(mThisRestaurant.getRating() * 3 / 5);
+            if (starsRange > 0) {
+                mBinding.abInclude.aboutTheRestStar1.setVisibility(View.VISIBLE);
+                if (starsRange > 1) {
+                    mBinding.abInclude.aboutTheRestStar2.setVisibility(View.VISIBLE);
+                    if (starsRange > 2) {
+                        mBinding.abInclude.aboutTheRestStar3.setVisibility(View.VISIBLE);
+                    }
                 }
             }
         }
@@ -190,11 +217,13 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
 
     private void setUpUiUser() {
         Log.i(TAG, "ABOUT ____setUpUiUser START: isChosen " + isChosen);
-        isLiked = checkIfThisRestaurantIsFavorite();
-        isChosen = mUser.getUserRestaurant() != null && mUser.getUserRestaurant().getPlaceId().equals(mThisRestaurant.getPlaceId());
-        Log.i(TAG, "ABOUT ____setUpUiUser END: isChosen " + isChosen);
-        updateIconChoiceFAB();
-        updateIconLike();
+        if (mUser != null) {
+            isLiked = checkIfThisRestaurantIsFavorite();
+            isChosen = mUser.getUserRestaurant() != null && mUser.getUserRestaurant().getPlaceId().equals(mThisRestaurant.getPlaceId());
+            Log.i(TAG, "ABOUT ____setUpUiUser END: isChosen " + isChosen);
+            updateIconChoiceFAB();
+            updateIconLike();
+        }
     }
 
     private boolean checkIfThisRestaurantIsFavorite() {
@@ -208,19 +237,21 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void setOnClickListeners() {
-        // Call Restaurant
-        if (mThisRestaurant.getPhoneNumber() != null)
-            mBinding.abInclude.aboutTheRestTxCall.setOnClickListener(v -> makePhoneCall());
-        else mBinding.abInclude.aboutTheRestTxCall.setAlpha(0.3f);
-        // Like Restaurant
-        mBinding.abInclude.aboutTheRestTxLike.setOnClickListener(v -> isLiked());
-        if (mThisRestaurant.getWebsite() != null)
-            mBinding.abInclude.aboutTheRestTxWebsite.setOnClickListener(v -> visitWebsite());
-            // Go to Website of Restaurant
-        else mBinding.abInclude.aboutTheRestTxWebsite.setAlpha(0.3f);
-        // manage choice of restaurant for lunch
-        mBinding.aboutRestaurantFab.setOnClickListener(view -> choseThisRestaurant());
-        // TODO change the choice of the user for this restaurant and register it in Firebase
+        if (mThisRestaurant != null) {
+            // Call Restaurant
+            if (mThisRestaurant.getPhoneNumber() != null)
+                mBinding.abInclude.aboutTheRestTxCall.setOnClickListener(v -> makePhoneCall());
+            else mBinding.abInclude.aboutTheRestTxCall.setAlpha(0.3f);
+            // Like Restaurant
+            mBinding.abInclude.aboutTheRestTxLike.setOnClickListener(v -> isLiked());
+            if (mThisRestaurant.getWebsite() != null)
+                mBinding.abInclude.aboutTheRestTxWebsite.setOnClickListener(v -> visitWebsite());
+                // Go to Website of Restaurant
+            else mBinding.abInclude.aboutTheRestTxWebsite.setAlpha(0.3f);
+            // manage choice of restaurant for lunch
+            mBinding.aboutRestaurantFab.setOnClickListener(view -> choseThisRestaurant());
+            // TODO change the choice of the user for this restaurant and register it in Firebase
+        }
     }
 
     /**
@@ -266,9 +297,9 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
 
     private void updateIconChoiceFAB() {
         int counter = 0;
-        Log.i(TAG, "ABOUT ___updateIconChoiceFAB: isChosen " + isChosen + " _"+ counter);
+        Log.i(TAG, "ABOUT ___updateIconChoiceFAB: isChosen " + isChosen + " _" + counter);
         mBinding.aboutRestaurantFab.setImageDrawable(isChosen ? ic_rest_chosen : ic_rest_not_chosen);
-        counter = counter +1;
+        counter = counter + 1;
     }
 
     private void choseThisRestaurant() {
@@ -328,12 +359,12 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
     private void showMessagePhoneNumberInvalid(int mode) {
         ViewWidgets.showSnackBar(mode, view, mode == 0 ?
                 getString(R.string.invalid_phone_number)
-                : getString(R.string.permission_call_denided));
+                : getString(R.string.permission_call_denied));
     }
 
     private void showMessageBookingRestaurant(boolean mode) {
         ViewWidgets.showSnackBar(0, view, !mode ?
-                getString(R.string.cancel_choice_restaurnat)
+                getString(R.string.cancel_choice_restaurant)
                 : getString(R.string.save_choice_restaurant));
     }
 
@@ -341,11 +372,14 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
     protected void onPause() {
         super.onPause();
         // TODO if changes was made, persist new data in Firebase
-        if (isChosen) {
-            mAboutRestaurantVM.updateUserRestaurant(mUser.getUid(), mThisRestaurant);
-        } else if (!isChosen && mUser.getUserRestaurant() != null) {
-            mAboutRestaurantVM.updateUserRestaurant(mUser.getUid(),null);
+        if (restaurantId != null && mUser != null && mThisRestaurant != null) {
+            if (isChosen) {
+                mAboutRestaurantVM.updateUserRestaurant(mUser.getUid(), mThisRestaurant);
+            } else if (!isChosen && mUser.getUserRestaurant() != null) {
+                mAboutRestaurantVM.updateUserRestaurant(mUser.getUid(), null);
+            }
+            mAboutRestaurantVM.updateUserFavoriteRestaurantsList(mUser.getUid(), mUser.getFavoritesRestaurants());
         }
-        mAboutRestaurantVM.updateUserFavoriteRestaurantsList(mUser.getUid(), mUser.getFavoritesRestaurants());
+
     }
 }

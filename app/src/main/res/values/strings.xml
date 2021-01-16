@@ -57,11 +57,12 @@
     <string name="title_activity_about_restaurant"> </string>
     <string name="invalid_phone_number">Numéro de téléphone invalide</string>
     <string name="invalid_http_address">Désolé. L\'adresse Web n\'est pas valide.</string>
-    <string name="permission_call_denided">Entendu. L\'app Go4Lunch n\'a pas permission d\'appeler le restaurant.</string>
+    <string name="permission_call_denied">Entendu. L\'app Go4Lunch n\'a pas permission d\'appeler le restaurant.</string>
     <string name="save_choice_restaurant">Entendu, c\'est enregistré.</string>
-    <string name="cancel_choice_restaurnat">Ok, votre choix est annulé.</string>
+    <string name="cancel_choice_restaurant">OK, votre choix est annulé.</string>
+    <string name="no_restaurant_data">Aucune restaurant choisi.</string>
     <string name="name_restaurant_absent">Nom manquant</string>
-    <string name="address_restaurant_absent">Adress manquant</string>
+    <string name="address_restaurant_absent">Adresse manquant</string>
 
     <!-- Settings Activity -->
     <string name="title_activity_settings">Paramètres</string>

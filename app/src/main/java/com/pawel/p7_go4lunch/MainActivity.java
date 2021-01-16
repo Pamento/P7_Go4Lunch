@@ -6,7 +6,9 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -296,9 +298,9 @@ public class MainActivity extends AppCompatActivity
 
     private void saveNewUser(FirebaseUser firebaseUser) {
         String uid = firebaseUser.getUid();
-        String name = firebaseUser.getDisplayName() == null ? getResources().getString(R.string.workmate_anonymous) : firebaseUser.getDisplayName();
-        String email = firebaseUser.getEmail() == null ? "" : firebaseUser.getEmail();
-        String urlImage = firebaseUser.getPhotoUrl() == null ? "" : firebaseUser.getPhotoUrl().toString();
+        String name = TextUtils.isEmpty(firebaseUser.getDisplayName()) ? getResources().getString(R.string.workmate_anonymous) : firebaseUser.getDisplayName();
+        String email = TextUtils.isEmpty(firebaseUser.getEmail()) ? "" : firebaseUser.getEmail();
+        String urlImage = Uri.EMPTY.equals(firebaseUser.getPhotoUrl()) ? "" : firebaseUser.getPhotoUrl().toString();
         mMainActivityViewModel.createUser(uid, name, email, urlImage);
     }
 

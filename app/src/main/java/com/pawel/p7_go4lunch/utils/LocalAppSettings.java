@@ -18,7 +18,7 @@ public class LocalAppSettings {
         notification = prefs.getBoolean("notification", true);
         hour = prefs.getString("hour","12");
         localisation = prefs.getBoolean("localisation",true);
-        perimeter = prefs.getString("perimeter", "max");
+        perimeter = prefs.getString("perimeter", "1000");
     }
 
     public boolean isNotification() {
@@ -34,8 +34,16 @@ public class LocalAppSettings {
     }
 
     public int getRadius() {
+        int rValue = 1000;
         if (perimeter.equals("max")) return 6000;
-        else return Integer.getInteger(perimeter);
+        else {
+            try {
+                rValue = Integer.parseInt(perimeter);
+            } catch (NumberFormatException ne) {
+                ne.getStackTrace();
+            }
+        }
+        return rValue;
     }
     public float getPerimeter() {
         if (perimeter.equals("max")) return Const.DEFAULT_ZOOM;

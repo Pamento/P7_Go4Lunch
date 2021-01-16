@@ -15,8 +15,8 @@ import java.util.List;
 public class MainActivityViewModel extends ViewModel {
 
     private final FirebaseUserRepository mFirebaseUserRepository;
+
     public void init() {
-        //mFirebaseUserRepository = FirebaseUserRepository.getInstance();
     }
 
     public MainActivityViewModel(FirebaseUserRepository firebaseUserRepository) {
@@ -24,10 +24,10 @@ public class MainActivityViewModel extends ViewModel {
     }
 
     public void createUser(String uri, String name, String email, String urlImage) {
-        mFirebaseUserRepository.createUser(uri,name,email,urlImage).addOnFailureListener(this.onFailureListener());
+        mFirebaseUserRepository.createUser(uri, name, email, urlImage).addOnFailureListener(this.onFailureListener());
     }
 
-    protected OnFailureListener onFailureListener(){
-        return e -> Log.e("TESTING_MAPS", "onFailure: ",e );
+    protected OnFailureListener onFailureListener() {
+        return e -> Log.e("TESTING_MAPS", "onFailure: ", e);
     }
 }

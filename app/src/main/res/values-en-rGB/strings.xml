@@ -55,9 +55,10 @@
     <string name="title_activity_about_restaurant">About the restaurant</string>
     <string name="invalid_phone_number">Invalid phone number.</string>
     <string name="invalid_http_address">Sorry. Web address is invalid.</string>
-    <string name="permission_call_denided">Understand. The Go4Lunch app does not have permission to call the restaurant.</string>
+    <string name="permission_call_denied">Understand. The Go4Lunch app does not have permission to call the restaurant.</string>
     <string name="save_choice_restaurant">Saved successfully.</string>
-    <string name="cancel_choice_restaurnat">OK, your choice is canceled.</string>
+    <string name="cancel_choice_restaurant">OK, your choice is canceled.</string>
+    <string name="no_restaurant_data">No restaurant chosen.</string>
     <string name="name_restaurant_absent">Missing name</string>
     <string name="address_restaurant_absent">Missing address</string>
 

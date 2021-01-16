@@ -82,11 +82,9 @@ public class SettingsActivity extends AppCompatActivity implements DialogWidget.
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
-            Preference test = SettingsFragment.this.findPreference("delete_account");
-            if (test != null) {
-                test.setLayoutResource(R.layout.delete_btn_layout);
-            } else {
-                ViewWidgets.showSnackBar(1,getView(),"Indentured error. please retry.");
+            Preference deleteAccountBtn = SettingsFragment.this.findPreference("delete_account");
+            if (deleteAccountBtn != null) {
+                deleteAccountBtn.setLayoutResource(R.layout.delete_btn_layout);
             }
         }
     }

@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.pawel.p7_go4lunch.AboutRestaurantActivity;
 import com.pawel.p7_go4lunch.dataServices.repositorys.FirebaseChosenRestaurants;
 import com.pawel.p7_go4lunch.dataServices.repositorys.FirebaseUserRepository;
 import com.pawel.p7_go4lunch.dataServices.repositorys.GooglePlaceRepository;
@@ -40,6 +41,9 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         }
         if (modelClass.isAssignableFrom(WorkmatesViewModel.class)) {
             return (T) new WorkmatesViewModel(mFirebaseUserRepository);
+        }
+        if (modelClass.isAssignableFrom(AboutRestaurantViewModel.class)) {
+            return (T) new AboutRestaurantViewModel(mGooglePlaceRepository, mFirebaseUserRepository);
         }
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
     }

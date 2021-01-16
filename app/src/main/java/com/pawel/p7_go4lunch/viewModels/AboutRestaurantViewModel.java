@@ -1,5 +1,7 @@
 package com.pawel.p7_go4lunch.viewModels;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -17,9 +19,9 @@ public class AboutRestaurantViewModel extends ViewModel {
 
     private final GooglePlaceRepository mGooglePlaceRepository;
     private final FirebaseUserRepository mFirebaseUserRepository;
-    private List<Restaurant> mRestaurants = new ArrayList<>();
-    private FirebaseUser mFirebaseUser = null;
-    private User mUser = null;
+    private List<Restaurant> mRestaurantsList = new ArrayList<>();
+    private final MutableLiveData<Restaurant> mRestaurant = new MutableLiveData<>();
+    private final MutableLiveData<User> mUser = new MutableLiveData<>();
 
     public AboutRestaurantViewModel(GooglePlaceRepository googlePlaceRepository, FirebaseUserRepository firebaseUserRepository) {
         mGooglePlaceRepository = googlePlaceRepository;
@@ -27,9 +29,9 @@ public class AboutRestaurantViewModel extends ViewModel {
     }
 
     public void init() {
-        mRestaurants = mGooglePlaceRepository.getRestaurants();
-        mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (mFirebaseUser != null) getUserFromFirestore(mFirebaseUser.getUid());
+        mRestaurantsList = mGooglePlaceRepository.getRestaurants();
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (firebaseUser != null) getUserFromFirestore(firebaseUser.getUid());
     }
 
     // .......................................................... GETTERS
@@ -39,36 +41,34 @@ public class AboutRestaurantViewModel extends ViewModel {
 
     public void getUserFromFirestore(String uid) {
         mFirebaseUserRepository.getUser(uid)
-                .addOnSuccessListener(documentSnapshot -> mUser = documentSnapshot.toObject(User.class));
+                .addOnSuccessListener(documentSnapshot -> mUser.setValue(documentSnapshot.toObject(User.class)));
     }
 
     public Query getSelectedUsersFromCollection(String restaurantName) {
         return mFirebaseUserRepository.getSelectedUsersFromCollection(restaurantName);
     }
 
-    public List<Restaurant> getRestaurants() {
-        if (mRestaurants.isEmpty()) {
-            this.mRestaurants = mGooglePlaceRepository.getRestaurants();
+    public void getRestaurantsList() {
+        if (mRestaurantsList.isEmpty()) {
+            this.mRestaurantsList = mGooglePlaceRepository.getRestaurants();
         }
-        return mRestaurants;
     }
 
-    public Restaurant getRestaurant(String placeID) {
-        if (mRestaurants.isEmpty()) init();
-        Restaurant restaurant = null;
-        for (Restaurant rst: mRestaurants) {
+    public LiveData<Restaurant> getRestaurant(String placeID) {
+        if (mRestaurantsList.isEmpty()) getRestaurantsList();
+        for (Restaurant rst: mRestaurantsList) {
             if (rst.getPlaceId().equals(placeID)) {
-                restaurant = rst;
+                mRestaurant.setValue(rst);
             }
         }
-        return restaurant;
+        return mRestaurant;
     }
 
-    public FirebaseUser getFirebaseUser() {
-        return mFirebaseUser;
-    }
+//    public FirebaseUser getFirebaseUser() {
+//        return mFirebaseUser;
+//    }
 
-    public User getUser() {
+    public LiveData<User> getUser() {
         return mUser;
     }
 
