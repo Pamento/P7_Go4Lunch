@@ -1,8 +1,8 @@
 package com.pawel.p7_go4lunch;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -10,6 +10,8 @@ import android.os.Bundle;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.nabinbhandari.android.permissions.PermissionHandler;
+import com.nabinbhandari.android.permissions.Permissions;
 import com.pawel.p7_go4lunch.databinding.ActivityAboutRestaurantBinding;
 import com.pawel.p7_go4lunch.model.Restaurant;
 import com.pawel.p7_go4lunch.model.User;
@@ -21,12 +23,8 @@ import com.pawel.p7_go4lunch.utils.di.Injection;
 import com.pawel.p7_go4lunch.viewModels.AboutRestaurantViewModel;
 import com.pawel.p7_go4lunch.viewModels.ViewModelFactory;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -254,20 +252,6 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
         }
     }
 
-    /**
-     * In correlation with makePhoneCall()
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == Const.REQUEST_CALL) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                makePhoneCall();
-            } else {
-                showMessagePhoneNumberInvalid(1);
-            }
-        }
-    }
-
     // ......................................................... Utils functions
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void isLiked() {
@@ -284,15 +268,6 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
         Log.i(TAG, "ABOUT ___updateIconLike: isLiked " + isLiked);
         mBinding.abInclude.aboutTheRestTxLike
                 .setCompoundDrawablesRelativeWithIntrinsicBounds(null, isLiked ? ic_Like : ic_notLike, null, null);
-        /*
-                if (isLiked) {
-            mBinding.abInclude.aboutTheRestTxLike
-                    .setCompoundDrawablesRelativeWithIntrinsicBounds(null, ic_Like, null, null);
-        } else {
-            mBinding.abInclude.aboutTheRestTxLike
-                    .setCompoundDrawablesRelativeWithIntrinsicBounds(null, ic_notLike, null, null);
-        }
-         */
     }
 
     private void updateIconChoiceFAB() {
@@ -316,17 +291,17 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
         Log.i(TAG, "ABOUT __makePhoneCall: START ");
         String number = mThisRestaurant.getPhoneNumber();
         if ((number != null) && (number.trim().length() > 0)) {
-            if (ContextCompat.checkSelfPermission(AboutRestaurantActivity.this,
-                    Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(AboutRestaurantActivity.this,
-                        new String[]{Manifest.permission.CALL_PHONE}, Const.REQUEST_CALL);
-            } else {
-                String dial = "tel:" + number;
-                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse(dial));
-                if (intent.resolveActivity(Objects.requireNonNull(AboutRestaurantActivity.this).getPackageManager()) != null) {
-                    startActivity(intent);
+            Permissions.check(this, Manifest.permission.CALL_PHONE, null, new PermissionHandler() {
+                @SuppressLint("MissingPermission")
+                @Override
+                public void onGranted() {
+                    String dial = "tel:" + number;
+                    Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse(dial));
+                    if (intent.resolveActivity(Objects.requireNonNull(AboutRestaurantActivity.this).getPackageManager()) != null) {
+                        startActivity(intent);
+                    }
                 }
-            }
+            });
         } else {
             showMessagePhoneNumberInvalid(0);
         }

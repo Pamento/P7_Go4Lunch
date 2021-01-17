@@ -1,6 +1,5 @@
 package com.pawel.p7_go4lunch;
 
-import android.Manifest;
 import android.app.Dialog;
 import android.app.SearchManager;
 import android.content.Context;
@@ -27,11 +26,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.FirebaseUserMetadata;
 import com.pawel.p7_go4lunch.databinding.ActivityMainBinding;
 import com.pawel.p7_go4lunch.databinding.NavigationDrawerHeaderBinding;
-import com.pawel.p7_go4lunch.model.FavoritesRestaurants;
-import com.pawel.p7_go4lunch.model.Restaurant;
 import com.pawel.p7_go4lunch.utils.Const;
 import com.pawel.p7_go4lunch.utils.GlideApp;
-import com.pawel.p7_go4lunch.utils.PermissionUtils;
 import com.pawel.p7_go4lunch.utils.ViewWidgets;
 import com.pawel.p7_go4lunch.utils.di.Injection;
 import com.pawel.p7_go4lunch.viewModels.MainActivityViewModel;
@@ -48,8 +44,6 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -69,7 +63,7 @@ public class MainActivity extends AppCompatActivity
     protected Location mCurrentLocation;
     protected double mLatitude, mLongitude;
     protected LatLng mLatLng;
-    public static boolean permissionDenied = false;
+    //public static boolean permissionDenied = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -337,45 +331,8 @@ public class MainActivity extends AppCompatActivity
         mLatLng = new LatLng(mLatitude, mLongitude);
     }
 
-    public static void getLocationPermission(MainActivity mainActivity) {
-        Log.i(TAG, "getLocationPermission: ");
-        for (String permission : Const.PERMISSIONS) {
-            PermissionUtils.requestPermissionAboveApiM(mainActivity, Const.LOCATION_PERMISSION_REQUEST_CODE, permission, false);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode != Const.LOCATION_PERMISSION_REQUEST_CODE) return;
-        Log.v(TAG, "onRequestPermissionsResult: PERMISSIONS false = OK " + PermissionUtils.isPermissionGranted(permissions, grantResults, Manifest.permission.ACCESS_FINE_LOCATION) );
-        permissionDenied = PermissionUtils.isPermissionGranted(permissions, grantResults, Manifest.permission.ACCESS_FINE_LOCATION);
-    }
-
     @Override
     protected void onResumeFragments() {
         super.onResumeFragments();
-        // TODO apply the check in 'get permissions'
-        if (permissionDenied) {
-            // Permission was not granted, display error dialog.
-            showMissingPermissionError();
-            permissionDenied = false;
-        }
     }
-
-    /**
-     * Displays a dialog with error message explaining that the location permission is missing.
-     * newInstance() get false if MainActivity must rest active.
-     */
-    private void showMissingPermissionError() {
-        PermissionUtils.PermissionDeniedDialog
-                .newInstance(false).show(getSupportFragmentManager(), "dialog");
-    }
-    //    protected Boolean havePermissions() {
-//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-//                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-//              return true;
-//            ActivityCompat.requestPermissions(this, Const.PERMISSIONS, Const.LOCATION_PERMISSION_REQUEST_CODE);
-//        }
-//    }
-
 }

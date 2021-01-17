@@ -54,6 +54,8 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment:2.3.2'
     implementation 'androidx.navigation:navigation-ui:2.3.2'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    // permissions
+    implementation 'com.nabinbhandari.android:permissions:3.8'
     // FIREBASE
     implementation platform('com.google.firebase:firebase-bom:26.2.0')
     //https://firebase.google.com/support/release-notes/android#bom_v25-12-0

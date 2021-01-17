@@ -42,6 +42,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
+import com.nabinbhandari.android.permissions.PermissionHandler;
+import com.nabinbhandari.android.permissions.Permissions;
 import com.pawel.p7_go4lunch.AboutRestaurantActivity;
 import com.pawel.p7_go4lunch.MainActivity;
 import com.pawel.p7_go4lunch.R;
@@ -50,7 +52,6 @@ import com.pawel.p7_go4lunch.model.Restaurant;
 import com.pawel.p7_go4lunch.utils.Const;
 import com.pawel.p7_go4lunch.utils.LocalAppSettings;
 import com.pawel.p7_go4lunch.utils.LocationUtils;
-import com.pawel.p7_go4lunch.utils.PermissionUtils;
 import com.pawel.p7_go4lunch.utils.ViewWidgets;
 import com.pawel.p7_go4lunch.utils.WasCalled;
 import com.pawel.p7_go4lunch.utils.di.Injection;
@@ -133,14 +134,21 @@ public class MapViewFragment extends Fragment
 //        } else {
 //            MainActivity.getLocationPermission(mainActivity);
 //        }
-        MainActivity.getLocationPermission(mainActivity);
-        // if permissionDenied is not denied (= false): initMapRestaurant();
-        if (!MainActivity.permissionDenied) {
-            initMapRestaurant();
-            mRestaurants = mMapViewVM.getRestaurants(mPrefs.getRadius(), getString(R.string.google_api_key));
-        } else {
-            PermissionUtils.PermissionDeniedDialog.newInstance(false).show(mFragmentActivity.getSupportFragmentManager(), "dialog");
-        }
+//        MainActivity.getLocationPermission(mainActivity);
+//        // if permissionDenied is not denied (= false): initMapRestaurant();
+//        if (!MainActivity.permissionDenied) {
+        Permissions.check(requireContext(), Const.PERMISSIONS, null, null, new PermissionHandler() {
+            @Override
+            public void onGranted() {
+                Log.i(TAG, "onGranted: PERMISSIONS");
+                initMapRestaurant();
+                mRestaurants = mMapViewVM.getRestaurants(mPrefs.getRadius(), getString(R.string.google_api_key));
+            }
+        });
+
+//        } else {
+//            PermissionUtils.PermissionDeniedDialog.newInstance(false).show(mFragmentActivity.getSupportFragmentManager(), "dialog");
+//        }
     }
 
     /**
@@ -163,6 +171,12 @@ public class MapViewFragment extends Fragment
                     setRestaurantMarksOnMap();
                 }
             });
+        } else {
+            if (getCurrentDeviceLocation()) {
+                if (mMapViewVM.getCurrentLocation() != null) moveCamera(mMapViewVM.getLatLng(), mPrefs.getPerimeter());
+                onViewModelReadySetObservers();
+                setRestaurantMarksOnMap();
+            }
         }
         // get automatically & unrepentantly of user will the position of device
         //getCurrentDeviceLocation();
@@ -235,8 +249,10 @@ public class MapViewFragment extends Fragment
     @Override
     public boolean onMarkerClick(Marker marker) {
         String placeId = marker.getTag().toString();
+        Log.i(TAG, "onMarkerClick: START "+ placeId);
         for (Restaurant rst : mRestaurants) {
             if (rst.getPlaceId().equals(placeId)) {
+                Log.i(TAG, "onMarkerClick: foreach placeId " + placeId);
                 Intent intent = new Intent(getActivity(), AboutRestaurantActivity.class);
                 intent.putExtra(Const.EXTRA_KEY_RESTAURANT, placeId);
                 startActivity(intent);
