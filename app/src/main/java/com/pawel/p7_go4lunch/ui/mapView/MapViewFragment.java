@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
@@ -17,10 +16,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -36,7 +33,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -103,12 +99,13 @@ public class MapViewFragment extends Fragment
         mBinding.fabCurrentLocation.setVisibility(View.VISIBLE);
         mBinding.fabCurrentLocation.setOnClickListener(v -> {
             Log.i(TAG, "initMapRestaurant: FAB_OnClick");
-            if (getCurrentDeviceLocation()) {
-                moveCamera(mMapViewVM.getLatLng(), mPrefs.getPerimeter());
+            getCurrentDeviceLocation();
+            mMapViewVM.getCurrentLocation().observe(this, location -> moveCamera(location, mPrefs.getPerimeter()));
                 Log.i(TAG, "initMapRestaurant: FAB : " + currentLocation);
-            } else {
-                ViewWidgets.showSnackBar(0, view, getResources().getString(R.string.current_location_not_found));
-            }
+                // TODO this below
+//            if (now location){
+//                ViewWidgets.showSnackBar(0, view, getResources().getString(R.string.current_location_not_found));
+//            }
         });
     }
 
@@ -165,18 +162,16 @@ public class MapViewFragment extends Fragment
         if (mMap == null) {
             mMapViewVM.getGoogleMap().observe(getViewLifecycleOwner(), googleMap -> {
                 mMap = googleMap;
-                if (getCurrentDeviceLocation()) {
-                    if (mMapViewVM.getCurrentLocation() != null) moveCamera(mMapViewVM.getLatLng(), mPrefs.getPerimeter());
-                    onViewModelReadySetObservers();
-                    setRestaurantMarksOnMap();
-                }
+                initMapRestaurant();
             });
         } else {
-            if (getCurrentDeviceLocation()) {
-                if (mMapViewVM.getCurrentLocation() != null) moveCamera(mMapViewVM.getLatLng(), mPrefs.getPerimeter());
+            Log.i(TAG, "initMapRestaurant: _else");
+            getCurrentDeviceLocation();
+            mMapViewVM.getCurrentLocation().observe(this, location -> {
+                moveCamera(location, mPrefs.getPerimeter());
                 onViewModelReadySetObservers();
                 setRestaurantMarksOnMap();
-            }
+            });
         }
         // get automatically & unrepentantly of user will the position of device
         //getCurrentDeviceLocation();
@@ -267,8 +262,7 @@ public class MapViewFragment extends Fragment
      * More info on https://developer.android.com/training/location/request-updates
      */
     //@TargetApi(Build.VERSION_CODES.KITKAT)
-    private boolean getCurrentDeviceLocation() {
-        final boolean[] res = {false};
+    private void getCurrentDeviceLocation() {
         Log.i(TAG, "getCurrentDeviceLocation: FIRED ");
         if (LocationUtils.isDeviceLocationEnabled(requireContext())) {
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(mActivity);
@@ -280,10 +274,9 @@ public class MapViewFragment extends Fragment
                         Location location = task.getResult();
                         currentLocation = location.getLatitude() + "," + location.getLongitude();
                         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                        Log.i(TAG, "getCurrentDeviceLocation: latLng " + latLng);
                         Log.i(TAG, "getCurrentDeviceLocation: " + task.getResult());
-                        mMapViewVM.setUpCurrentLocation(currentLocation);
-                        mMapViewVM.setUpCurrentLatLng(latLng);
-                        res[0] = true;
+                        mMapViewVM.setUpCurrentLocation(location,latLng);
                     } else {
                         createLocationRequest();
                     }
@@ -291,7 +284,6 @@ public class MapViewFragment extends Fragment
             } catch (SecurityException e) {
                 e.getMessage();
             }
-            res[0] = true;
         } else {
 //            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O_MR1) {
             //getFragmentManager is deprecated
@@ -299,13 +291,11 @@ public class MapViewFragment extends Fragment
 //            } else {
             LocationUtils.LocationDisabledDialog.newInstance().show(mFragmentActivity.getSupportFragmentManager(), "dialog");
             //}
-            res[0] = false;
         }
-        return res[0];
     }
 
-    private void moveCamera(LatLng latLng, float zoom) {
-        Log.i(TAG, "moveCamera: FIRED");
+    private void moveCamera(Location loc, float zoom) {
+        LatLng latLng = new LatLng(loc.getLatitude(), loc.getLongitude());
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
         mMap.animateCamera(CameraUpdateFactory.zoomIn());
     }

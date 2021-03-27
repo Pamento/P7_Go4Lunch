@@ -1,5 +1,7 @@
 package com.pawel.p7_go4lunch.ui.mapView;
 
+import android.location.Location;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -12,7 +14,6 @@ import com.pawel.p7_go4lunch.model.Restaurant;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.SingleRestaurant;
 import com.pawel.p7_go4lunch.utils.WasCalled;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observer;
@@ -20,9 +21,7 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 
-
 public class MapViewViewModel extends ViewModel {
-
     private final GooglePlaceRepository mGooglePlaceRepository;
     private final FirebaseChosenRestaurants mFirebaseChosenRestaurants;
     private final CompositeDisposable mDisposable = new CompositeDisposable();
@@ -30,8 +29,8 @@ public class MapViewViewModel extends ViewModel {
     private MutableLiveData<GoogleMap> mGoogleMap;
     private MutableLiveData<List<Restaurant>> mMiddleRestaurants = new MutableLiveData<>();
 
-    private LatLng mCurrentLatLng;
-    private String mCurrentLocation;
+    private final MutableLiveData<Location> mCurrentLocation = new MutableLiveData<>();
+    private String mCurrentLocS;
     private List<Restaurant> mRestaurants;
 
     public MapViewViewModel(GooglePlaceRepository googlePlaceRepository, FirebaseChosenRestaurants firebaseChosenRestaurants) {
@@ -50,17 +49,13 @@ public class MapViewViewModel extends ViewModel {
 
     // ................................................................. GETTERS
     public List<Restaurant> getRestaurants(int radius, String key) {
-        if (mCurrentLocation != null && mGooglePlaceRepository.getRestaurants().isEmpty()) {
-            fetchRestaurants(mCurrentLocation, radius, key);
+        if (mCurrentLocS != null && mGooglePlaceRepository.getRestaurants().isEmpty()) {
+            fetchRestaurants(mCurrentLocS, radius, key);
         }
         return mRestaurants;
     }
 
-    public LatLng getLatLng() {
-        return mCurrentLatLng;
-    }
-
-    public String getCurrentLocation() {
+    public LiveData<Location> getCurrentLocation() {
         return mCurrentLocation;
     }
 
@@ -82,15 +77,16 @@ public class MapViewViewModel extends ViewModel {
 
     // ................................................................. SETTERS
     public void setUpCurrentLatLng(LatLng latLng) {
-        mCurrentLatLng = latLng;
         if (!WasCalled.isLocationWasCalled()) {
             mGooglePlaceRepository.setInitialLatLng(latLng);
         }
     }
 
-    public void setUpCurrentLocation(String currentLocation) {
+    public void setUpCurrentLocation(Location currentLocation, LatLng ll) {
         mGooglePlaceRepository.setCurrentLocation(currentLocation);
-        mCurrentLocation = currentLocation;
+        mCurrentLocation.setValue(currentLocation);
+        mCurrentLocS = currentLocation.getLatitude() + "," + currentLocation.getLongitude();
+        if (ll != null) setUpCurrentLatLng(ll);
     }
 
     public void setGoogleMap(GoogleMap googleMap) {

@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -47,6 +48,7 @@ public abstract class LocationUtils {
     public static boolean isDeviceLocationEnabled(Context context) {
         //LocationManager lm = (LocationManager) requireContext().getSystemService(Context.LOCATION_SERVICE);
         LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        Log.i(TAG, "isDeviceLocationEnabled: _____________________________"+ Integer.valueOf(Build.VERSION.SDK_INT) );
         try {
             assert lm != null;
             return lm.isProviderEnabled(LocationManager.GPS_PROVIDER);

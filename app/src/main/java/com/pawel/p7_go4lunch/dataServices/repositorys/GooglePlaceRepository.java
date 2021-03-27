@@ -1,5 +1,6 @@
 package com.pawel.p7_go4lunch.dataServices.repositorys;
 
+import android.location.Location;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -51,8 +52,8 @@ public class GooglePlaceRepository {
     }
 
     // .........................................................................SETTERS
-    public void setCurrentLocation(String currentLocation) {
-        GooglePlaceRepository.mCurrentLocation = currentLocation;
+    public void setCurrentLocation(Location cLoc) {
+        GooglePlaceRepository.mCurrentLocation = cLoc.getLatitude() + "," + cLoc.getLongitude();;
     }
 
     public void setInitialLatLng(LatLng latLng) {
