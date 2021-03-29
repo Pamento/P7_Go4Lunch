@@ -1,6 +1,7 @@
 package com.pawel.p7_go4lunch.ui.mapView;
 
 import android.location.Location;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -14,6 +15,7 @@ import com.pawel.p7_go4lunch.model.Restaurant;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.SingleRestaurant;
 import com.pawel.p7_go4lunch.utils.WasCalled;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observer;
@@ -22,6 +24,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 
 public class MapViewViewModel extends ViewModel {
+    private static final String TAG = "SEARCH";
     private final GooglePlaceRepository mGooglePlaceRepository;
     private final FirebaseChosenRestaurants mFirebaseChosenRestaurants;
     private final CompositeDisposable mDisposable = new CompositeDisposable();
@@ -31,7 +34,7 @@ public class MapViewViewModel extends ViewModel {
 
     private final MutableLiveData<Location> mCurrentLocation = new MutableLiveData<>();
     private String mCurrentLocS;
-    private List<Restaurant> mRestaurants;
+    private List<Restaurant> mRestaurants = new ArrayList<>();
 
     public MapViewViewModel(GooglePlaceRepository googlePlaceRepository, FirebaseChosenRestaurants firebaseChosenRestaurants) {
         mGooglePlaceRepository = googlePlaceRepository;
@@ -48,10 +51,11 @@ public class MapViewViewModel extends ViewModel {
     }
 
     // ................................................................. GETTERS
-    public List<Restaurant> getRestaurants(int radius, String key) {
-        if (mCurrentLocS != null && mGooglePlaceRepository.getRestaurants().isEmpty()) {
-            fetchRestaurants(mCurrentLocS, radius, key);
-        }
+    public List<Restaurant> getRestaurants() {
+        // TODO we can do 2 way: 1. getRestaurants, 2.fetchRestaurants
+//        if (mCurrentLocS != null && mGooglePlaceRepository.getRestaurants().isEmpty()) {
+//            fetchRestaurants(mCurrentLocS, radius, key);
+//        }
         return mRestaurants;
     }
 
@@ -71,8 +75,8 @@ public class MapViewViewModel extends ViewModel {
         return mMiddleRestaurants;
     }
 
-    public void setMiddleRestaurants(MutableLiveData<List<Restaurant>> middleRestaurants) {
-        mMiddleRestaurants = middleRestaurants;
+    public void setMiddleRestaurants(List<Restaurant> middleRestaurants) {
+        mMiddleRestaurants.setValue(middleRestaurants);
     }
 
     // ................................................................. SETTERS
@@ -93,9 +97,10 @@ public class MapViewViewModel extends ViewModel {
         mGoogleMap.setValue(googleMap);
     }
 
-    public void fetchRestaurants(String location, int radius, String key) {
+    public void fetchRestaurants(int radius, String key) {
+        Log.i(TAG, "fetchRRRRRRRRRRRRRRRRRRRRRRRRRRRR: "+mCurrentLocS);
         if (mGooglePlaceRepository.getRestaurants().isEmpty()) {
-            mGooglePlaceRepository.streamCombinePlacesAndDetails(location, radius, key)
+            mGooglePlaceRepository.streamCombinePlacesAndDetails(mCurrentLocS, radius, key)
                     .subscribe(restaurantsRequestObserver(key));
         }
     }
@@ -105,6 +110,7 @@ public class MapViewViewModel extends ViewModel {
         return new Observer<List<SingleRestaurant>>() {
             @Override
             public void onSubscribe(@NonNull Disposable d) {
+                Log.i(TAG, "____restaurantsRequestObserver: ___onSubscribe: ___disposable: "+d);
                 mDisposable.add(d);
             }
 
@@ -112,13 +118,15 @@ public class MapViewViewModel extends ViewModel {
             public void onNext(@NonNull List<SingleRestaurant> singleRestaurants) {
                 for (SingleRestaurant sR : singleRestaurants) {
                     Restaurant rst = mGooglePlaceRepository.createRestaurant(sR.getResult(), key);
+                    Log.i(TAG, "onNext: " + rst);
                     mRestaurants.add(rst);
+                    Log.i(TAG, "onNext: ...mRestaurants.size(" + mRestaurants.size() + ")");
                 }
             }
 
             @Override
             public void onError(@NonNull Throwable e) {
-
+                Log.e(TAG, "onError:(restaurantsRequestObserver) ", e);
             }
 
             @SuppressWarnings("unchecked")
@@ -126,7 +134,10 @@ public class MapViewViewModel extends ViewModel {
             public void onComplete() {
                 // TODO send data to complainant
                 if (mGooglePlaceRepository.getRestaurants() != null) {
-                    setMiddleRestaurants((MutableLiveData<List<Restaurant>>) mGooglePlaceRepository.getRestaurants());
+                    List<Restaurant> r = mGooglePlaceRepository.getRestaurants();
+                    setMiddleRestaurants(r);
+                } else {
+                    mGooglePlaceRepository.setRestaurants(mRestaurants);
                 }
             }
         };

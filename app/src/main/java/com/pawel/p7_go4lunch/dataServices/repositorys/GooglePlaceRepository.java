@@ -25,7 +25,7 @@ public class GooglePlaceRepository {
 
     private static volatile GooglePlaceRepository instance;
     private final GooglePlaceAPI mGooglePlaceAPIService;
-    private final List<Restaurant> mRestaurants = new ArrayList<>();
+    private List<Restaurant> mRestaurants = new ArrayList<>();
     private static String mCurrentLocation;
     private static LatLng initialLatLng;
 
@@ -54,6 +54,10 @@ public class GooglePlaceRepository {
     // .........................................................................SETTERS
     public void setCurrentLocation(Location cLoc) {
         GooglePlaceRepository.mCurrentLocation = cLoc.getLatitude() + "," + cLoc.getLongitude();;
+    }
+
+    public void setRestaurants(List<Restaurant> r) {
+        mRestaurants = r;
     }
 
     public void setInitialLatLng(LatLng latLng) {
@@ -103,6 +107,7 @@ public class GooglePlaceRepository {
     }
 
     public Restaurant createRestaurant(Result result, String key) {
+        // TODO need change this: restaurant.setUserList(new ArrayList<>()); to real userList.
         Restaurant restaurant = new Restaurant();
         if (result != null) {
             restaurant.setPlaceId(result.getPlaceId());
@@ -114,7 +119,9 @@ public class GooglePlaceRepository {
             restaurant.setRating(result.getRating());
             restaurant.setPhoneNumber(result.getInternationalPhoneNumber());
             restaurant.setWebsite(result.getWebsite());
+            restaurant.setUserList(new ArrayList<>());
             Log.i("REQUEST", "fitRestaurantsList: restaurants(" + mRestaurants.size() + "); 1_restaurant: \n" + restaurant.toString());
+            Log.i("REQUEST", "createRestaurant: restaurant: "+restaurant.toString());
             return restaurant;
         }
         return null;

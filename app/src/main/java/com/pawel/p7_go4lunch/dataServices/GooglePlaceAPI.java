@@ -1,15 +1,11 @@
 package com.pawel.p7_go4lunch.dataServices;
 
-import com.pawel.p7_go4lunch.R;
-import com.pawel.p7_go4lunch.model.googleApiPlaces.Photo;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.RestaurantResult;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.SingleRestaurant;
 
 import io.reactivex.Observable;
-import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
-import retrofit2.http.Url;
 
 public interface GooglePlaceAPI {
 

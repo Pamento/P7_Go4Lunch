@@ -63,7 +63,7 @@ public class MapViewFragment extends Fragment
     private MapViewViewModel mMapViewVM;
     private FragmentMapViewBinding mBinding;
     private View view;
-    private GoogleMap mMap;
+    private GoogleMap mGoogleMaps;
     private FragmentActivity mFragmentActivity;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private LocationRequest locationRequest;
@@ -99,13 +99,12 @@ public class MapViewFragment extends Fragment
         mBinding.fabCurrentLocation.setVisibility(View.VISIBLE);
         mBinding.fabCurrentLocation.setOnClickListener(v -> {
             Log.i(TAG, "initMapRestaurant: FAB_OnClick");
-            getCurrentDeviceLocation();
-            mMapViewVM.getCurrentLocation().observe(this, location -> moveCamera(location, mPrefs.getPerimeter()));
-                Log.i(TAG, "initMapRestaurant: FAB : " + currentLocation);
-                // TODO this below
-//            if (now location){
-//                ViewWidgets.showSnackBar(0, view, getResources().getString(R.string.current_location_not_found));
-//            }
+            LocationUtils.getCurrentDeviceLocation(requireContext()).observe(this, location -> {
+                if (location == null) {
+                    ViewWidgets.showSnackBar(0, view, getResources().getString(R.string.current_location_not_found));
+                    LocationUtils.LocationDisabledDialog.newInstance().show(mFragmentActivity.getSupportFragmentManager(), "dialog");
+                }
+            });
         });
     }
 
@@ -118,34 +117,18 @@ public class MapViewFragment extends Fragment
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Log.i(TAG, "onMapReady: before permission");
-        this.mMap = googleMap;
+        Log.i(TAG, "onMapReady: permission");
+        this.mGoogleMaps = googleMap;
         mMapViewVM.setGoogleMap(googleMap);
-        Log.i(TAG, "onMapReady: after permission");
-        // TODO rebuild logic of check permissions
-//        if (PermissionUtils.isPermissionGranted()) {
-//            ContextCompat.checkSelfPermission()
-//        }
-//        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//
-//        } else {
-//            MainActivity.getLocationPermission(mainActivity);
-//        }
-//        MainActivity.getLocationPermission(mainActivity);
-//        // if permissionDenied is not denied (= false): initMapRestaurant();
-//        if (!MainActivity.permissionDenied) {
         Permissions.check(requireContext(), Const.PERMISSIONS, null, null, new PermissionHandler() {
             @Override
             public void onGranted() {
                 Log.i(TAG, "onGranted: PERMISSIONS");
                 initMapRestaurant();
-                mRestaurants = mMapViewVM.getRestaurants(mPrefs.getRadius(), getString(R.string.google_api_key));
+                // TODO ..........................................................................
+                //fetchRestaurants();
             }
         });
-
-//        } else {
-//            PermissionUtils.PermissionDeniedDialog.newInstance(false).show(mFragmentActivity.getSupportFragmentManager(), "dialog");
-//        }
     }
 
     /**
@@ -159,29 +142,24 @@ public class MapViewFragment extends Fragment
     private void initMapRestaurant() {
         Log.i(TAG, "initMapRestaurant: START");
         // for save Google Map in case of device rotation
-        if (mMap == null) {
+        if (mGoogleMaps == null) {
             mMapViewVM.getGoogleMap().observe(getViewLifecycleOwner(), googleMap -> {
-                mMap = googleMap;
+                mGoogleMaps = googleMap;
                 initMapRestaurant();
             });
         } else {
-            Log.i(TAG, "initMapRestaurant: _else");
-            getCurrentDeviceLocation();
-            mMapViewVM.getCurrentLocation().observe(this, location -> {
-                moveCamera(location, mPrefs.getPerimeter());
-                onViewModelReadySetObservers();
-                setRestaurantMarksOnMap();
+            LocationUtils.getCurrentDeviceLocation(requireContext()).observe(this, location -> {
+                Log.i(TAG, "MVF.onChanged: " + location);
+                if (location != null) {
+                    LatLng ll = new LatLng(location.getLatitude(),location.getLongitude());
+                    mMapViewVM.setUpCurrentLocation(location,ll);
+                    moveCamera(location, mPrefs.getPerimeter());
+                    onViewModelReadySetObservers();
+                    setRestaurantMarksOnMap();
+                }
             });
         }
         // get automatically & unrepentantly of user will the position of device
-        //getCurrentDeviceLocation();
-        // recheck permissions for settings  for maps below
-//            if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION)
-//                    != PackageManager.PERMISSION_GRANTED
-//                    && ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_COARSE_LOCATION)
-//                    != PackageManager.PERMISSION_GRANTED) {
-//                return;
-//            }
         // Set blue point (mark) of user position. "true" is visible; "false" is hidden.
         //mMap.setMyLocationEnabled(true);
         // Disable icon of the center location
@@ -213,30 +191,41 @@ public class MapViewFragment extends Fragment
 
     }
 
+    private void fetchRestaurants() {
+        mMapViewVM.fetchRestaurants(mPrefs.getRadius(), getString(R.string.google_api_key));
+    }
     private void setRestaurantMarksOnMap() {
+        Log.i(TAG, "setRestaurantMarksOnMap: XXX "+mRestaurants);
         if (mRestaurants == null) {
-            mMapViewVM.getMiddleRestaurants().observe(getViewLifecycleOwner(), restaurants -> {
-                mRestaurants = restaurants;
-                setRestaurantMarksOnMap();
-            });
+            if (mMapViewVM.getRestaurants() == null) {
+                fetchRestaurants();
+                mMapViewVM.getMiddleRestaurants().observe(getViewLifecycleOwner(), restaurants -> {
+                    mRestaurants = restaurants;
+                    setRestaurantMarksOnMap();
+                    Log.i(TAG, "setRestaurantMarksOnMap: GET___MIDDLE_restaurants" + restaurants);
+                });
+            } else {
+                mRestaurants = mMapViewVM.getRestaurants();
+            }
         } else {
+            Log.i(TAG, "setRestaurantMarksOnMap: MARKERS ___google");
             for (Restaurant rst : mRestaurants) {
-                mMap.clear();
+                mGoogleMaps.clear();
                 LatLng latLng = new LatLng(rst.getLocation().getLat(),rst.getLocation().getLng());
                 Marker marker;
                 if (rst.getUserList().isEmpty()) {
-                    marker = mMap.addMarker(new MarkerOptions()
+                    marker = mGoogleMaps.addMarker(new MarkerOptions()
                             .position(latLng)
                             .title(rst.getName())
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_orange)));
                 } else {
-                    marker = mMap.addMarker(new MarkerOptions()
+                    marker = mGoogleMaps.addMarker(new MarkerOptions()
                             .position(latLng)
                             .title(rst.getName())
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_green)));
                 }
                 marker.setTag(rst.getPlaceId());
-                mMap.setOnMarkerClickListener(this);
+                mGoogleMaps.setOnMarkerClickListener(this);
             }
         }
     }
@@ -256,48 +245,10 @@ public class MapViewFragment extends Fragment
         return false;
     }
 
-    /**
-     * @fun getCurrentDeviceLocation use FusedLocationProviderClient to get lastLocation and if
-     * this is not available the function start LocationRequest.
-     * More info on https://developer.android.com/training/location/request-updates
-     */
-    //@TargetApi(Build.VERSION_CODES.KITKAT)
-    private void getCurrentDeviceLocation() {
-        Log.i(TAG, "getCurrentDeviceLocation: FIRED ");
-        if (LocationUtils.isDeviceLocationEnabled(requireContext())) {
-            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(mActivity);
-            try {
-                // TODO check if device has location & network enabled (Kitkat & above)
-                Task<Location> getLocation = fusedLocationProviderClient.getLastLocation();
-                getLocation.addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        Location location = task.getResult();
-                        currentLocation = location.getLatitude() + "," + location.getLongitude();
-                        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                        Log.i(TAG, "getCurrentDeviceLocation: latLng " + latLng);
-                        Log.i(TAG, "getCurrentDeviceLocation: " + task.getResult());
-                        mMapViewVM.setUpCurrentLocation(location,latLng);
-                    } else {
-                        createLocationRequest();
-                    }
-                });
-            } catch (SecurityException e) {
-                e.getMessage();
-            }
-        } else {
-//            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O_MR1) {
-            //getFragmentManager is deprecated
-//                LocationUtils.LocationDisabledDialog.newInstance().show(getFragmentManager(), "dialog");
-//            } else {
-            LocationUtils.LocationDisabledDialog.newInstance().show(mFragmentActivity.getSupportFragmentManager(), "dialog");
-            //}
-        }
-    }
-
     private void moveCamera(Location loc, float zoom) {
+        Log.i(TAG, "moveCamera: >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> "+loc);
         LatLng latLng = new LatLng(loc.getLatitude(), loc.getLongitude());
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
-        mMap.animateCamera(CameraUpdateFactory.zoomIn());
+        mGoogleMaps.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
     }
 
     private void getLocalAppSettings(Activity activity) {
@@ -307,10 +258,10 @@ public class MapViewFragment extends Fragment
 
     @Override
     public void onStart() {
+        super.onStart();
         mFragmentActivity = getActivity();
         mPrefs = new LocalAppSettings(mActivity);
         Log.i(TAG, "onStart: mPrefs ? " + mPrefs);
-        super.onStart();
     }
 
     protected void createLocationRequest() {

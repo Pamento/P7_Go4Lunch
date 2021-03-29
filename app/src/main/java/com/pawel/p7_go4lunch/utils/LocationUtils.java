@@ -3,7 +3,7 @@ package com.pawel.p7_go4lunch.utils;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.pm.PackageManager;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,7 +11,6 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -19,36 +18,50 @@ import androidx.lifecycle.MutableLiveData;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.Task;
+import com.nabinbhandari.android.permissions.PermissionHandler;
+import com.nabinbhandari.android.permissions.Permissions;
 import com.pawel.p7_go4lunch.R;
-import com.pawel.p7_go4lunch.model.googleApiPlaces.Location;
 
 public abstract class LocationUtils {
 
-    //private static LiveData<Location> data = new MutableLiveData<>();
+    private static final MutableLiveData<Location> data = new MutableLiveData<>();
     private static final String TAG = "SEARCH";
-//    public static Location getCurrentDeviceLocation(Context context) {
-//        Log.i(TAG, "LOCATION _getCurrentDeviceLocation: " + context);
-//        FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
-//        final Location[] currentLocation = new Location[1];
-//        if (ActivityCompat.checkSelfPermission(context, Const.PERMISSIONS[0]) == PackageManager.PERMISSION_GRANTED
-//                && ActivityCompat.checkSelfPermission(context, Const.PERMISSIONS[1]) == PackageManager.PERMISSION_GRANTED) {
-//            // TODO check if device has location & network enabled (Kitkat & above)
-//            Task<Location> getLocation = fusedLocationProviderClient.getLastLocation();
-//            getLocation.addOnCompleteListener(task -> {
-//                if (task.isSuccessful() && (task.getResult() != null)) {
-//                    currentLocation[0] = (Location) task.getResult();
-//                    Log.i(TAG, "LOCATION _getCurrentDeviceLocation: task.successful " + currentLocation[0]);
-//                    //LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-//                }
-//            });
-//        }
-//        return currentLocation[0];
-//    }
+
+    /**
+     * @fun getCurrentDeviceLocation use FusedLocationProviderClient to get lastLocation and if
+     * this is not available the function start LocationRequest.
+     * More info on https://developer.android.com/training/location/request-updates
+     */
+    public static LiveData<Location> getCurrentDeviceLocation(Context context) {
+        Log.i(TAG, "LOCATION _getCurrentDeviceLocation: " + context);
+        if (isDeviceLocationEnabled(context)) {
+            FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
+            try {
+                Permissions.check(context, Const.PERMISSIONS, null, null, new PermissionHandler() {
+                    @Override
+                    public void onGranted() {
+                        // TODO check if device has location & network enabled (Kitkat & above)
+                        Task<android.location.Location> getLocation = fusedLocationProviderClient.getLastLocation();
+                        getLocation.addOnCompleteListener(task -> {
+                            if (task.isSuccessful() && (task.getResult() != null)) {
+                                data.setValue(task.getResult());
+                            }
+                        });
+                    }
+                });
+            } catch (SecurityException e) {
+                e.getMessage();
+            }
+        } else {
+            return null;
+        }
+        return data;
+    }
 
     public static boolean isDeviceLocationEnabled(Context context) {
         //LocationManager lm = (LocationManager) requireContext().getSystemService(Context.LOCATION_SERVICE);
         LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        Log.i(TAG, "isDeviceLocationEnabled: _____________________________"+ Integer.valueOf(Build.VERSION.SDK_INT) );
+        Log.i(TAG, "isDeviceLocationEnabled: _____________________________" + Build.VERSION.SDK_INT);
         try {
             assert lm != null;
             return lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
