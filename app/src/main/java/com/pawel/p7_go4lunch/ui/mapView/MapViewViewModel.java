@@ -44,7 +44,7 @@ public class MapViewViewModel extends ViewModel {
     public void init() {
         mGoogleMap = new MutableLiveData<>();
         if (mGooglePlaceRepository.getRestaurants().isEmpty()) {
-            mRestaurants = null;
+            mRestaurants = new ArrayList<>();
         } else {
             mRestaurants = mGooglePlaceRepository.getRestaurants();
         }

@@ -19,6 +19,8 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class GooglePlaceRepository {
@@ -86,15 +88,20 @@ public class GooglePlaceRepository {
     public ObservableSource<List<SingleRestaurant>> streamCombinePlacesAndDetails(String location, int radius, String key) {
         return streamFetchRestaurantsPlaces(location, radius, key)
                 .map(RestaurantResult::getResults)
-                .concatMap(results -> Observable.fromIterable(results)
-                        .concatMap(result -> streamFetchRestaurantsDetails(result.getPlaceId(), key))
-                        .toList().toObservable());
+                .concatMap(new Function<List<Result>, ObservableSource<? extends List<SingleRestaurant>>>() {
+                    @Override
+                    public ObservableSource<? extends List<SingleRestaurant>> apply(@NonNull List<Result> results) throws Exception {
+                        return Observable.fromIterable(results)
+                                .concatMap(result -> GooglePlaceRepository.this.streamFetchRestaurantsDetails(result.getPlaceId(), key))
+                                .toList().toObservable();
+                    }
+                });
     }
 
     // ................................................................. UTILS FUNCTIONS
     private void fitRestaurantsList(Result result, String key) {
         if (WasCalled.restaurantsList()) {
-            for (Restaurant res : mRestaurants) {
+            for (Restaurant res : new ArrayList<>(mRestaurants)) {
                 if (res.getPlaceId().equals((result).getPlaceId())) {
                     mRestaurants.set(mRestaurants.indexOf(res), createRestaurant(result,key));
                 } else {
@@ -113,15 +120,15 @@ public class GooglePlaceRepository {
             restaurant.setPlaceId(result.getPlaceId());
             restaurant.setName(result.getName());
             restaurant.setAddress(result.getVicinity());
-            restaurant.setLocation(result.getGeometry().getLocation());
+            //restaurant.setLocation(result.getGeometry().getLocation());
             restaurant.setOpeningHours(result.getOpeningHours());
-            restaurant.setImage(getPhoto(result.getPhotos().get(0).getPhotoReference(), key));
-            restaurant.setRating(result.getRating());
+//            restaurant.setImage(getPhoto(result.getPhotos().get(0).getPhotoReference(), key));
+//            restaurant.setRating(result.getRating());
             restaurant.setPhoneNumber(result.getInternationalPhoneNumber());
             restaurant.setWebsite(result.getWebsite());
             restaurant.setUserList(new ArrayList<>());
-            Log.i("REQUEST", "fitRestaurantsList: restaurants(" + mRestaurants.size() + "); 1_restaurant: \n" + restaurant.toString());
-            Log.i("REQUEST", "createRestaurant: restaurant: "+restaurant.toString());
+            //Log.i("REQUEST", "fitRestaurantsList: restaurants(" + mRestaurants.size() + "); 1_restaurant: \n" + restaurant.toString());
+            //Log.i("REQUEST", "createRestaurant: restaurant: "+restaurant.toString());
             return restaurant;
         }
         return null;
