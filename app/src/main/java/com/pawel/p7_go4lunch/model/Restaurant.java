@@ -26,14 +26,14 @@ public class Restaurant {
     @Nullable
     private String website;
     @Nullable
-    private List<User> userList;
+    private List<String> userList;
 
     public Restaurant() {}
 
     public Restaurant(String placeId, Location location, String name, String address,
                       @Nullable OpeningHours openingHours,
                       @Nullable String image, double rating, @Nullable String phoneNumber, @Nullable String website,
-                      @Nullable List<User> userList) {
+                      @Nullable List<String> userList) {
         this.placeId = placeId;
         this.location = location;
         this.name = name;
@@ -93,7 +93,7 @@ public class Restaurant {
     }
 
     @Nullable
-    public List<User> getUserList() {
+    public List<String> getUserList() {
         return userList;
     }
 
@@ -138,7 +138,7 @@ public class Restaurant {
         this.website = website;
     }
 
-    public void setUserList(@Nullable List<User> userList) {
+    public void setUserList(@Nullable List<String> userList) {
         this.userList = userList;
     }
 

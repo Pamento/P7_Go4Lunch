@@ -1,5 +1,7 @@
 package com.pawel.p7_go4lunch.dataServices.repositorys;
 
+import android.util.Log;
+
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -53,9 +55,14 @@ public class FirebaseUserRepository {
                 //.orderBy(Const.FIREBASE_ADAPTER_QUERY_RATING, Query.Direction.DESCENDING);
     }
 
+    public Query getUsersWithChosenRestaurant() {
+        return userRepository.whereNotEqualTo("userRestaurant", null);
+    }
+
     // ................................................................................... UPDATE
     public void updateUserRestaurant(String uid, Restaurant chosenRestaurant) {
-        userRepository.document(uid).update("chosenRestaurant", chosenRestaurant);
+        Log.i("SEARCH", "updateUserRestaurant: " + chosenRestaurant);
+        userRepository.document(uid).update("userRestaurant", chosenRestaurant);
     }
 
     public void updateUserFavoritesRestaurant(String uid, List<String> favoritesRestaurants) {

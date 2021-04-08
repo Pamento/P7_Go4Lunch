@@ -1,5 +1,7 @@
 package com.pawel.p7_go4lunch.model;
 
+import androidx.annotation.NonNull;
+
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -87,5 +89,18 @@ public class User {
 
     public void setFavoritesRestaurants(@Nullable List<String> favoritesRestaurants) {
         this.favoritesRestaurants = favoritesRestaurants;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "User:"+
+                "uid='" + uid + '\'' +
+                ", name=" + name +
+                ", email=" + email +
+                ", UrlImage='" + UrlImage + '\'' +
+                ", userRestaurant='" + userRestaurant + '\'' +
+                ", favoritesRestaurants='" + favoritesRestaurants + '\'' +
+                '}';
     }
 }

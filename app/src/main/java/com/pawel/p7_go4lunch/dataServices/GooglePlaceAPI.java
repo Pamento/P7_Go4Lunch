@@ -39,8 +39,8 @@ public interface GooglePlaceAPI {
 //    @GET("details/json?")
 //    Observable<RestaurantResult> getDetailRestaurants (@Query("place_id") String placeId,
 //                                                 @Query("key") String key);
-    @GET("details/json?fields=vicinity,name,place_id,id,geometry,opening_hours,international_phone_number,website,rating,utc_offset,photos")
-    //@GET("details/json?fields=international_phone_number,website")
+//    @GET("details/json?fields=vicinity,name,place_id,id,geometry,opening_hours,international_phone_number,website,rating,utc_offset,photos")
+    @GET("details/json?fields=place_id,international_phone_number,website")
     Observable<SingleRestaurant> getDetailsOfRestaurant(@Query("place_id") String placeId,
                                                         @Query("key") String key);
 

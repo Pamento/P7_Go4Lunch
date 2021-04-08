@@ -34,7 +34,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             return (T) new MainActivityViewModel(mFirebaseUserRepository);
         }
         if (modelClass.isAssignableFrom(MapViewViewModel.class)) {
-            return (T) new MapViewViewModel(mGooglePlaceRepository, mFirebaseChosenRestaurants);
+            return (T) new MapViewViewModel(mGooglePlaceRepository, mFirebaseChosenRestaurants, mFirebaseUserRepository);
         }
         if (modelClass.isAssignableFrom(ListViewViewModel.class)) {
             return (T) new ListViewViewModel(mGooglePlaceRepository, mFirebaseChosenRestaurants);

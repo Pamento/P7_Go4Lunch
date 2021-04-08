@@ -110,6 +110,7 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
             mThisRestaurant = restaurant;
             restaurantId = mThisRestaurant.getPlaceId();
             updateUI();
+            Log.i(TAG, "getRestaurantFromGoogleMap: " + mThisRestaurant.toString());
         });
     }
 
@@ -138,13 +139,18 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
     private void setUiAboutRestaurant() {
         if (mThisRestaurant != null) {
             // name
-            mBinding.abInclude.aboutTheRestName.setText(
-                    mThisRestaurant.getName() != null ?
-                            getString(R.string.name_restaurant_absent) : mThisRestaurant.getName());
+            Log.i(TAG, "setUiAboutRestaurant::name::: " + mThisRestaurant.getName() );
+            if (mThisRestaurant.getName().isEmpty()) {
+                mBinding.abInclude.aboutTheRestName.setText(getString(R.string.name_restaurant_absent));
+            } else {
+                mBinding.abInclude.aboutTheRestName.setText(mThisRestaurant.getName());
+            }
             // address
-            mBinding.abInclude.aboutTheRestAddress.setText(
-                    mThisRestaurant.getAddress() != null ?
-                            getString(R.string.address_restaurant_absent) : mThisRestaurant.getAddress());
+            if (mThisRestaurant.getAddress().isEmpty()) {
+                mBinding.abInclude.aboutTheRestAddress.setText(getString(R.string.address_restaurant_absent));
+            } else {
+                mBinding.abInclude.aboutTheRestAddress.setText(mThisRestaurant.getAddress());
+            }
             // TODO set name, address, stars range. Maybe refactor stars logic.?
             // rating google in 5 stars convert in 3 stars
             double starsRange = Math.round(mThisRestaurant.getRating() * 3 / 5);

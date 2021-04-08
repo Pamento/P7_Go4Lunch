@@ -29,7 +29,7 @@ public class AboutRestaurantViewModel extends ViewModel {
     }
 
     public void init() {
-        mRestaurantsList = mGooglePlaceRepository.getRestaurants();
+        mRestaurantsList = mGooglePlaceRepository.getRestaurantsCache();
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (firebaseUser != null) getUserFromFirestore(firebaseUser.getUid());
     }
@@ -50,7 +50,7 @@ public class AboutRestaurantViewModel extends ViewModel {
 
     public void getRestaurantsList() {
         if (mRestaurantsList.isEmpty()) {
-            this.mRestaurantsList = mGooglePlaceRepository.getRestaurants();
+            this.mRestaurantsList = mGooglePlaceRepository.getRestaurantsCache();
         }
     }
 

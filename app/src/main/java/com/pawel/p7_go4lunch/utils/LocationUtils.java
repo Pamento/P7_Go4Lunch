@@ -61,7 +61,7 @@ public abstract class LocationUtils {
     public static boolean isDeviceLocationEnabled(Context context) {
         //LocationManager lm = (LocationManager) requireContext().getSystemService(Context.LOCATION_SERVICE);
         LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        Log.i(TAG, "isDeviceLocationEnabled: _____________________________" + Build.VERSION.SDK_INT);
+        //Log.i(TAG, "isDeviceLocationEnabled: _____________________________" + Build.VERSION.SDK_INT);
         try {
             assert lm != null;
             return lm.isProviderEnabled(LocationManager.GPS_PROVIDER);

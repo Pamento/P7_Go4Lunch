@@ -20,6 +20,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -83,6 +85,10 @@ public class MainActivity extends AppCompatActivity
         } else {
             startSignInActivity();
         }
+        if (!Places.isInitialized()) {
+            Places.initialize(getApplicationContext(), BuildConfig.API_KEY);
+        }
+        PlacesClient placesClient = Places.createClient(this);
     }
 
     private void initMainViewModel() {

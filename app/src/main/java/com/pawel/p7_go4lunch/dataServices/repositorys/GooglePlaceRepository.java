@@ -3,36 +3,53 @@ package com.pawel.p7_go4lunch.dataServices.repositorys;
 import android.location.Location;
 import android.util.Log;
 
+import androidx.lifecycle.MutableLiveData;
+
 import com.google.android.gms.maps.model.LatLng;
+import com.pawel.p7_go4lunch.BuildConfig;
 import com.pawel.p7_go4lunch.dataServices.GooglePlaceAPI;
 import com.pawel.p7_go4lunch.dataServices.RetrofitClient;
 import com.pawel.p7_go4lunch.model.Restaurant;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.RestaurantResult;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.Result;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.SingleRestaurant;
-import com.pawel.p7_go4lunch.utils.WasCalled;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class GooglePlaceRepository {
-
+    private static final String TAG = "SEARCH";
     private static volatile GooglePlaceRepository instance;
     private final GooglePlaceAPI mGooglePlaceAPIService;
     private List<Restaurant> mRestaurants = new ArrayList<>();
+    private MutableLiveData<List<Restaurant>> mRestaurantLiveData = new MutableLiveData<>();
     private static String mCurrentLocation;
     private static LatLng initialLatLng;
+    private final CompositeDisposable mDisposable = new CompositeDisposable();
 
     public GooglePlaceRepository() {
         mGooglePlaceAPIService = getGooglePlaceApiService();
+    }
+
+
+    public MutableLiveData<List<Restaurant>> getRestaurantLiveData() {
+        return mRestaurantLiveData;
+    }
+
+    public void setRestaurantLiveData(MutableLiveData<List<Restaurant>> restaurantLiveData) {
+        mRestaurantLiveData = restaurantLiveData;
     }
 
     // ................................................................. GETTERS
@@ -45,7 +62,11 @@ public class GooglePlaceRepository {
         return RetrofitClient.getRequestApi();
     }
 
-    public List<Restaurant> getRestaurants() {
+    public MutableLiveData<List<Restaurant>> getRestaurants() {
+        return mRestaurantLiveData;
+    }
+
+    public List<Restaurant> getRestaurantsCache() {
         return mRestaurants;
     }
 
@@ -55,7 +76,7 @@ public class GooglePlaceRepository {
 
     // .........................................................................SETTERS
     public void setCurrentLocation(Location cLoc) {
-        GooglePlaceRepository.mCurrentLocation = cLoc.getLatitude() + "," + cLoc.getLongitude();;
+        GooglePlaceRepository.mCurrentLocation = cLoc.getLatitude() + "," + cLoc.getLongitude();
     }
 
     public void setRestaurants(List<Restaurant> r) {
@@ -67,74 +88,120 @@ public class GooglePlaceRepository {
     }
 
     // .........................................................................STREAMS
-    public Observable<RestaurantResult> streamFetchRestaurantsPlaces(String location, int radius, String key) {
-        return mGooglePlaceAPIService.getNearbyRestaurants(location, radius, key)
+    public Observable<RestaurantResult> streamFetchRestaurantsPlaces(String location, int radius) {
+        return mGooglePlaceAPIService.getNearbyRestaurants(location, radius, BuildConfig.API_KEY)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .timeout(10, TimeUnit.SECONDS);
     }
 
-    public Observable<SingleRestaurant> streamFetchRestaurantsDetails(String placeId, String key) {
-        return mGooglePlaceAPIService.getDetailsOfRestaurant(placeId, key)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .timeout(10, TimeUnit.SECONDS)
-                .map(singleRestaurant -> {
-                    fitRestaurantsList(singleRestaurant.getResult(), key);
-                    return singleRestaurant;
+    private Observable<Result> getRestaurantNearby(String location, int radius) {
+        return streamFetchRestaurantsPlaces(location, radius)
+                .map(RestaurantResult::getResults)
+                .concatMap(results -> {
+                    setRestaurantsNearby(results);
+                    return Observable.fromIterable(results)
+                            .subscribeOn(Schedulers.io());
                 });
     }
 
-    public ObservableSource<List<SingleRestaurant>> streamCombinePlacesAndDetails(String location, int radius, String key) {
-        return streamFetchRestaurantsPlaces(location, radius, key)
-                .map(RestaurantResult::getResults)
-                .concatMap(new Function<List<Result>, ObservableSource<? extends List<SingleRestaurant>>>() {
+    private Observable<Result> getRestaurantDetail(String id) {
+        return mGooglePlaceAPIService.getDetailsOfRestaurant(id,BuildConfig.API_KEY)
+                .map(SingleRestaurant::getResult);
+    }
+
+    public void streamCombinedNearbyAndDetailPlace(String location, int radius) {
+        getRestaurantNearby(location,radius)
+                .subscribeOn(Schedulers.io())
+                .concatMap((Function<Result, ObservableSource<Result>>) result -> getRestaurantDetail(result.getPlaceId()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Result>() {
                     @Override
-                    public ObservableSource<? extends List<SingleRestaurant>> apply(@NonNull List<Result> results) throws Exception {
-                        return Observable.fromIterable(results)
-                                .concatMap(result -> GooglePlaceRepository.this.streamFetchRestaurantsDetails(result.getPlaceId(), key))
-                                .toList().toObservable();
+                    public void onSubscribe(@NonNull Disposable d) {
+                        mDisposable.add(d);
+                    }
+
+                    @Override
+                    public void onNext(@NonNull Result result) {
+                        Log.i("SEARCH", "onNext: GOOGLE_REPOSITORY ====== result.toString:::" + result.getPlaceId());
+                        upDateRestaurantsWithDetails(result);
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        Log.e("SEARCH", "onError: ", e);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.i("SEARCH", "onComplete: mRestaurants.size("+mRestaurants.size()+")");
+                        Log.i("SEARCH", "onComplete: 1..._: " + mRestaurants.get(0).toString());
+                        mRestaurantLiveData.setValue(mRestaurants);
                     }
                 });
     }
-
-    // ................................................................. UTILS FUNCTIONS
-    private void fitRestaurantsList(Result result, String key) {
-        if (WasCalled.restaurantsList()) {
-            for (Restaurant res : new ArrayList<>(mRestaurants)) {
-                if (res.getPlaceId().equals((result).getPlaceId())) {
-                    mRestaurants.set(mRestaurants.indexOf(res), createRestaurant(result,key));
-                } else {
-                    mRestaurants.add(createRestaurant(result, key));
-                }
-            }
-        } else {
-            mRestaurants.add(createRestaurant(result, key));
+    public void disposeDisposable() {
+        if (mDisposable.isDisposed()) {
+            mDisposable.dispose();
         }
     }
 
-    public Restaurant createRestaurant(Result result, String key) {
+    // ................................................................. UTILS FUNCTIONS
+    private void setRestaurantsNearby(List<Result> results) {
+        Log.i("SEARCH", "setRestaurantsNearby: " + results.size() );
+        for (Result r: results) {
+            Restaurant res = createRestaurant(r);
+            if (mRestaurants.contains(res)) {
+                Log.i(TAG, "setRestaurantsNearby: the same. Id::: " + res.getPlaceId());
+                mRestaurants.set(mRestaurants.indexOf(res), res);
+            } else {
+                mRestaurants.add(res);
+            }
+        }
+    }
+
+    private void upDateRestaurantsWithDetails(Result result) {
+        Log.i("SEARCH", "UUUUUUUUUUUUUUUUUUUUUUupDateRestaurantsWithDetails: ");
+        Restaurant mRcp;
+        for (int i = 0; i < mRestaurants.size(); i++) {
+            if (mRestaurants.get(i).getPlaceId().equals(result.getPlaceId())) {
+                mRcp = mRestaurants.get(i);
+                Log.i(TAG, "upDateRestaurantsWithDetails: inside for LOOP single.restaurant: " + mRcp);
+                updateAndReplace(result,mRcp);
+            }
+        }
+    }
+
+    private void updateAndReplace(Result result, Restaurant mRcp) {
+        if (mRcp != null) {
+            mRcp.setPhoneNumber(result.getInternationalPhoneNumber());
+            mRcp.setWebsite(result.getWebsite());
+            mRestaurants.set(mRestaurants.indexOf(mRcp),mRcp);
+            Log.i("SEARCH", "upDateRestaurantsWithDetails: " + mRcp.toString());
+        }
+    }
+
+    public Restaurant createRestaurant(Result result) {
         // TODO need change this: restaurant.setUserList(new ArrayList<>()); to real userList.
         Restaurant restaurant = new Restaurant();
         if (result != null) {
-            restaurant.setPlaceId(result.getPlaceId());
-            restaurant.setName(result.getName());
-            restaurant.setAddress(result.getVicinity());
-            //restaurant.setLocation(result.getGeometry().getLocation());
-            restaurant.setOpeningHours(result.getOpeningHours());
-//            restaurant.setImage(getPhoto(result.getPhotos().get(0).getPhotoReference(), key));
-//            restaurant.setRating(result.getRating());
-            restaurant.setPhoneNumber(result.getInternationalPhoneNumber());
-            restaurant.setWebsite(result.getWebsite());
+            if (result.getPlaceId() != null) restaurant.setPlaceId(result.getPlaceId());
+            restaurant.setDateCreated(new Date());
+            if (result.getName() != null) restaurant.setName(result.getName());
+            if (result.getVicinity() != null) restaurant.setAddress(result.getVicinity());
+            if (result.getGeometry() != null) restaurant.setLocation(result.getGeometry().getLocation());
+            if (result.getOpeningHours() != null) restaurant.setOpeningHours(result.getOpeningHours());
+            if (result.getPhotos() != null) restaurant.setImage(getPhoto(result.getPhotos().get(0).getPhotoReference()));
+            if (result.getRating() != null) restaurant.setRating(result.getRating());
+            if (result.getInternationalPhoneNumber() != null) restaurant.setPhoneNumber(result.getInternationalPhoneNumber());
+            if (result.getWebsite() != null) restaurant.setWebsite(result.getWebsite());
             restaurant.setUserList(new ArrayList<>());
-            //Log.i("REQUEST", "fitRestaurantsList: restaurants(" + mRestaurants.size() + "); 1_restaurant: \n" + restaurant.toString());
-            //Log.i("REQUEST", "createRestaurant: restaurant: "+restaurant.toString());
             return restaurant;
         }
         return null;
     }
 
-    public String getPhoto(String photoReference, String key) {
-        return "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + photoReference + "&key=" + key;
+    public String getPhoto(String photoReference) {
+        return "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + photoReference + "&key=" + BuildConfig.API_KEY;
     }
 }
