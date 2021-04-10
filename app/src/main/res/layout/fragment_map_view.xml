@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/fab_margin"
     android:orientation="vertical"
-    tools:context=".ui.mapView.MapViewFragment">
+    tools:context=".ui.MapViewFragment">
 
     <fragment
         android:id="@+id/map"

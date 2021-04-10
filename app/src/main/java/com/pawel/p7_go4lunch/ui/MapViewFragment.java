@@ -1,4 +1,4 @@
-package com.pawel.p7_go4lunch.ui.mapView;
+package com.pawel.p7_go4lunch.ui;
 
 import android.Manifest;
 import android.app.Activity;
@@ -51,6 +51,7 @@ import com.pawel.p7_go4lunch.utils.LocationUtils;
 import com.pawel.p7_go4lunch.utils.ViewWidgets;
 import com.pawel.p7_go4lunch.utils.WasCalled;
 import com.pawel.p7_go4lunch.utils.di.Injection;
+import com.pawel.p7_go4lunch.viewModels.RestaurantsViewModel;
 import com.pawel.p7_go4lunch.viewModels.ViewModelFactory;
 
 import java.util.ArrayList;
@@ -62,7 +63,7 @@ public class MapViewFragment extends Fragment
         com.google.android.gms.location.LocationListener,
         GoogleMap.OnMarkerClickListener {
 
-    private MapViewViewModel mMapViewVM;
+    private RestaurantsViewModel mMapViewVM;
     private FragmentMapViewBinding mBinding;
     private View view;
     private GoogleMap mGoogleMaps;
@@ -91,7 +92,7 @@ public class MapViewFragment extends Fragment
 
     private void initMapViewModel() {
         ViewModelFactory vmf = Injection.sViewModelFactory();
-        mMapViewVM = new ViewModelProvider(this, vmf).get(MapViewViewModel.class);
+        mMapViewVM = new ViewModelProvider(requireActivity(), vmf).get(RestaurantsViewModel.class);
         mMapViewVM.init();
     }
 
@@ -142,14 +143,14 @@ public class MapViewFragment extends Fragment
         // TODO for save Google Map in case of device rotation need use onActivityCreate
         if (mGoogleMaps != null) {
             Log.i(TAG, "START initMapRestaurant: :else ");
-            Objects.requireNonNull(LocationUtils.getCurrentDeviceLocation(requireContext())).observe(this, location -> {
+            Objects.requireNonNull(LocationUtils.getCurrentDeviceLocation(requireContext())).observe(getViewLifecycleOwner(), location -> {
                 if (location != null) {
                     Log.i(TAG, "initMapRestaurant: " + location);
                     LatLng ll = new LatLng(location.getLatitude(), location.getLongitude());
                     mMapViewVM.setUpCurrentLocation(location, ll);
                     if (mMapViewVM.getRestaurantsCache().isEmpty()) {
-                        //fetchRestaurants();
-                        //onFetchRestaurants();
+                        fetchRestaurants();
+                        onFetchRestaurants();
                         Log.i(TAG, "initMapRestaurant: fetchRestaurants ");
                     } else {
                         mRestaurants = mMapViewVM.getRestaurantsCache();

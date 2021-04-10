@@ -1,4 +1,4 @@
-package com.pawel.p7_go4lunch.ui.workmates;
+package com.pawel.p7_go4lunch.ui;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -24,6 +24,7 @@ import com.pawel.p7_go4lunch.model.User;
 import com.pawel.p7_go4lunch.utils.adapters.WorkmateAdapter;
 import com.pawel.p7_go4lunch.utils.di.Injection;
 import com.pawel.p7_go4lunch.viewModels.ViewModelFactory;
+import com.pawel.p7_go4lunch.viewModels.WorkmatesViewModel;
 
 public class WorkmatesFragment extends Fragment implements WorkmateAdapter.OnItemClickListener {
     private static final String TAG = "workmate";
@@ -71,7 +72,7 @@ public class WorkmatesFragment extends Fragment implements WorkmateAdapter.OnIte
 
     private void initWorkmatesViewModel() {
         ViewModelFactory vmf = Injection.sViewModelFactory();
-        mWorkmatesVM = new ViewModelProvider(this, vmf).get(WorkmatesViewModel.class);
+        mWorkmatesVM = new ViewModelProvider(requireActivity(), vmf).get(WorkmatesViewModel.class);
         mWorkmatesVM.init();
     }
 

@@ -26,6 +26,7 @@
 
     <!-- Main Activity __menu_drawer -->
     <string name="menu_persona_description">Image of the person logged in.</string>
+    <string name="drawer_head_name">Me</string>
 
     <!-- Main Activity __menu_toolbar -->
     <string name="search">search</string>
@@ -120,7 +121,12 @@
     <string name="about_restaurant_workmates_empty_list">No One joining this place yet.</string>
 
     <!-- Restaurant list (RecyclerView) -->
-    <string name="workmate_number">(%s)</string>
+    <string name="workmate_number">(%d)</string>
+    <string name="distance_to_restaurant">%fm</string>
+    <string name="open_now">Open now</string>
+    <string name="close_now">Close now</string>
+    <string name="open_at">Open at %d</string>
+    <string name="close_at">Close at %d</string>
 
     <!-- PermissionUtils.java : dialog explain way need permission -->
     <string name="permission_required_toast">Location permission is required for Go4Lunch.</string>

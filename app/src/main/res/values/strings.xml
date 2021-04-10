@@ -28,6 +28,7 @@
 
     <!-- Main Activity __menu_drawer -->
     <string name="menu_persona_description">Image de la personne connecté</string>
+    <string name="drawer_head_name">Moi,</string>
 
     <!-- Main Activity __menu_toolbar -->
     <string name="search">recherche</string>
@@ -122,7 +123,12 @@
     <string name="about_restaurant_workmates_empty_list">Personne n\'a encore rejoint cet endroit.</string>
 
     <!-- Restaurant list (RecyclerView) -->
-    <string name="workmate_number">(%s)</string>
+    <string name="workmate_number">(%d)</string>
+    <string name="distance_to_restaurant">%fm</string>
+    <string name="open_now">Ouvert à cette heur</string>
+    <string name="close_now">Fermé à cette heur</string>
+    <string name="open_at">Ouvre à %d</string>
+    <string name="close_at">Ferme à %d</string>
 
     <!-- PermissionUtils.java : dialog explain way need permission -->
     <string name="permission_required_toast">Une autorisation de localisation est requise pour Go4Lunch.</string>

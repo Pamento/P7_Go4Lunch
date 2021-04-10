@@ -203,6 +203,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void updateUiNavigationDrawerMenu(FirebaseUser user) {
+        String name = user.getDisplayName() == null ? getResources().getString(R.string.drawer_head_name) : user.getDisplayName();
         View drawerHeader = binding.navDrawerView.getHeaderView(0);
         NavigationDrawerHeaderBinding headerBinding = NavigationDrawerHeaderBinding.bind(drawerHeader);
         GlideApp.with(this)
@@ -213,7 +214,7 @@ public class MainActivity extends AppCompatActivity
                 .circleCrop()
                 .into(headerBinding.navDrawerUserImage);
         headerBinding.navDrawerUserEmail.setText(user.getEmail());
-        headerBinding.navDrawerUserFullName.setText(user.getDisplayName());
+        headerBinding.navDrawerUserFullName.setText(name);
     }
 
     @Override

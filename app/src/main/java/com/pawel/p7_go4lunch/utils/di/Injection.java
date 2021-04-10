@@ -15,11 +15,11 @@ public class Injection {
         return FirebaseUserRepository.getInstance();
     }
 
-    public static FirebaseChosenRestaurants sFirebaseChosenRestaurants() {
-        return FirebaseChosenRestaurants.getInstance();
-    }
+//    public static FirebaseChosenRestaurants sFirebaseChosenRestaurants() {
+//        return FirebaseChosenRestaurants.getInstance();
+//    }
 
     public static ViewModelFactory sViewModelFactory() {
-        return new ViewModelFactory(sGooglePlaceRepository(),sFirebaseUserRepository(),sFirebaseChosenRestaurants());
+        return new ViewModelFactory(sGooglePlaceRepository(),sFirebaseUserRepository());
     }
 }

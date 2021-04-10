@@ -1,4 +1,4 @@
-package com.pawel.p7_go4lunch.ui.listView;
+package com.pawel.p7_go4lunch.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,40 +22,36 @@ import com.pawel.p7_go4lunch.model.Restaurant;
 import com.pawel.p7_go4lunch.utils.Const;
 import com.pawel.p7_go4lunch.utils.adapters.RestaurantAdapter;
 import com.pawel.p7_go4lunch.utils.di.Injection;
+import com.pawel.p7_go4lunch.viewModels.RestaurantsViewModel;
 import com.pawel.p7_go4lunch.viewModels.ViewModelFactory;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ListViewFragment extends Fragment implements RestaurantAdapter.OnItemRestaurantListClickListener {
 
     private FragmentListViewBinding mBinding;
     private ProgressBarBinding progressBarBiding;
     private ErrorNoDataFullscreenMessageBinding errorBinding;
-    private ListViewViewModel mListViewVM;
-    private final ArrayList<Restaurant> mRestaurants = new ArrayList<>();
+    private RestaurantsViewModel mRestoVM;
+    private List<Restaurant> mRestaurants = new ArrayList<>();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        initListViewModel();
+        initVM();
         // TODO mRestaurants = mListViewVM.getRestaurants();
         mBinding = FragmentListViewBinding.inflate(inflater, container, false);
         bindIncludesLayouts();
-//        final TextView textView = root.findViewById(R.id.text_dashboard);
-//        mListViewViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-//            @Override
-//            public void onChanged(@Nullable String s) {
-//                textView.setText(s);
-//            }
-//        });
         setProgressBar();
         setRecyclerView();
         return mBinding.getRoot();
     }
 
-    private void initListViewModel() {
+    private void initVM() {
         ViewModelFactory vmf = Injection.sViewModelFactory();
-        mListViewVM = new ViewModelProvider(this, vmf).get(ListViewViewModel.class);
-        mListViewVM.init();
+        mRestoVM = new ViewModelProvider(requireActivity(), vmf).get(RestaurantsViewModel.class);
+        mRestaurants = mRestoVM.getRestaurantsCache();
+        //mRestaurantsViewModel.init();
     }
 
     private void bindIncludesLayouts() {
@@ -72,12 +68,12 @@ public class ListViewFragment extends Fragment implements RestaurantAdapter.OnIt
             new android.os.Handler().postDelayed(
                     new Runnable() {
                         public void run() {
-                            Log.i("SEARCH", "This'll run 300 milliseconds later");
+                            Log.i("SEARCH", "This'll run 600 milliseconds later");
                             progressBarBiding.progressBarLayout.setVisibility(View.GONE);
                             errorBinding.errorNoData.setVisibility(View.VISIBLE);
                         }
                     },
-                    1000);
+                    600);
         } else {
             RecyclerView recView = mBinding.restaurantRecyclerView;
             RestaurantAdapter adapter = new RestaurantAdapter(mRestaurants ,this);

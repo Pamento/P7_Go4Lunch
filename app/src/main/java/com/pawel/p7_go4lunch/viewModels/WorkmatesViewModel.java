@@ -1,4 +1,4 @@
-package com.pawel.p7_go4lunch.ui.workmates;
+package com.pawel.p7_go4lunch.viewModels;
 
 import androidx.lifecycle.ViewModel;
 

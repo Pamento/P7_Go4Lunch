@@ -15,14 +15,14 @@ import com.pawel.p7_go4lunch.databinding.ItemRestaurantBinding;
 import com.pawel.p7_go4lunch.model.Restaurant;
 import com.pawel.p7_go4lunch.utils.GlideApp;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder> {
 
-    private final ArrayList<Restaurant> mRestaurants;
+    private final List<Restaurant> mRestaurants;
     private final OnItemRestaurantListClickListener mListClickListener;
 
-    public RestaurantAdapter(ArrayList<Restaurant> restaurants, OnItemRestaurantListClickListener listClickListener) {
+    public RestaurantAdapter(List<Restaurant> restaurants, OnItemRestaurantListClickListener listClickListener) {
         mRestaurants = restaurants;
         mListClickListener = listClickListener;
     }
@@ -36,17 +36,22 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
 
     @Override
     public void onBindViewHolder(@NonNull RestaurantViewHolder holder, int position) {
-        String url = getImageUrl();
+
         Restaurant restaurant = mRestaurants.get(position);
+        String d = holder.itemView.getResources().getString(R.string.distance_to_restaurant, restaurant.getDistance());
+        String w = holder.itemView.getResources().getString(R.string.workmate_number, restaurant.getUserList().size());
+        String h = holder.itemView.getResources().getString(R.string.close_now);
+        if (restaurant.getOpeningHours() != null && restaurant.getOpeningHours().getOpenNow())
+            h = holder.itemView.getResources().getString(R.string.open_now);
         holder.restaurantName.setText(restaurant.getName());
         holder.restaurantAddress.setText(restaurant.getAddress());
-        holder.restaurantOpeningTime.setText("");
-        holder.restaurantDistanceFromUser.setText("");
-        holder.restaurantWorkmatesNumber.setText("");
-        holder.restaurantRatingBar.setRating(0.1f);
+        holder.restaurantOpeningTime.setText(h);
+        holder.restaurantDistanceFromUser.setText(d);
+        holder.restaurantWorkmatesNumber.setText(w);
+        holder.restaurantRatingBar.setRating((float)restaurant.getRating());
         // Restaurant image
         GlideApp.with(holder.restaurantImage.getContext())
-                .load(url)// TODO pass getUrl() directly here
+                .load(restaurant.getImage())
                 .placeholder(R.drawable.restaurant_default)
                 .error(R.drawable.restaurant_default)
                 .into(holder.restaurantImage);
@@ -56,13 +61,6 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
     public int getItemCount() {
         return mRestaurants.size();
     }
-
-    private String getImageUrl() {
-        String url = "https://google.com";
-        // TODO get Url of image of restaurant
-        return url;
-    }
-
 
     // ....................................................ViewHolder
     public static class RestaurantViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
