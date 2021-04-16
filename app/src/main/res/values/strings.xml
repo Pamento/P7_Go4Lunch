@@ -85,11 +85,14 @@
     <string name="notification_category">Notifications</string>
     <string name="notification_active">Activé</string>
     <string name="notification_inactive">Désactivé</string>
+    <string name="notification_repeat">Récurrence</string>
+    <string name="notification_repeat_once">Quand cette option est désactivée, le rappel du choix du restaurant s\'effectuera une seule fois dans 24h qui suit.</string>
+    <string name="notification_repeat_more">Rappel tous les jours</string>
     <string name="hour">Heure d\'affichage</string>
     <string name="localisation_category">Localisation</string>
     <string name="account_category">Compte</string>
     <string name="account_category_descript">
-        Utilisation de cette action supprimera toutes vôtres préference et son histoire que vous avez utilisé à travers de cette application.</string>
+        Utilisation de cette action supprimera toutes vos préférens et l\'historique de son utilisation dans cette application.</string>
     <string name="delete_account">Supprimer le compte</string>
     <string name="perimeter_research">Périmètre de recherche</string>
 
@@ -99,7 +102,7 @@
 
     <!-- AlertDialog delete account -->
     <string name="delete_account_title">Suppression du compte !</string>
-    <string name="delete_account_message">Voulez-vous supprimer definitivement votre compte ?</string>
+    <string name="delete_account_message">Voulez-vous supprimer définitivement votre compte ?</string>
     <string name="btn_ok">Supprimer</string>
     <string name="btn_cancel">Annuler</string>
     <string name="cancel_message">Suppression du compte annulé.</string>
@@ -124,9 +127,9 @@
 
     <!-- Restaurant list (RecyclerView) -->
     <string name="workmate_number">(%d)</string>
-    <string name="distance_to_restaurant">%fm</string>
-    <string name="open_now">Ouvert à cette heur</string>
-    <string name="close_now">Fermé à cette heur</string>
+    <string name="distance_to_restaurant">%dm</string>
+    <string name="open_now">Ouvert à cette heure</string>
+    <string name="close_now">Fermé à cette heure</string>
     <string name="open_at">Ouvre à %d</string>
     <string name="close_at">Ferme à %d</string>
 

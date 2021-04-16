@@ -27,7 +27,7 @@ public class RetrofitClient {
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create());
 
-    private static final Retrofit retrofit = retrofitBuilder.build();
+     private static final Retrofit retrofit = retrofitBuilder.build();
 
     private static final GooglePlaceAPI requestApi = retrofit.create(GooglePlaceAPI.class);
 

@@ -43,7 +43,7 @@ public class RestaurantsViewModel extends ViewModel {
     private final MutableLiveData<Location> mCurrentLocation = new MutableLiveData<>();
     private String mCurrentLocS;
     private List<Restaurant> mRestaurants = new ArrayList<>();
-    private List<User> usersRestaurants;
+    private List<User> usersRestaurants = new ArrayList<>();
 
     public RestaurantsViewModel(GooglePlaceRepository googlePlaceRepository, FirebaseUserRepository firebaseUserRepository) {
         mGooglePlaceRepository = googlePlaceRepository;
@@ -59,8 +59,6 @@ public class RestaurantsViewModel extends ViewModel {
     }
 
     // ................................................................. GETTERS
-
-
     public void streamCombinedNearbyAndDetailPlace(String location, int radius) {
         mGooglePlaceRepository.getRestaurantNearby(location, radius)
                 .subscribeOn(Schedulers.io())
@@ -105,12 +103,12 @@ public class RestaurantsViewModel extends ViewModel {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
-                List<User> tem = queryDocumentSnapshots.toObjects(User.class);
-
-                for (int i = 0; i < tem.size(); i++) {
-                    if (u != null && tem.get(i).getEmail().equals(u.getEmail())) continue;
-                    usersRestaurants.add(tem.get(i));
-                    Log.i(TAG, "onSuccess: " + tem.get(i).toString());
+                //List<User> tem = queryDocumentSnapshots.toObjects(User.class);
+                usersRestaurants = queryDocumentSnapshots.toObjects(User.class);
+                for (int i = 0; i < usersRestaurants.size(); i++) {
+                    Log.i(TAG, "onSuccess: " + usersRestaurants.get(i).toString());
+                    if (u != null && usersRestaurants.get(i).getEmail().equals(u.getEmail())) usersRestaurants.remove(i);
+                    //usersRestaurants.add(tem.get(i));
                 }
             }
         });

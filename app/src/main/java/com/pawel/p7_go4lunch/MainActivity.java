@@ -203,7 +203,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void updateUiNavigationDrawerMenu(FirebaseUser user) {
-        String name = user.getDisplayName() == null ? getResources().getString(R.string.drawer_head_name) : user.getDisplayName();
+        String name = getResources().getString(R.string.drawer_head_name);
+        if (user.getDisplayName() != null) name = user.getDisplayName();
         View drawerHeader = binding.navDrawerView.getHeaderView(0);
         NavigationDrawerHeaderBinding headerBinding = NavigationDrawerHeaderBinding.bind(drawerHeader);
         GlideApp.with(this)
@@ -275,13 +276,14 @@ public class MainActivity extends AppCompatActivity
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
                 FirebaseUser firebaseUser = getCurrentUser();
-                assert firebaseUser != null;
-                mFirebaseUser = firebaseUser;
+                if (firebaseUser != null) mFirebaseUser = firebaseUser;
                 FirebaseUserMetadata userMetadata = firebaseUser.getMetadata();
                 if (userMetadata != null && isSignInFirstTime(userMetadata)) {
                     saveNewUser(firebaseUser);
                 }
                 ViewWidgets.showSnackBar(0, view, getString(R.string.login_succeed));
+                // TODO If it's correct to cal startMainActivity here ?
+                startMainActivity();
             } else {
                 // Sign in failed. If response is null the user canceled the
                 // sign-in flow using the back background_facebook_btn. Otherwise check
@@ -299,7 +301,7 @@ public class MainActivity extends AppCompatActivity
 
     private void saveNewUser(FirebaseUser firebaseUser) {
         String uid = firebaseUser.getUid();
-        String name = TextUtils.isEmpty(firebaseUser.getDisplayName()) ? getResources().getString(R.string.workmate_anonymous) : firebaseUser.getDisplayName();
+        String name = TextUtils.isEmpty(firebaseUser.getDisplayName()) ? "" : firebaseUser.getDisplayName();
         String email = TextUtils.isEmpty(firebaseUser.getEmail()) ? "" : firebaseUser.getEmail();
         String urlImage = Uri.EMPTY.equals(firebaseUser.getPhotoUrl()) ? "" : firebaseUser.getPhotoUrl().toString();
         mMainActivityViewModel.createUser(uid, name, email, urlImage);

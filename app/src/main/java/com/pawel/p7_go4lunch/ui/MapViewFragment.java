@@ -18,7 +18,6 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -101,7 +100,7 @@ public class MapViewFragment extends Fragment
         mBinding.fabCurrentLocation.setVisibility(View.VISIBLE);
         mBinding.fabCurrentLocation.setOnClickListener(v -> {
             Log.i(TAG, "initMapRestaurant: FAB_OnClick");
-            Objects.requireNonNull(LocationUtils.getCurrentDeviceLocation(requireContext())).observe(getViewLifecycleOwner(), location -> {
+            Objects.requireNonNull(LocationUtils.getCurrentDeviceLocation()).observe(getViewLifecycleOwner(), location -> {
                 if (location == null) {
                     ViewWidgets.showSnackBar(0, view, getResources().getString(R.string.current_location_not_found));
                     LocationUtils.LocationDisabledDialog.newInstance().show(mFragmentActivity.getSupportFragmentManager(), "dialog");
@@ -133,7 +132,6 @@ public class MapViewFragment extends Fragment
 
     /**
      * This is where we can add markers or lines, add listeners or move the camera.
-     * In this case, we just add a marker near Africa.
      * Override
      * public void onMapReady(GoogleMap map) {
      * map.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
@@ -143,7 +141,7 @@ public class MapViewFragment extends Fragment
         // TODO for save Google Map in case of device rotation need use onActivityCreate
         if (mGoogleMaps != null) {
             Log.i(TAG, "START initMapRestaurant: :else ");
-            Objects.requireNonNull(LocationUtils.getCurrentDeviceLocation(requireContext())).observe(getViewLifecycleOwner(), location -> {
+            Objects.requireNonNull(LocationUtils.getCurrentDeviceLocation()).observe(getViewLifecycleOwner(), location -> {
                 if (location != null) {
                     Log.i(TAG, "initMapRestaurant: " + location);
                     LatLng ll = new LatLng(location.getLatitude(), location.getLongitude());
@@ -199,12 +197,9 @@ public class MapViewFragment extends Fragment
     }
 
     private void onFetchRestaurants() {
-        mMapViewVM.getRestaurants().observe(getViewLifecycleOwner(), new Observer<List<Restaurant>>() {
-            @Override
-            public void onChanged(List<Restaurant> restaurants) {
-                mRestaurants = restaurants;
-                setRestaurantMarksOnMap();
-            }
+        mMapViewVM.getRestaurants().observe(getViewLifecycleOwner(), restaurants -> {
+            mRestaurants = restaurants;
+            setRestaurantMarksOnMap();
         });
     }
 

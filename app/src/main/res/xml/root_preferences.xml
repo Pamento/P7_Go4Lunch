@@ -3,12 +3,12 @@
     <PreferenceCategory app:title="@string/notification_category">
 
         <SwitchPreferenceCompat
-            app:icon="@drawable/ic_notifications_24"
             app:defaultValue="true"
+            app:icon="@drawable/ic_notifications_24"
             app:key="notification"
-            app:title="Notifications"
             app:summaryOff="@string/notification_inactive"
-            app:summaryOn="@string/notification_active"/>
+            app:summaryOn="@string/notification_active"
+            app:title="Notifications" />
 
         <ListPreference
             app:defaultValue="12"
@@ -20,12 +20,19 @@
             app:title="@string/hour"
             app:useSimpleSummaryProvider="true" />
 
-<!--        <SeekBarPreference-->
-<!--            app:key="notification_volume"-->
-<!--            app:title="Volume"-->
-<!--            app:showSeekBarValue="true"-->
-<!--            app:defaultValue="50"/>-->
-
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:dependency="notification"
+            app:icon="@drawable/ic_repeat_primary_dark_24"
+            app:key="repeat"
+            app:summaryOff="@string/notification_repeat_once"
+            app:summaryOn="@string/notification_repeat_more"
+            app:title="@string/notification_repeat" />
+        <!--        <SeekBarPreference-->
+        <!--            app:key="notification_volume"-->
+        <!--            app:title="Volume"-->
+        <!--            app:showSeekBarValue="true"-->
+        <!--            app:defaultValue="50"/>-->
 
     </PreferenceCategory>
 
@@ -34,12 +41,12 @@
         app:title="@string/localisation_category">
 
         <SwitchPreferenceCompat
-            app:icon="@drawable/ic_baseline_location_on_24"
             app:defaultValue="true"
+            app:icon="@drawable/ic_baseline_location_on_24"
             app:key="localisation"
-            app:title="Localisation"
+            app:summaryOff="@string/notification_inactive"
             app:summaryOn="@string/notification_active"
-            app:summaryOff="@string/notification_inactive"/>
+            app:title="Localisation" />
 
         <ListPreference
             app:defaultValue="1000"
@@ -62,6 +69,6 @@
         <Preference
             app:icon="@drawable/ic_delete_primary_dark_24"
             app:key="delete_account"
-            app:title="@string/delete_account"/>
+            app:title="@string/delete_account" />
     </PreferenceCategory>
 </PreferenceScreen>

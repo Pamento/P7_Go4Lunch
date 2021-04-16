@@ -5,9 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,23 +19,23 @@ import com.google.android.gms.tasks.Task;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 import com.pawel.p7_go4lunch.R;
+import com.pawel.p7_go4lunch.service.Go4Lunch;
 
 public abstract class LocationUtils {
 
     private static final MutableLiveData<Location> data = new MutableLiveData<>();
-    private static final String TAG = "SEARCH";
+    //private static final String TAG = "SEARCH";
 
     /**
      * @fun getCurrentDeviceLocation use FusedLocationProviderClient to get lastLocation and if
      * this is not available the function start LocationRequest.
      * More info on https://developer.android.com/training/location/request-updates
      */
-    public static LiveData<Location> getCurrentDeviceLocation(Context context) {
-        Log.i(TAG, "LOCATION _getCurrentDeviceLocation: " + context);
-        if (isDeviceLocationEnabled(context)) {
-            FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
+    public static LiveData<Location> getCurrentDeviceLocation() {
+        if (isDeviceLocationEnabled()) {
+            FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(Go4Lunch.getContext());
             try {
-                Permissions.check(context, Const.PERMISSIONS, null, null, new PermissionHandler() {
+                Permissions.check(Go4Lunch.getContext(), Const.PERMISSIONS, null, null, new PermissionHandler() {
                     @Override
                     public void onGranted() {
                         // TODO check if device has location & network enabled (Kitkat & above)
@@ -58,9 +56,9 @@ public abstract class LocationUtils {
         return data;
     }
 
-    public static boolean isDeviceLocationEnabled(Context context) {
+    public static boolean isDeviceLocationEnabled() {
         //LocationManager lm = (LocationManager) requireContext().getSystemService(Context.LOCATION_SERVICE);
-        LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        LocationManager lm = (LocationManager) Go4Lunch.getContext().getSystemService(Context.LOCATION_SERVICE);
         //Log.i(TAG, "isDeviceLocationEnabled: _____________________________" + Build.VERSION.SDK_INT);
         try {
             assert lm != null;

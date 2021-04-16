@@ -44,8 +44,8 @@ public class AboutRestaurantViewModel extends ViewModel {
                 .addOnSuccessListener(documentSnapshot -> mUser.setValue(documentSnapshot.toObject(User.class)));
     }
 
-    public Query getSelectedUsersFromCollection(String restaurantName) {
-        return mFirebaseUserRepository.getSelectedUsersFromCollection(restaurantName);
+    public Query getUsersWithTheSameRestaurant(String restoId) {
+        return mFirebaseUserRepository.getUsersWithTheSameRestaurant(restoId);
     }
 
     public void getRestaurantsList() {

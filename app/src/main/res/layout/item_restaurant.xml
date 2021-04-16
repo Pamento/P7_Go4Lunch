@@ -16,6 +16,8 @@
             style="@style/RestaurantName"
             android:layout_width="wrap_content"
             android:maxWidth="@dimen/max_width_restaurant_name"
+            android:ellipsize="end"
+            android:maxLines="2"
             android:layout_height="wrap_content"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -23,10 +25,13 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/list_restaurant_address"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:maxWidth="@dimen/max_width_restaurant_address"
+            android:layout_marginEnd="@dimen/size_n"
+            app:layout_constraintEnd_toStartOf="@+id/list_restaurant_ratingBar"
             app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/list_restaurant_name"
             app:layout_constraintTop_toBottomOf="@+id/list_restaurant_name"
             tools:text="54 rue Faubourgue poissonier 54 rue Faubourgue poissonier" />
 

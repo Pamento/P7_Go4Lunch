@@ -14,7 +14,7 @@ public class Restaurant {
     private String placeId;
     private Date dateCreated;
     private Location location;
-    private Float distance;
+    private int distance;
     private String name;
     private String address;
     @Nullable
@@ -61,7 +61,7 @@ public class Restaurant {
         return location;
     }
 
-    public Float getDistance() {
+    public int getDistance() {
         return distance;
     }
     public String getName() {
@@ -114,7 +114,7 @@ public class Restaurant {
         this.location = location;
     }
 
-    public void setDistance(Float distance) { this.distance = distance; }
+    public void setDistance(int distance) { this.distance = distance; }
 
     public void setName(String name) {
         this.name = name;

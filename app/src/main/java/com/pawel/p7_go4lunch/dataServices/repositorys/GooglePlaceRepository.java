@@ -20,13 +20,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class GooglePlaceRepository {
@@ -81,10 +76,6 @@ public class GooglePlaceRepository {
         mCntLocation.setLatitude(cLoc.getLatitude());
         mCntLocation.setLongitude(cLoc.getLongitude());
 
-    }
-
-    public void setRestaurants(List<Restaurant> r) {
-        mRestaurants = r;
     }
 
     public void setInitialLatLng(LatLng latLng) {
@@ -149,12 +140,12 @@ public class GooglePlaceRepository {
             mRcp.setPhoneNumber(result.getInternationalPhoneNumber());
             mRcp.setWebsite(result.getWebsite());
             mRestaurants.set(mRestaurants.indexOf(mRcp), mRcp);
-            Log.i("SEARCH", "upDateRestaurantsWithDetails: " + mRcp.toString());
+            Log.i(TAG, "upDateRestaurantsWithDetails::: ");
+            Log.i(TAG, "" + mRcp.toString());
         }
     }
 
     public Restaurant createRestaurant(Result result) {
-        // TODO need change this: restaurant.setUserList(new ArrayList<>()); to real userList.
         Restaurant restaurant = new Restaurant();
         Location l = new Location("");
         if (result != null) {
@@ -166,7 +157,8 @@ public class GooglePlaceRepository {
                 restaurant.setLocation(result.getGeometry().getLocation());
                 l.setLatitude(result.getGeometry().getLocation().getLat());
                 l.setLongitude(result.getGeometry().getLocation().getLng());
-                restaurant.setDistance(mCntLocation.distanceTo(l));
+                float dt = mCntLocation.distanceTo(l);
+                restaurant.setDistance(Math.round(dt));
             }
             if (result.getOpeningHours() != null)
                 restaurant.setOpeningHours(result.getOpeningHours());
