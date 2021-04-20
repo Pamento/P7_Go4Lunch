@@ -18,7 +18,6 @@ public class ExampleInstrumentedTest {
     @Test
     public void useAppContext() {
         // Context of the app under test.
-        Context
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
         assertEquals("com.pawel.p7_go4lunch", appContext.getPackageName());
     }

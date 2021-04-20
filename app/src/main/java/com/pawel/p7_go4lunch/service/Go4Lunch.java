@@ -1,9 +1,10 @@
 package com.pawel.p7_go4lunch.service;
 
-import android.app.Application;
 import android.content.Context;
 
-public class Go4Lunch extends Application {
+import androidx.multidex.MultiDexApplication;
+
+public class Go4Lunch extends MultiDexApplication {
 
     private static Context sContext;
 

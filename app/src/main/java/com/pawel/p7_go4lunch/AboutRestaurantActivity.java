@@ -219,6 +219,7 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
     }
 
     private void checkIfThisRestaurantIsFavorite() {
+        isLiked = false;
         Log.i(TAG, "checkIfThisRestaurantIsFavorite: ");
         if (favoritesResto != null || favoritesResto.size() > 0) {
             Log.i(TAG, "checkIfThisRestaurantIsFavorite: in if ");
@@ -229,7 +230,7 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
             }
         }
         Log.i(TAG, "checkIfThisRestaurantIsFavorite: isLiked ::: " + isLiked);
-        isLiked = false;
+
         updateIconLike();
     }
 
