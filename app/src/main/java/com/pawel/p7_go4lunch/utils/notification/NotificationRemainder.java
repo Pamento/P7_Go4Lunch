@@ -54,8 +54,6 @@ public class NotificationRemainder extends ContextWrapper {
                 workmates.append(u.getName()).append("\n");
             }
         }
-
-
     }
 
     public void showNotification() {
@@ -69,21 +67,19 @@ public class NotificationRemainder extends ContextWrapper {
 
             NotificationManager nMgr =
                     (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-
             if (nMgr != null) {
                 nMgr.createNotificationChannel(channel);
             }
         }
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_launcher_foreground).setTicker(nTicker)
+                .setSmallIcon(R.drawable.ic_logo_go4lunch).setTicker(nTicker)
                 .setContentTitle(restoName)
                 .setContentText(restoAdress)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(workmates))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setVibrate(new long[0]);
 
-        // TODO get content for notification: resto info and workmates list
         NotificationManagerCompat.from(mContext).notify(Const.NOTIFICATION_ID, builder.build());
     }
 }

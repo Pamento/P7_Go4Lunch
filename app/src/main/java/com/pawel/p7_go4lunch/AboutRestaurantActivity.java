@@ -2,6 +2,7 @@ package com.pawel.p7_go4lunch;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -18,6 +19,7 @@ import com.pawel.p7_go4lunch.model.User;
 import com.pawel.p7_go4lunch.service.AlarmService;
 import com.pawel.p7_go4lunch.utils.Const;
 import com.pawel.p7_go4lunch.utils.GlideApp;
+import com.pawel.p7_go4lunch.utils.LocalAppSettings;
 import com.pawel.p7_go4lunch.utils.ViewWidgets;
 import com.pawel.p7_go4lunch.utils.adapters.WorkmateAdapter;
 import com.pawel.p7_go4lunch.utils.di.Injection;
@@ -36,12 +38,13 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 public class AboutRestaurantActivity extends AppCompatActivity implements WorkmateAdapter.OnItemClickListener {
 
-    private static final String TAG = "workmate";
+    private static final String TAG = "NOTIF";
 
     // view
     private AboutRestaurantViewModel mAboutRestaurantVM;
@@ -59,6 +62,8 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
     private Drawable ic_rest_chosen;
     private Drawable ic_rest_not_chosen;
     private Drawable ic_empty_star;
+    private LocalAppSettings mAppSettings;
+
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -98,7 +103,8 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
         mAboutRestaurantVM.getUser().observe(this, user -> {
             mUser = user;
             if (user != null) Log.i(TAG, "getUser: user: " + user.toString());
-            favoritesResto = user.getFavoritesRestaurants();
+            if (user.getFavoritesRestaurants() != null)
+                favoritesResto = user.getFavoritesRestaurants();
             if (isCalledFromGoogleMap()) getRestaurantFromGoogleMap();
             else getRestaurantFromUser();
             if (favoritesResto != null)
@@ -127,7 +133,7 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
         if (mUser != null && mUser.getUserRestaurant() != null) {
             mThisRestaurant = mUser.getUserRestaurant();
             restaurantId = mUser.getUserRestaurant().getPlaceId();
-            isChosen = true;
+            isChosen = isChosen();
             updateUI();
         } else if (mUser != null && mUser.getUserRestaurant() == null) {
             mBinding.abInclude.aboutTheRestName.setText(R.string.no_restaurant_data);
@@ -137,6 +143,19 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
             mBinding.aboutRestaurantFab.setVisibility(View.GONE);
         }
     }
+
+//    private boolean isChosen(Date restoChosenAt) {
+        private boolean isChosen() {
+            return mAppSettings.isNotif_recurrence() || mAppSettings.isNotification();
+
+//        else if (mAppSettings.isNotification()) {
+//            long timeDif = restoChosenAt.getTime() - System.currentTimeMillis();
+//            long day = 100 * 60 * 60 * 24;
+//            if (timeDif > day) {
+//
+//            }
+//        }
+        }
 
     private void updateUI() {
         setUpUiUser();
@@ -222,7 +241,7 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
     private void checkIfThisRestaurantIsFavorite() {
         isLiked = false;
         Log.i(TAG, "checkIfThisRestaurantIsFavorite: ");
-        if (favoritesResto != null || favoritesResto.size() > 0) {
+        if (favoritesResto != null) {
             Log.i(TAG, "checkIfThisRestaurantIsFavorite: in if ");
             for (int i = 0; i < favoritesResto.size(); i++) {
                 if (favoritesResto.get(i).equals(mThisRestaurant.getPlaceId())) {
@@ -244,13 +263,12 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
             else mBinding.abInclude.aboutTheRestTxCall.setAlpha(0.3f);
             // Like Restaurant
             mBinding.abInclude.aboutTheRestTxLike.setOnClickListener(v -> isLiked());
+            // Go to Website of Restaurant
             if (mThisRestaurant.getWebsite() != null)
                 mBinding.abInclude.aboutTheRestTxWebsite.setOnClickListener(v -> visitWebsite());
-                // Go to Website of Restaurant
             else mBinding.abInclude.aboutTheRestTxWebsite.setAlpha(0.3f);
             // manage choice of restaurant for lunch
             mBinding.aboutRestaurantFab.setOnClickListener(view -> choseThisRestaurant());
-            // TODO change the choice of the user for this restaurant and register it in Firebase
         }
     }
 
@@ -260,8 +278,8 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
         isLiked = !isLiked;
         updateIconLike();
         if (isLiked && !favoritesResto.contains(restaurantId)) {
-                favoritesResto.add(mThisRestaurant.getPlaceId());
-        } else if (!isLiked && favoritesResto.contains(restaurantId)){
+            favoritesResto.add(mThisRestaurant.getPlaceId());
+        } else if (!isLiked && favoritesResto.contains(restaurantId)) {
             favoritesResto.remove(mThisRestaurant.getPlaceId());
         }
     }
@@ -280,11 +298,12 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
         isChosen = !isChosen;
         if (isChosen) {
             mUser.setUserRestaurant(mThisRestaurant);
-            mBinding.aboutRestaurantFab.setImageDrawable(ic_rest_chosen);
+            //mBinding.aboutRestaurantFab.setImageDrawable(ic_rest_chosen);
         } else {
             mUser.setUserRestaurant(null);
-            mBinding.aboutRestaurantFab.setImageDrawable(ic_rest_not_chosen);
+            //mBinding.aboutRestaurantFab.setImageDrawable(ic_rest_not_chosen);
         }
+        updateIconChoiceFAB();
         showMessageBookingRestaurant(isChosen);
     }
 
@@ -342,26 +361,50 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
                 : getString(R.string.save_choice_restaurant));
     }
 
-    private void setRemainderOnce() {
-        AlarmService.startAlarm();
+    private void setRemainderOnce(String h) {
+        AlarmService.startAlarm(h);
     }
 
-    private void setMultiRemainder() {
-        AlarmService.startRepeatedAlarm();
-    }
+//    private void setMultiRemainder(String h) {
+//        AlarmService.startRepeatedAlarm(h);
+//    }
 
     private void cancelAlarm() {
         AlarmService.cancelAlarm();
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        getLocalAppSettings(this);
+    }
+
+    private void getLocalAppSettings(Activity activity) {
+        mAppSettings = new LocalAppSettings(activity);
+    }
+
+    @Override
     protected void onPause() {
+        Log.i(TAG, "onPause: AboutRestaurantActivity");
         super.onPause();
         if (mUser != null && mThisRestaurant != null) {
             if (isChosen) {
+                mThisRestaurant.setDateCreated(new Date());
+                Log.i(TAG, "onPause: isNotification " + mAppSettings.isNotification());
+                if (!mAppSettings.isNotification()) mAppSettings.setNotification(true);
+                setRemainder();
                 mAboutRestaurantVM.updateUserRestaurant(mUser.getUid(), mThisRestaurant);
             }
             mAboutRestaurantVM.updateUserFavoriteRestaurantsList(mUser.getUid(), favoritesResto);
         }
+    }
+
+    private void setRemainder() {
+        // if the alarm was set delete it for give the place for next one
+        cancelAlarm();
+        Log.i(TAG, "setRemainder: ____at ::: " + mAppSettings.getHour());
+//        if (mAppSettings.isNotif_recurrence()) setMultiRemainder(mAppSettings.getHour());
+//        else setRemainderOnce(mAppSettings.getHour());
+        if (mAppSettings.isNotification()) setRemainderOnce(mAppSettings.getHour());
     }
 }

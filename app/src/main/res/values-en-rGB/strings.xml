@@ -111,6 +111,7 @@
     <!-- AlertDialog delete account -->
     <string name="ask_location_account_title">Localisation permissions.</string>
     <string name="ask_location_account_message">To find the restaurant near by you, the app needs access to your location.\nYou can set the location in System Settings globally or in part of Go4Lunch app.</string>
+    <string name="ask_location_local_settings_message">To continue searching for restaurants, you must activate the location in the settings of this app.</string>
     <string name="btn_goto_ask_persmissions">Permissions</string>
     <string name="btn_goto_phone_settings">Settings</string>
     <string name="btn_denny">Denny</string>

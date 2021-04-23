@@ -70,7 +70,7 @@ public class MapViewFragment extends Fragment
     private FusedLocationProviderClient fusedLocationProviderClient;
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
-    private LocalAppSettings mPrefs;
+    private LocalAppSettings mAppSettings;
     private Activity mActivity;
     private String currentLocation;
     private List<Restaurant> mRestaurants = new ArrayList<>();
@@ -84,7 +84,7 @@ public class MapViewFragment extends Fragment
         view = mBinding.getRoot();
         mActivity = getActivity();
         //mainActivity = (MainActivity) getParentFragment().getActivity();
-        if ((mActivity != null) && (mPrefs == null)) getLocalAppSettings(mActivity);
+        if ((mActivity != null) && (mAppSettings == null)) getLocalAppSettings(mActivity);
         initMap();
         return view;
     }
@@ -139,7 +139,7 @@ public class MapViewFragment extends Fragment
      */
     private void initMapRestaurant() {
         // TODO for save Google Map in case of device rotation need use onActivityCreate
-        if (mGoogleMaps != null) {
+        if (mGoogleMaps != null && mAppSettings.isLocalisation()) {
             Log.i(TAG, "START initMapRestaurant: :else ");
             Objects.requireNonNull(LocationUtils.getCurrentDeviceLocation()).observe(getViewLifecycleOwner(), location -> {
                 if (location != null) {
@@ -155,10 +155,14 @@ public class MapViewFragment extends Fragment
                         if (mRestaurants != null) setRestaurantMarksOnMap();
                     }
 
-                    moveCamera(location, mPrefs.getPerimeter());
+                    moveCamera(location, mAppSettings.getPerimeter());
                     onViewModelReadySetObservers();
                 }
             });
+        } else {
+            if (!mAppSettings.isLocalisation()) {
+                ViewWidgets.showSnackBar(1, view, getString(R.string.ask_location_local_settings_message));
+            }
         }
         // get automatically & unrepentantly of user will the position of device
         // Set blue point (mark) of user position. "true" is visible; "false" is hidden.
@@ -193,7 +197,7 @@ public class MapViewFragment extends Fragment
     }
 
     private void fetchRestaurants() {
-        mMapViewVM.fetchRestaurants(mPrefs.getRadius());
+        mMapViewVM.fetchRestaurants(mAppSettings.getRadius());
     }
 
     private void onFetchRestaurants() {
@@ -254,15 +258,15 @@ public class MapViewFragment extends Fragment
 
     private void getLocalAppSettings(Activity activity) {
         Log.i(TAG, "getLocalAppSettings: FIRED");
-        mPrefs = new LocalAppSettings(activity);
+        mAppSettings = new LocalAppSettings(activity);
     }
 
     @Override
     public void onStart() {
         super.onStart();
         mFragmentActivity = getActivity();
-        mPrefs = new LocalAppSettings(mActivity);
-        Log.i(TAG, "onStart: mPrefs ? " + mPrefs);
+        mAppSettings = new LocalAppSettings(mActivity);
+        Log.i(TAG, "onStart: mPrefs ? " + mAppSettings);
     }
 
     protected void createLocationRequest() {

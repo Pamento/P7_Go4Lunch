@@ -3,13 +3,14 @@ package com.pawel.p7_go4lunch.utils.notification;
 import com.pawel.p7_go4lunch.model.Restaurant;
 import com.pawel.p7_go4lunch.model.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class NotificationData {
 
     private static volatile NotificationData sNotificationData;
     private Restaurant mRestaurant;
-    private List<User> mUsers;
+    private List<User> mUsers = new ArrayList<>();
 
     private NotificationData() {
         //Prevent form the reflection api.
