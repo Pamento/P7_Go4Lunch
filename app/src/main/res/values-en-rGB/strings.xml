@@ -86,6 +86,9 @@
     <string name="notification_repeat">Recurrence</string>
     <string name="notification_repeat_once">When this option is deactivated, the restaurant choice will be recalled only once in the following 24 hours.</string>
     <string name="notification_repeat_more">Daily reminder</string>
+    <string name="notification_title">You are hungry</string>
+    <string name="notification_intro">You are going to eat in the company of:</string>
+    <string name="notification_no_workmates_go">No workmate eat there.</string>
     <string name="hour">Hour of display</string>
     <string name="localisation_category">Localisation</string>
     <string name="account_category">Account</string>

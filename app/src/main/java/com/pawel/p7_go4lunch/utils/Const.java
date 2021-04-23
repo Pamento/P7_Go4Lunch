@@ -1,6 +1,7 @@
 package com.pawel.p7_go4lunch.utils;
 
 import android.Manifest;
+import android.content.Context;
 
 public class Const {
 
@@ -43,4 +44,12 @@ public class Const {
     // final variable for makePhoneCall() in AboutRestaurantActivity
     public static final int REQUEST_CALL = 1;
 
+    // Notification
+    public static final CharSequence VERBOSE_NOTIFICATION_CHANNEL_NAME = "resto place remainder";
+    public static String VERBOSE_NOTIFICATION_CHANNEL_DESCRIPTION = "Shows notifications remainder for 12 pm";
+    //public static final CharSequence NOTIFICATION_TITLE = Context.getRe
+    public static final String CHANNEL_ID = "REMAINDER_NOTIFICATION";
+    public static final int NOTIFICATION_ID = 1;
+    public static final String KEY_USER_ID = "KEY_USER_ID";
+    public static final String KEY_RESTO_ID = "KEY_RESTO_ID";
 }

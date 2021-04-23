@@ -15,6 +15,7 @@ import com.nabinbhandari.android.permissions.Permissions;
 import com.pawel.p7_go4lunch.databinding.ActivityAboutRestaurantBinding;
 import com.pawel.p7_go4lunch.model.Restaurant;
 import com.pawel.p7_go4lunch.model.User;
+import com.pawel.p7_go4lunch.service.AlarmService;
 import com.pawel.p7_go4lunch.utils.Const;
 import com.pawel.p7_go4lunch.utils.GlideApp;
 import com.pawel.p7_go4lunch.utils.ViewWidgets;
@@ -339,6 +340,18 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
         ViewWidgets.showSnackBar(0, view, !mode ?
                 getString(R.string.cancel_choice_restaurant)
                 : getString(R.string.save_choice_restaurant));
+    }
+
+    private void setRemainderOnce() {
+        AlarmService.startAlarm();
+    }
+
+    private void setMultiRemainder() {
+        AlarmService.startRepeatedAlarm();
+    }
+
+    private void cancelAlarm() {
+        AlarmService.cancelAlarm();
     }
 
     @Override

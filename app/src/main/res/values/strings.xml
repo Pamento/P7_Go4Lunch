@@ -88,6 +88,9 @@
     <string name="notification_repeat">Récurrence</string>
     <string name="notification_repeat_once">Quand cette option est désactivée, le rappel du choix du restaurant s\'effectuera une seule fois dans 24h qui suit.</string>
     <string name="notification_repeat_more">Rappel tous les jours</string>
+    <string name="notification_title">T\'as faim</string>
+    <string name="notification_intro">Tu vas manger en compagnie de:</string>
+    <string name="notification_no_workmates_go">Aucun collègue n\'y mange pas.</string>
     <string name="hour">Heure d\'affichage</string>
     <string name="localisation_category">Localisation</string>
     <string name="account_category">Compte</string>
