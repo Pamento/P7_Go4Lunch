@@ -10,19 +10,21 @@
     <string name="facebook_login_protocol_scheme" translatable="false">fb429297778093935</string>
 
     <!-- Functional strings for open and close the navigation drawer -->
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_bottom_map_view" translatable="false">Carte</string>
-    <string name="nav_bottom_list_view" translatable="false">Liste</string>
-    <string name="nav_bottom_workmates" translatable="false">Collègues</string>
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
+    <string name="nav_bottom_map_view">Carte</string>
+    <string name="nav_bottom_list_view">Liste</string>
+    <string name="nav_bottom_workmates">Collègues</string>
 
     <!-- Main Activity -->
-    <string name="login_succeed" translatable="false">Authentification réussite !</string>
-    <string name="login_filed" translatable="false">Erreur d\'authentification&#8230;Veuillez réessayer ultérieurement.</string>
-    <string name="your_lunch" translatable="false">Mon restaurant</string>
-    <string name="sidebar_menu_settings" translatable="false">Paramètres</string>
-    <string name="sidebar_menu_logout" translatable="false">Se déconnecter</string>
+    <string name="login_succeed">Authentification réussite !</string>
+    <string name="login_filed">Erreur d\'authentification&#8230;Veuillez réessayer ultérieurement.</string>
+    <string name="your_lunch">Mon restaurant</string>
+    <string name="sidebar_menu_settings">Paramètres</string>
+    <string name="sidebar_menu_logout">Se déconnecter</string>
+
     <!-- Main Activity Error messages -->
+    <string name="wii_off">Problème de connexion réseau.</string>
     <string name="google_maps_not_available">Le service Google Maps n\'est pas disponible.</string>
     <string name="localisation_not_available">Il vous faut activer le localisation pour bon fonctionnement de l\'application. </string>
 
@@ -41,7 +43,7 @@
     <string name="btn_text_email">Connection avec email</string>
 
     <!-- Log out -->
-    <string name="logout_successful">Log out successful.</string>
+    <string name="logout_successful">Déconnexion réussie.</string>
 
     <!-- Fragment map view -->
     <string name="current_location_not_found">Impossible d\'obtenir la position actuelle.</string>
@@ -73,20 +75,11 @@
     <string name="sync_header">Sync</string>
 
     <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
-
-    <!-- Settings & Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="notification_category">Notifications</string>
     <string name="notification_active">Activé</string>
     <string name="notification_inactive">Désactivé</string>
     <string name="notification_repeat">Récurrence</string>
-    <string name="notification_repeat_once">Quand cette option est désactivée, le rappel du choix du restaurant s\'effectuera une seule fois dans 24h qui suit.</string>
+    <string name="notification_repeat_once">La notification n\'apparaîtra qu\'une seule fois.</string>
     <string name="notification_repeat_more">Rappel tous les jours</string>
     <string name="notification_title">T\'as faim</string>
     <string name="notification_intro">Tu vas manger en compagnie de:</string>
@@ -95,7 +88,8 @@
     <string name="localisation_category">Localisation</string>
     <string name="account_category">Compte</string>
     <string name="account_category_descript">
-        Utilisation de cette action supprimera toutes vos préférens et l\'historique de son utilisation dans cette application.</string>
+        Utilisation de cette action supprimera toutes vos préférens et l\'historique de son utilisation dans cette application.
+    </string>
     <string name="delete_account">Supprimer le compte</string>
     <string name="perimeter_research">Périmètre de recherche</string>
 

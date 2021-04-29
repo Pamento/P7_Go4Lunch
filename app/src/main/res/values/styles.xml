@@ -58,6 +58,7 @@
     <style name="TextItalicGrayLight" parent="TextAppearance.AppCompat">
         <item name="android:textColor">@color/quantum_grey600</item>
         <item name="android:textStyle">italic</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
     <style name="FullScreenErrorMessage" parent="@style/TextAppearance.AppCompat.Headline">

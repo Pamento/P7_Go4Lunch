@@ -16,7 +16,7 @@ public class WorkmatesViewModel extends ViewModel {
     public void init() {
     }
 
-    public Query getAllUsersFromCollection() {
-        return mFirebaseUserRepository.getAllUsersFromCollection();
+    public Query getAllUsersFromCollection(String userId) {
+        return mFirebaseUserRepository.getAllUsersFromCollection(userId);
     }
 }

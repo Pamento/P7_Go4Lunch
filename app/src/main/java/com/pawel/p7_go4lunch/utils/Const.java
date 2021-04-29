@@ -18,7 +18,7 @@ public class Const {
     public static final float DEFAULT_ZOOM = 10f;
     public static final int REQUEST_CHECK_SETTINGS = 9004;
 
-    // GOOGLE __Service
+    // GOOGLE __Service apiPlace
     public static final String GOOGLE_BASE_URL = "https://maps.googleapis.com/maps/api/place/";
 
     // FIREBASE __Service
@@ -47,7 +47,11 @@ public class Const {
     public static final CharSequence VERBOSE_NOTIFICATION_CHANNEL_NAME = "resto place remainder";
     public static final String VERBOSE_NOTIFICATION_CHANNEL_DESCRIPTION = "Shows notifications remainder for 12 pm";
     public static final String CHANNEL_ID = "REMAINDER_NOTIFICATION";
-    public static final int NOTIFICATION_ID = 9002;
+    public static final int NOTIFICATION_ID = 9005;
     public static final String KEY_USER_ID = "KEY_USER_ID";
     public static final String KEY_RESTO_ID = "KEY_RESTO_ID";
+    public static final String ALARM_ID = "alarm_id";
+    public static final int ALARM_MULTIPLE = 1009;
+    public static final int ALARM_SINGLE = 1001;
+    public static final int ONE_DAY_IN_MILLIS = 8640000;
 }

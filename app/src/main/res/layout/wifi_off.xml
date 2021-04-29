@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/map_wifi_off"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:visibility="gone">
+
+    <ImageView
+        android:id="@+id/map_wifi_off_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/size_h"
+        android:layout_marginTop="@dimen/size_h"
+        android:contentDescription="@string/app_name"
+        android:minWidth="@dimen/size_m"
+        android:src="@drawable/ic_wifi_off_48" />
+
+    <TextView
+        android:id="@+id/map_wifi_off_ms"
+        style="@style/FullScreenErrorMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/size_b"
+        android:layout_marginTop="@dimen/size_h"
+        android:layout_toEndOf="@+id/map_wifi_off_img"
+        android:text="@string/wii_off" />
+
+
+</RelativeLayout>

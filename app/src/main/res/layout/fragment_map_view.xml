@@ -13,6 +13,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+
+    <include
+        android:id="@+id/ms_wifi_off"
+        layout="@layout/wifi_off"/>
+
     <RelativeLayout
         android:id="@+id/error_get_map"
         android:layout_width="match_parent"

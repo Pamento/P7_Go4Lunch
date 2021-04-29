@@ -44,8 +44,9 @@ public class FirebaseUserRepository {
         return userRepository.document(uid).get();
     }
 
-    public Query getAllUsersFromCollection() {
-        return userRepository.orderBy(Const.FIREBASE_ADAPTER_QUERY_EMAIL, Query.Direction.DESCENDING);
+    public Query getAllUsersFromCollection(String userId) {
+        return userRepository.whereNotEqualTo("uid", userId).orderBy("uid").orderBy("userRestaurant");
+//        return userRepository.orderBy(Const.FIREBASE_ADAPTER_QUERY_EMAIL, Query.Direction.DESCENDING);
     }
 
     public Query getUsersWithTheSameRestaurant(String restoId) {

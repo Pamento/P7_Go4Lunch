@@ -9,8 +9,6 @@ import retrofit2.http.Query;
 
 public interface GooglePlaceAPI {
 
-    // TODO wite the code
-
     /**
      * Request HTTP in Json nearbySearch for list of Restaurants in defined area
      * <p>

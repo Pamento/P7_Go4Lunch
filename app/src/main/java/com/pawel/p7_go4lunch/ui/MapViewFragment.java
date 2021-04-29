@@ -43,6 +43,7 @@ import com.nabinbhandari.android.permissions.Permissions;
 import com.pawel.p7_go4lunch.AboutRestaurantActivity;
 import com.pawel.p7_go4lunch.R;
 import com.pawel.p7_go4lunch.databinding.FragmentMapViewBinding;
+import com.pawel.p7_go4lunch.databinding.WifiOffBinding;
 import com.pawel.p7_go4lunch.model.Restaurant;
 import com.pawel.p7_go4lunch.utils.Const;
 import com.pawel.p7_go4lunch.utils.LocalAppSettings;
@@ -64,6 +65,7 @@ public class MapViewFragment extends Fragment
 
     private RestaurantsViewModel mMapViewVM;
     private FragmentMapViewBinding mBinding;
+    private WifiOffBinding mWifiOffBinding;
     private View view;
     private GoogleMap mGoogleMaps;
     private FragmentActivity mFragmentActivity;
@@ -81,6 +83,7 @@ public class MapViewFragment extends Fragment
                              ViewGroup container, Bundle savedInstanceState) {
         initMapViewModel();
         mBinding = FragmentMapViewBinding.inflate(inflater, container, false);
+        mWifiOffBinding = mBinding.msWifiOff;
         view = mBinding.getRoot();
         mActivity = getActivity();
         //mainActivity = (MainActivity) getParentFragment().getActivity();
@@ -110,9 +113,12 @@ public class MapViewFragment extends Fragment
     }
 
     private void initMap() {
-        SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        if (supportMapFragment != null) {
-            supportMapFragment.getMapAsync(MapViewFragment.this);
+        if (LocationUtils.isWifiOn()) mWifiOffBinding.mapWifiOff.setVisibility(View.VISIBLE);
+        else {
+            SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+            if (supportMapFragment != null) {
+                supportMapFragment.getMapAsync(MapViewFragment.this);
+            }
         }
     }
 

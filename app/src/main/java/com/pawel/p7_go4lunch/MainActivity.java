@@ -282,6 +282,7 @@ public class MainActivity extends AppCompatActivity
                     saveNewUser(firebaseUser);
                 }
                 ViewWidgets.showSnackBar(0, view, getString(R.string.login_succeed));
+                updateUiNavigationDrawerMenu(firebaseUser);
                 // TODO If it's correct to cal startMainActivity here ?
                 startMainActivity();
             } else {

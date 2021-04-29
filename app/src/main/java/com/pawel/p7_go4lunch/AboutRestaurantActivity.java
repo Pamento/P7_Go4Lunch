@@ -3,6 +3,7 @@ package com.pawel.p7_go4lunch;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -10,22 +11,28 @@ import android.os.Build;
 import android.os.Bundle;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 import com.pawel.p7_go4lunch.databinding.ActivityAboutRestaurantBinding;
+import com.pawel.p7_go4lunch.databinding.WifiOffBinding;
 import com.pawel.p7_go4lunch.model.Restaurant;
 import com.pawel.p7_go4lunch.model.User;
 import com.pawel.p7_go4lunch.service.AlarmService;
 import com.pawel.p7_go4lunch.utils.Const;
 import com.pawel.p7_go4lunch.utils.GlideApp;
 import com.pawel.p7_go4lunch.utils.LocalAppSettings;
+import com.pawel.p7_go4lunch.utils.LocationUtils;
 import com.pawel.p7_go4lunch.utils.ViewWidgets;
 import com.pawel.p7_go4lunch.utils.adapters.WorkmateAdapter;
 import com.pawel.p7_go4lunch.utils.di.Injection;
 import com.pawel.p7_go4lunch.viewModels.AboutRestaurantViewModel;
 import com.pawel.p7_go4lunch.viewModels.ViewModelFactory;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
@@ -50,6 +57,7 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
     private AboutRestaurantViewModel mAboutRestaurantVM;
     private View view;
     private ActivityAboutRestaurantBinding mBinding;
+    private WifiOffBinding mWifiOffBinding;
     // data
     private User mUser;
     private Restaurant mThisRestaurant;
@@ -72,6 +80,7 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
         initAboutRestaurantViewModel();
         mBinding = com.pawel.p7_go4lunch.databinding.ActivityAboutRestaurantBinding
                 .inflate(getLayoutInflater());
+        mWifiOffBinding = mBinding.abInclude.aboutWifiOff;
         view = mBinding.getRoot();
         setContentView(view);
         setSupportActionBar(mBinding.aboutTheRestaurantToolbar);
@@ -81,6 +90,7 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
             Window w = getWindow();
             w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         }
+        getLocalAppSettings(this);
         getDrawable();
         getUser();
     }
@@ -103,7 +113,7 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
         mAboutRestaurantVM.getUser().observe(this, user -> {
             mUser = user;
             if (user != null) Log.i(TAG, "getUser: user: " + user.toString());
-            if (user.getFavoritesRestaurants() != null)
+            if (user != null && user.getFavoritesRestaurants() != null)
                 favoritesResto = user.getFavoritesRestaurants();
             if (isCalledFromGoogleMap()) getRestaurantFromGoogleMap();
             else getRestaurantFromUser();
@@ -124,7 +134,10 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
     private void getRestaurantFromGoogleMap() {
         mAboutRestaurantVM.getRestaurant(restaurantId).observe(this, restaurant -> {
             mThisRestaurant = restaurant;
-            isChosen = mUser.getUserRestaurant() != null && mUser.getUserRestaurant().getPlaceId().equals(mThisRestaurant.getPlaceId());
+            // isSetAlarmRemainder() send true if is set.
+            isChosen = mUser.getUserRestaurant() != null
+                    && mUser.getUserRestaurant().getPlaceId().equals(mThisRestaurant.getPlaceId())
+                    && isSetAlarmRemainder();
             updateUI();
         });
     }
@@ -144,18 +157,20 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
         }
     }
 
-//    private boolean isChosen(Date restoChosenAt) {
-        private boolean isChosen() {
-            return mAppSettings.isNotif_recurrence() || mAppSettings.isNotification();
-
-//        else if (mAppSettings.isNotification()) {
-//            long timeDif = restoChosenAt.getTime() - System.currentTimeMillis();
-//            long day = 100 * 60 * 60 * 24;
-//            if (timeDif > day) {
-//
-//            }
+    private boolean isSetAlarmRemainder() {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        PendingIntent alarmUp = AlarmService.isAlarmSet();
+        return alarmUp != null;
+//        } else {
+//            int[] time = TimeUtils.timeToInt(mAppSettings.getHour());
+//            int[] cTime = TimeUtils.currentHour();
+//            return TimeUtils.isGreaterThan(cTime,time);
 //        }
-        }
+    }
+
+    private boolean isChosen() {
+        return isSetAlarmRemainder() && (mAppSettings.isNotif_recurrence() || mAppSettings.isNotification());
+    }
 
     private void updateUI() {
         setUpUiUser();
@@ -223,16 +238,24 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
     }
 
     private void setRecyclerViewWorkmates() {
-        FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
-                .setQuery(mAboutRestaurantVM.getUsersWithTheSameRestaurant(restaurantId), User.class)
-                .setLifecycleOwner(this)
-                .build();
-        WorkmateAdapter workmateAdapter = new WorkmateAdapter(options, this, 2);
-        mBinding.abInclude.aboutTheRestRecyclerView.setAdapter(workmateAdapter);
-        mBinding.abInclude.aboutTheRestRecyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
+        if (LocationUtils.isWifiOn()) mWifiOffBinding.mapWifiOff.setVisibility(View.VISIBLE);
+        else {
+            mAboutRestaurantVM.getUsersWithTheSameRestaurant(restaurantId).get().addOnCompleteListener(task -> {
+                if (task.isSuccessful() && task.getResult().isEmpty()) {
+                    mBinding.abInclude.aboutTheRestWorkmatesListEmpty.setVisibility(View.VISIBLE);
+                }
+            });
+            FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
+                    .setQuery(mAboutRestaurantVM.getUsersWithTheSameRestaurant(restaurantId), User.class)
+                    .setLifecycleOwner(this)
+                    .build();
+            WorkmateAdapter workmateAdapter = new WorkmateAdapter(options, this, 2);
+            mBinding.abInclude.aboutTheRestRecyclerView.setAdapter(workmateAdapter);
+            mBinding.abInclude.aboutTheRestRecyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
+        }
     }
 
-    // Workmates list onClickListener
+    // Workmates list onClickListener on RecyclerView item
     @Override
     public void onItemClick(DocumentSnapshot documentSnapshot) {
         // Go to chat with your workmate ...
@@ -350,9 +373,7 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
     }
 
     private void showMessagePhoneNumberInvalid() {
-        ViewWidgets.showSnackBar(0, view, 0 == 0 ?
-                getString(R.string.invalid_phone_number)
-                : getString(R.string.permission_call_denied));
+        ViewWidgets.showSnackBar(0, view, getString(R.string.invalid_phone_number));
     }
 
     private void showMessageBookingRestaurant(boolean mode) {
@@ -362,12 +383,13 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
     }
 
     private void setRemainderOnce(String h) {
+        Log.i(TAG, "setRemainderOnce: isNotification _:_" + mAppSettings.isNotification());
         AlarmService.startAlarm(h);
     }
 
-//    private void setMultiRemainder(String h) {
-//        AlarmService.startRepeatedAlarm(h);
-//    }
+    private void setMultiRemainder(String h) {
+        AlarmService.startRepeatedAlarm(h);
+    }
 
     private void cancelAlarm() {
         AlarmService.cancelAlarm();
@@ -390,7 +412,7 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
         if (mUser != null && mThisRestaurant != null) {
             if (isChosen) {
                 mThisRestaurant.setDateCreated(new Date());
-                Log.i(TAG, "onPause: isNotification " + mAppSettings.isNotification());
+                Log.i(TAG, "onPause: isNotification _:_" + mAppSettings.isNotification());
                 if (!mAppSettings.isNotification()) mAppSettings.setNotification(true);
                 setRemainder();
                 mAboutRestaurantVM.updateUserRestaurant(mUser.getUid(), mThisRestaurant);
@@ -402,9 +424,9 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
     private void setRemainder() {
         // if the alarm was set delete it for give the place for next one
         cancelAlarm();
+        Log.i(TAG, "setRemainder: isNotification _:_" + mAppSettings.isNotification());
         Log.i(TAG, "setRemainder: ____at ::: " + mAppSettings.getHour());
-//        if (mAppSettings.isNotif_recurrence()) setMultiRemainder(mAppSettings.getHour());
-//        else setRemainderOnce(mAppSettings.getHour());
-        if (mAppSettings.isNotification()) setRemainderOnce(mAppSettings.getHour());
+        if (mAppSettings.isNotif_recurrence()) setMultiRemainder(mAppSettings.getHour());
+        else setRemainderOnce(mAppSettings.getHour());
     }
 }

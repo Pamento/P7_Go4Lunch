@@ -5,6 +5,14 @@ import android.app.Dialog;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
+import android.net.wifi.SupplicantState;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -24,7 +32,6 @@ import com.pawel.p7_go4lunch.service.Go4Lunch;
 public abstract class LocationUtils {
 
     private static final MutableLiveData<Location> data = new MutableLiveData<>();
-    //private static final String TAG = "SEARCH";
 
     /**
      * @fun getCurrentDeviceLocation use FusedLocationProviderClient to get lastLocation and if
@@ -57,9 +64,7 @@ public abstract class LocationUtils {
     }
 
     public static boolean isDeviceLocationEnabled() {
-        //LocationManager lm = (LocationManager) requireContext().getSystemService(Context.LOCATION_SERVICE);
         LocationManager lm = (LocationManager) Go4Lunch.getContext().getSystemService(Context.LOCATION_SERVICE);
-        //Log.i(TAG, "isDeviceLocationEnabled: _____________________________" + Build.VERSION.SDK_INT);
         try {
             assert lm != null;
             return lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -87,5 +92,16 @@ public abstract class LocationUtils {
                     .setPositiveButton(android.R.string.ok, null)
                     .create();
         }
+    }
+
+    /**
+     * A function to check if Wi-fi is connected, return boolean.
+     */
+    public static boolean isWifiOn() {
+        SupplicantState supState;
+        WifiManager wifiManager = (WifiManager) Go4Lunch.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        supState = wifiInfo.getSupplicantState();
+        return supState == SupplicantState.DISCONNECTED;
     }
 }

@@ -1,7 +1,7 @@
 package com.pawel.p7_go4lunch.utils.adapters;
 
-import android.content.Context;
-import android.util.Log;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,9 +23,7 @@ import com.pawel.p7_go4lunch.model.User;
 import com.pawel.p7_go4lunch.utils.GlideApp;
 
 public class WorkmateAdapter extends FirestoreRecyclerAdapter<User, WorkmateAdapter.WorkmateViewHolder> {
-    private static final String TAG = "workmate";
     private final OnItemClickListener mOnItemClickListener;
-    private Context mContext;
     private Resources mResources;
     /**
      * @field int mode:
@@ -44,22 +42,18 @@ public class WorkmateAdapter extends FirestoreRecyclerAdapter<User, WorkmateAdap
         super(options);
         mOnItemClickListener = onItemClickListener;
         mMode = mode;
-        Log.i(TAG, "WorkmateAdapter: mode " + mMode);
     }
 
     @NonNull
     @Override
     public WorkmateViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         ItemWorkmateBinding binding = ItemWorkmateBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
-        mContext = parent.getContext();
         mResources = parent.getResources();
         return new WorkmateViewHolder(binding, mOnItemClickListener);
     }
 
     @Override
     protected void onBindViewHolder(@NonNull WorkmateViewHolder holder, int i, @NonNull User user) {
-        Log.i(TAG, "onBindViewHolder: user.getUserRestaurant(): " + user.getUserRestaurant());
-        // TODO add logic for add restaurant name.
         boolean workmateEatAt = false;
         String beOrNotToBe = "";
         if (user.getUserRestaurant() != null) {
@@ -69,7 +63,6 @@ public class WorkmateAdapter extends FirestoreRecyclerAdapter<User, WorkmateAdap
                 beOrNotToBe = String.format(mResources.getString(R.string.about_restaurant_workmate_going_there), user.getName());
             }
         } else {
-            // TODO this conditions is it to adapt after add GoogleApi Places services we don't needed
             if (mMode == 1) {
                 beOrNotToBe = String.format(mResources.getString(R.string.workmate_not_decide), user.getName());
                 workmateEatAt = true;
@@ -82,8 +75,10 @@ public class WorkmateAdapter extends FirestoreRecyclerAdapter<User, WorkmateAdap
                 .circleCrop()
                 .into(holder.workmateImage);
         holder.description.setText(beOrNotToBe);
-        if (workmateEatAt)
-            holder.description.setTextAppearance(mContext, R.style.TextItalicGrayLight);
+        if (workmateEatAt) holder.description.setTypeface(null, Typeface.ITALIC);
+        else holder.description.setTextColor(Color.BLACK);
+
+        //setTextAppearance(mContext, R.style.TextItalicGrayLight);
         //else holder.description.setTextAppearance(mContext, R.style.TextNormalBlack);
     }
 
@@ -120,7 +115,7 @@ public class WorkmateAdapter extends FirestoreRecyclerAdapter<User, WorkmateAdap
 
         @Override
         public void onClick(View v) {
-            int position = getAdapterPosition();
+            int position = getAbsoluteAdapterPosition();
             mOnItemClickListener.onItemClick(getSnapshots().getSnapshot(position));
         }
     }

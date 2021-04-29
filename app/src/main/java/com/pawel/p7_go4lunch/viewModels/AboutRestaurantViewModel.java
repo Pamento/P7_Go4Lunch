@@ -35,10 +35,6 @@ public class AboutRestaurantViewModel extends ViewModel {
     }
 
     // .......................................................... GETTERS
-    public Query getAllUsersFromCollection() {
-        return mFirebaseUserRepository.getAllUsersFromCollection();
-    }
-
     public void getUserFromFirestore(String uid) {
         mFirebaseUserRepository.getUser(uid)
                 .addOnSuccessListener(documentSnapshot -> mUser.setValue(documentSnapshot.toObject(User.class)));
@@ -64,16 +60,11 @@ public class AboutRestaurantViewModel extends ViewModel {
         return mRestaurant;
     }
 
-//    public FirebaseUser getFirebaseUser() {
-//        return mFirebaseUser;
-//    }
-
     public LiveData<User> getUser() {
         return mUser;
     }
 
     // .......................................................... UPDATES
-
     public void updateUserRestaurant(String uid, Restaurant restaurant) {
         mFirebaseUserRepository.updateUserRestaurant(uid, restaurant);
     }
@@ -81,6 +72,4 @@ public class AboutRestaurantViewModel extends ViewModel {
     public void updateUserFavoriteRestaurantsList(String uid, List<String> favoriteRestaurants) {
         mFirebaseUserRepository.updateUserFavoritesRestaurant(uid, favoriteRestaurants);
     }
-
-    // .......................................................... UTILS
 }

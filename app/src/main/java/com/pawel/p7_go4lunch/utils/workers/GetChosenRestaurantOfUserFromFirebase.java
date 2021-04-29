@@ -18,7 +18,6 @@ import static com.pawel.p7_go4lunch.utils.Const.KEY_RESTO_ID;
 import static com.pawel.p7_go4lunch.utils.Const.KEY_USER_ID;
 
 public class GetChosenRestaurantOfUserFromFirebase extends Worker {
-    private static final String TAG = "NOTIF";
     private static Restaurant r;
 
     public GetChosenRestaurantOfUserFromFirebase(
@@ -33,19 +32,14 @@ public class GetChosenRestaurantOfUserFromFirebase extends Worker {
         String userId = getInputData().getString(KEY_USER_ID);
         if (userId == null) Result.failure();
         NotificationData notifData = NotificationData.getInstance();
-        Log.i(TAG, "doWork: getResto  userID " + userId);
         String restoID = "";
         FirebaseUserRepository.getInstance().
                 getUser(userId).addOnSuccessListener(documentSnapshot -> {
-            Log.i(TAG, "RESTO ___1____doWork: ");
             User user = documentSnapshot.toObject(User.class);
             Restaurant r = user.getUserRestaurant();
             notifData.setRestaurant(r);
             Data d = new Data.Builder().putString(KEY_RESTO_ID, r.getPlaceId()).build();
-            Log.i(TAG, "RESTO ___2____doWork: restoID: << " + restoID + " >>//////");
         });
-        // TODO put the data in this way will work ?
-        // TODO Result run before Firebase giv back data !!!
         return Result.success();
     }
 }

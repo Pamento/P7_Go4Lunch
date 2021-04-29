@@ -121,6 +121,10 @@
             android:layout_height="1dp"
             android:background="@color/colorPrimary" />
 
+        <include
+            android:id="@+id/about_wifi_off"
+            layout="@layout/wifi_off" />
+
         <TextView
             android:id="@+id/about_the_rest_workmates_list_empty"
             style="@style/FullScreenErrorMessage"
@@ -136,6 +140,5 @@
             android:layout_height="wrap_content"
             tools:listitem="@layout/item_workmate" />
     </LinearLayout>
-
 
 </androidx.core.widget.NestedScrollView>

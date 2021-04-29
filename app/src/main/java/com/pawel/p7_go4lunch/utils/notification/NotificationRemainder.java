@@ -1,6 +1,5 @@
 package com.pawel.p7_go4lunch.utils.notification;
 
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -29,7 +28,7 @@ public class NotificationRemainder extends ContextWrapper {
     private final NotificationData nData;
     private String restoName;
     private String restoAdress;
-    private final StringBuilder workmates = new StringBuilder();
+    private final StringBuilder workmatesList = new StringBuilder();
 
 
     public NotificationRemainder(Context base) {
@@ -49,14 +48,24 @@ public class NotificationRemainder extends ContextWrapper {
         restoAdress = r.getAddress();
         if (!nData.getUsers().isEmpty()) {
             List<User> users = nData.getUsers();
-            workmates.append(intro).append("\n");
+            workmatesList.append(restoAdress).append("\n")
+                    .append(intro).append("\n");
             for (User u : users) {
-                workmates.append(u.getName()).append("\n");
+                workmatesList.append(u.getName()).append("\n");
             }
         }
     }
 
     public void showNotification() {
+        CharSequence workmates = workmatesList.length() > 0 ? workmatesList : noWorkmates;
+//        StringBuilder workmates = new StringBuilder();
+//        workmates.append(restoAdress).append("\n")
+//        .append(intro).append("\n")
+//        .append("Nathan").append("\n")
+//        .append("Hipolit").append("\n")
+//        .append("Cadaphie").append("\n")
+//        .append("Paul");
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = Const.VERBOSE_NOTIFICATION_CHANNEL_NAME;
             String description = Const.VERBOSE_NOTIFICATION_CHANNEL_DESCRIPTION;

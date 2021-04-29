@@ -19,6 +19,10 @@
         tools:listitem="@layout/item_workmate" />
 
     <include
+        android:id="@+id/workmates_wifi_off"
+        layout="@layout/wifi_off" />
+
+    <include
         android:id="@+id/workmates_progress_bar"
         layout="@layout/progress_bar"
         android:visibility="gone" />

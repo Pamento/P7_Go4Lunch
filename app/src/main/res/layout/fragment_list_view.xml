@@ -19,6 +19,10 @@
         tools:listitem="@layout/item_restaurant" />
 
     <include
+        android:id="@+id/list_wifi_off"
+        layout="@layout/wifi_off"/>
+
+    <include
         android:id="@+id/restaurant_progress_bar"
         layout="@layout/progress_bar"/>
 
