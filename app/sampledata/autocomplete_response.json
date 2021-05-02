@@ -1,0 +1,154 @@
+{
+	"Go4Lunch": "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=Pizza&types=establishment&language=fr&location=37.76999,-122.44696&radius=500&origin=37.76999,-122.44696&strictbounds&key=",
+	"predictions" : [
+		{
+			"description" : "Escape From New York Pizza, Haight Street, San Francisco, Californie, États-Unis",
+			"distance_meters" : 393,
+			"matched_substrings" : [
+				{
+					"length" : 5,
+					"offset" : 21
+				}
+			],
+			"place_id" : "ChIJ_8NMy1OHhYARRkRWgYk6ra4",
+			"reference" : "ChIJ_8NMy1OHhYARRkRWgYk6ra4",
+			"structured_formatting" : {
+				"main_text" : "Escape From New York Pizza",
+				"main_text_matched_substrings" : [
+					{
+						"length" : 5,
+						"offset" : 21
+					}
+				],
+				"secondary_text" : "Haight Street, San Francisco, Californie, États-Unis"
+			},
+			"terms" : [
+				{
+					"offset" : 0,
+					"value" : "Escape From New York Pizza"
+				},
+				{
+					"offset" : 28,
+					"value" : "Haight Street"
+				},
+				{
+					"offset" : 43,
+					"value" : "San Francisco"
+				},
+				{
+					"offset" : 58,
+					"value" : "Californie"
+				},
+				{
+					"offset" : 70,
+					"value" : "États-Unis"
+				}
+			],
+			"types" : [
+				"meal_delivery",
+				"meal_takeaway",
+				"restaurant",
+				"food",
+				"point_of_interest",
+				"establishment"
+			]
+		},
+		{
+			"description" : "Slice House Pizza, Haight Street, San Francisco, Californie, États-Unis",
+			"distance_meters" : 59,
+			"matched_substrings" : [
+				{
+					"length" : 5,
+					"offset" : 12
+				}
+			],
+			"place_id" : "ChIJT_KDOlOHhYARp00sTmSJKTA",
+			"reference" : "ChIJT_KDOlOHhYARp00sTmSJKTA",
+			"structured_formatting" : {
+				"main_text" : "Slice House Pizza",
+				"main_text_matched_substrings" : [
+					{
+						"length" : 5,
+						"offset" : 12
+					}
+				],
+				"secondary_text" : "Haight Street, San Francisco, Californie, États-Unis"
+			},
+			"terms" : [
+				{
+					"offset" : 0,
+					"value" : "Slice House Pizza"
+				},
+				{
+					"offset" : 19,
+					"value" : "Haight Street"
+				},
+				{
+					"offset" : 34,
+					"value" : "San Francisco"
+				},
+				{
+					"offset" : 49,
+					"value" : "Californie"
+				},
+				{
+					"offset" : 61,
+					"value" : "États-Unis"
+				}
+			],
+			"types" : [ "restaurant", "food", "point_of_interest", "establishment" ]
+		},
+		{
+			"description" : "Hayes Pizza, Hayes Street, San Francisco, Californie, États-Unis",
+			"distance_meters" : 478,
+			"matched_substrings" : [
+				{
+					"length" : 5,
+					"offset" : 6
+				}
+			],
+			"place_id" : "ChIJS0QZlk2HhYARUbPuB5MGZ94",
+			"reference" : "ChIJS0QZlk2HhYARUbPuB5MGZ94",
+			"structured_formatting" : {
+				"main_text" : "Hayes Pizza",
+				"main_text_matched_substrings" : [
+					{
+						"length" : 5,
+						"offset" : 6
+					}
+				],
+				"secondary_text" : "Hayes Street, San Francisco, Californie, États-Unis"
+			},
+			"terms" : [
+				{
+					"offset" : 0,
+					"value" : "Hayes Pizza"
+				},
+				{
+					"offset" : 13,
+					"value" : "Hayes Street"
+				},
+				{
+					"offset" : 27,
+					"value" : "San Francisco"
+				},
+				{
+					"offset" : 42,
+					"value" : "Californie"
+				},
+				{
+					"offset" : 54,
+					"value" : "États-Unis"
+				}
+			],
+			"types" : [
+				"meal_delivery",
+				"restaurant",
+				"food",
+				"point_of_interest",
+				"establishment"
+			]
+		}
+	],
+	"status" : "OK"
+}

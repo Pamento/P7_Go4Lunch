@@ -98,6 +98,7 @@ public abstract class LocationUtils {
      * A function to check if Wi-fi is connected, return boolean.
      */
     public static boolean isWifiOn() {
+        // ConnectivityManager
         SupplicantState supState;
         WifiManager wifiManager = (WifiManager) Go4Lunch.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();

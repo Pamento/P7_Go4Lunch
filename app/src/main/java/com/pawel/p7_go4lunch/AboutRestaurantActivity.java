@@ -11,10 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 import com.pawel.p7_go4lunch.databinding.ActivityAboutRestaurantBinding;
@@ -32,7 +29,6 @@ import com.pawel.p7_go4lunch.utils.di.Injection;
 import com.pawel.p7_go4lunch.viewModels.AboutRestaurantViewModel;
 import com.pawel.p7_go4lunch.viewModels.ViewModelFactory;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
@@ -73,7 +69,7 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
     private LocalAppSettings mAppSettings;
 
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    //@RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,8 +113,6 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
                 favoritesResto = user.getFavoritesRestaurants();
             if (isCalledFromGoogleMap()) getRestaurantFromGoogleMap();
             else getRestaurantFromUser();
-            if (favoritesResto != null)
-                Log.i(TAG, "getUser: favoriteResto s::: " + favoritesResto.size());
         });
     }
 
@@ -143,17 +137,19 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
     }
 
     private void getRestaurantFromUser() {
-        if (mUser != null && mUser.getUserRestaurant() != null) {
-            mThisRestaurant = mUser.getUserRestaurant();
-            restaurantId = mUser.getUserRestaurant().getPlaceId();
-            isChosen = isChosen();
-            updateUI();
-        } else if (mUser != null && mUser.getUserRestaurant() == null) {
-            mBinding.abInclude.aboutTheRestName.setText(R.string.no_restaurant_data);
-            mBinding.abInclude.aboutTheRestTxCall.setAlpha(0.3f);
-            mBinding.abInclude.aboutTheRestTxLike.setAlpha(0.3f);
-            mBinding.abInclude.aboutTheRestTxWebsite.setAlpha(0.3f);
-            mBinding.aboutRestaurantFab.setVisibility(View.GONE);
+        if (mUser != null) {
+            if (mUser.getUserRestaurant() != null) {
+                mThisRestaurant = mUser.getUserRestaurant();
+                restaurantId = mUser.getUserRestaurant().getPlaceId();
+                isChosen = isChosen();
+                updateUI();
+            } else {
+                mBinding.abInclude.aboutTheRestName.setText(R.string.no_restaurant_data);
+                mBinding.abInclude.aboutTheRestTxCall.setAlpha(0.3f);
+                mBinding.abInclude.aboutTheRestTxLike.setAlpha(0.3f);
+                mBinding.abInclude.aboutTheRestTxWebsite.setAlpha(0.3f);
+                mBinding.aboutRestaurantFab.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -352,7 +348,7 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
     private void visitWebsite() {
         String url = null;
         if (mThisRestaurant != null) url = mThisRestaurant.getWebsite();
-        if ((url != null) || !url.contains("google.com")) {
+        if ((url != null) && !url.contains("google.com")) {
             if (!url.startsWith("https://") || !url.startsWith("http://")) {
                 url = "http://" + url;
             }

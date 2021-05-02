@@ -4,8 +4,6 @@ import android.Manifest;
 
 public class Const {
 
-    public static final int RC_SIGN_IN = 697;
-
     // Permissions
     public static final String[] PERMISSIONS = {
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -20,6 +18,10 @@ public class Const {
 
     // GOOGLE __Service apiPlace
     public static final String GOOGLE_BASE_URL = "https://maps.googleapis.com/maps/api/place/";
+
+
+    // FIREBASE login request id
+    public static final int RC_SIGN_IN = 697;
 
     // FIREBASE __Service
     public static final String COLLECTION_USERS = "users";
@@ -44,10 +46,11 @@ public class Const {
     public static final int REQUEST_CALL = 1;
 
     // Notification
-    public static final CharSequence VERBOSE_NOTIFICATION_CHANNEL_NAME = "resto place remainder";
-    public static final String VERBOSE_NOTIFICATION_CHANNEL_DESCRIPTION = "Shows notifications remainder for 12 pm";
+    public static final int NOTIF_PENDING_ID = 9006;
+    public static final CharSequence VERBOSE_NOTIF_CHANNEL_NAME = "resto place remainder";
+    public static final String VERBOSE_NOTIF_CHANNEL_DESCRIPT = "Shows notifications remainder for 12 pm";
     public static final String CHANNEL_ID = "REMAINDER_NOTIFICATION";
-    public static final int NOTIFICATION_ID = 9005;
+    public static final int NOTIF_ID = 9005;
     public static final String KEY_USER_ID = "KEY_USER_ID";
     public static final String KEY_RESTO_ID = "KEY_RESTO_ID";
     public static final String ALARM_ID = "alarm_id";

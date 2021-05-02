@@ -3,6 +3,7 @@
     <words>
       <w>adress</w>
       <w>appel</w>
+      <w>descript</w>
       <w>firestore</w>
       <w>heur</w>
       <w>illimité</w>
@@ -11,6 +12,7 @@
       <w>paramètres</w>
       <w>pawel</w>
       <w>resto</w>
+      <w>strictbounds</w>
     </words>
   </dictionary>
 </component>

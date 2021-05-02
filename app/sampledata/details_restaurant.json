@@ -1,0 +1,193 @@
+{
+  "html_attributions" : [],
+  "result" : {
+    "geometry" : {
+      "location" : {
+        "lat" : 37.7732219,
+        "lng" : -122.4505462
+      },
+      "viewport" : {
+        "northeast" : {
+          "lat" : 37.7746442802915,
+          "lng" : -122.4492867697085
+        },
+        "southwest" : {
+          "lat" : 37.7719463197085,
+          "lng" : -122.4519847302915
+        }
+      }
+    },
+    "international_phone_number" : "+1 415-742-5234",
+    "name" : "Hayes Pizza",
+    "opening_hours" : {
+      "open_now" : true,
+      "periods" : [
+        {
+          "close" : {
+            "day" : 0,
+            "time" : "2100"
+          },
+          "open" : {
+            "day" : 0,
+            "time" : "1600"
+          }
+        },
+        {
+          "close" : {
+            "day" : 1,
+            "time" : "2100"
+          },
+          "open" : {
+            "day" : 1,
+            "time" : "1600"
+          }
+        },
+        {
+          "close" : {
+            "day" : 2,
+            "time" : "2100"
+          },
+          "open" : {
+            "day" : 2,
+            "time" : "1200"
+          }
+        },
+        {
+          "close" : {
+            "day" : 3,
+            "time" : "2100"
+          },
+          "open" : {
+            "day" : 3,
+            "time" : "1200"
+          }
+        },
+        {
+          "close" : {
+            "day" : 4,
+            "time" : "2100"
+          },
+          "open" : {
+            "day" : 4,
+            "time" : "1200"
+          }
+        },
+        {
+          "close" : {
+            "day" : 5,
+            "time" : "2100"
+          },
+          "open" : {
+            "day" : 5,
+            "time" : "1200"
+          }
+        },
+        {
+          "close" : {
+            "day" : 6,
+            "time" : "2100"
+          },
+          "open" : {
+            "day" : 6,
+            "time" : "1200"
+          }
+        }
+      ],
+      "weekday_text" : [
+        "Monday: 4:00 – 9:00 PM",
+        "Tuesday: 12:00 – 9:00 PM",
+        "Wednesday: 12:00 – 9:00 PM",
+        "Thursday: 12:00 – 9:00 PM",
+        "Friday: 12:00 – 9:00 PM",
+        "Saturday: 12:00 – 9:00 PM",
+        "Sunday: 4:00 – 9:00 PM"
+      ]
+    },
+    "photos" : [
+      {
+        "height" : 2674,
+        "html_attributions" : [
+          "\u003ca href=\"https://maps.google.com/maps/contrib/111450706673730952587\"\u003eAlbertino M.\u003c/a\u003e"
+        ],
+        "photo_reference" : "ATtYBwKxYMcFD8qbx7jqcF8qf2V3GPDYXjsOkqIktaN5SkRAfOUS-k5koYOKBNk_WdV248WZ4wqhyVGAip48aG7cU_xX6C3C-UoGkXuWBdwcw7mQlz0xtJSORCXT-eEcBZlj-3r0pThqqVpXOZ4H3MDT5_urZZRBNssC40N8E1QKu36BM8n8",
+        "width" : 1870
+      },
+      {
+        "height" : 1029,
+        "html_attributions" : [
+          "\u003ca href=\"https://maps.google.com/maps/contrib/115329279727546307232\"\u003eHayes Pizza\u003c/a\u003e"
+        ],
+        "photo_reference" : "ATtYBwL2UGMJpxk5jBmmm0fwpK3CQcsTrhfKN1bz50IV-03A-utBQNUh0brchy1zkF3p18XuIzOJnxcZ8O9Ekt0zYIxvcY1OD4VYGL1eXlXVmFI0Rds3wfe86jIxuABeoi81TUrW2QNmvGMfV_9Mv99IbPk6sVXb8EMUvU_7Vt9k96jfUWgO",
+        "width" : 1356
+      },
+      {
+        "height" : 1908,
+        "html_attributions" : [
+          "\u003ca href=\"https://maps.google.com/maps/contrib/115329279727546307232\"\u003eHayes Pizza\u003c/a\u003e"
+        ],
+        "photo_reference" : "ATtYBwK4W3ZIxqMYzKM_WgdW10FvQR6MZy2pgsdub03oDBKzG3Ok9bTm1SCFJU2-GH2BNWgqW8frLyYuHYyRqbYk8SAoy04g_9hNTR61YIDt4QK_mIrI0IQqriDn5Z5Rl_hwbKya0HjIcxGRrTVWuLkG0VcbiR5opye7v9ovI90aOqplO8yE",
+        "width" : 2277
+      },
+      {
+        "height" : 1613,
+        "html_attributions" : [
+          "\u003ca href=\"https://maps.google.com/maps/contrib/115329279727546307232\"\u003eHayes Pizza\u003c/a\u003e"
+        ],
+        "photo_reference" : "ATtYBwLIDJogwVq-M2xYq4vvZqzzPyOT9KhqdELMUQFBxA6smRdeit82nE_SoJHfaXG8ir9qwQAwaPs8WOx9oVe6UmHMxsUF_qH5FUuTwDAFGXRUvAPKS69deHoGYT750c-wltcdyoAAl3A916lu4PlX3VgRLejgHbSh1FQfieQSlQw2A7TS",
+        "width" : 1908
+      },
+      {
+        "height" : 3006,
+        "html_attributions" : [
+          "\u003ca href=\"https://maps.google.com/maps/contrib/101257645491187781028\"\u003eThomas San Francisco\u003c/a\u003e"
+        ],
+        "photo_reference" : "ATtYBwKQLPjn2Pp4JeDF_RBR5RtogaMNZN89U4ehHJ670WHzpJlGp4lSAB1Hb8-5e9s_-G50ZKwHlyY-JfaYZZMAjdpddrwmsBhw4VqrZJjhcvdNMbsjzi2fgUY2gKj-yrkUzRWcQChbmcbJlJu9K95JwqvV1AUmnC7AA0Tsw9QrMBYAdKqC",
+        "width" : 5344
+      },
+      {
+        "height" : 1908,
+        "html_attributions" : [
+          "\u003ca href=\"https://maps.google.com/maps/contrib/115329279727546307232\"\u003eHayes Pizza\u003c/a\u003e"
+        ],
+        "photo_reference" : "ATtYBwKSFlajfwSw2oESgPUHXVfiud07lmzzcklIAswF8MGdHcwmQcUI2UKs2C_550Od4CGpm1cK2g9Eo0c4UpHfK1Ix3rZ5EDtyZ6E2HQnYCO4Q_dtf4KuwCljoD0ZR8LmqM6zqu4CvnhuFgr3OFDK0KWd1MIko-eVhbIOQbdPahpRNirsX",
+        "width" : 2738
+      },
+      {
+        "height" : 4032,
+        "html_attributions" : [
+          "\u003ca href=\"https://maps.google.com/maps/contrib/101257645491187781028\"\u003eThomas San Francisco\u003c/a\u003e"
+        ],
+        "photo_reference" : "ATtYBwKgzi2SIdr2PRUn0YAUW9vvyEMib8f5IhNo2b37kHXdibur35t2PosivaALHQ3z39l70jMyNiqw3oNoQPQ0i9bN7D9wbzmr6iJQ_0Y-4jJe0_Yl78H_nbuAy8-UhrsanQNmQKXaKgvi970uh2MO-mJz3tL0l3fbIHEOH5AQzwhgzw_d",
+        "width" : 3024
+      },
+      {
+        "height" : 3024,
+        "html_attributions" : [
+          "\u003ca href=\"https://maps.google.com/maps/contrib/115286099506307947626\"\u003eCali Resident\u003c/a\u003e"
+        ],
+        "photo_reference" : "ATtYBwLCdQSLTnWf5VC05sfQCDixW7gs8CD48zISnkBB8C5E_IEhrjFsM69rOW1aRY8iwhzPLN9QeFk_BI7Q_fnpjd-7Z9pTJLbEw54fREwLVZUncYlizLwsdPR5rWPN1pDi8Xvq9H-svZGed64_-uy_ZYDRfUoB4va2Y2USdNMxOQDP-L1_",
+        "width" : 4032
+      },
+      {
+        "height" : 1055,
+        "html_attributions" : [
+          "\u003ca href=\"https://maps.google.com/maps/contrib/115329279727546307232\"\u003eHayes Pizza\u003c/a\u003e"
+        ],
+        "photo_reference" : "ATtYBwIzaDS-95J7qQmCHcOkh_aBgw69M1pEt_MAjGQDRiG6Wo0XlUheMr8MpIx1TPIs6stHNMcwiKpQSlu5dvNJ6XOh9kfwqw-52wqZSJf6ViC-Z6G2Qk5upr4IKHwCWcNIvWppkNg-W37ERaQc6hievU2QU0M1DYZst759VXfl4mHYPhsu",
+        "width" : 1080
+      },
+      {
+        "height" : 514,
+        "html_attributions" : [
+          "\u003ca href=\"https://maps.google.com/maps/contrib/115329279727546307232\"\u003eHayes Pizza\u003c/a\u003e"
+        ],
+        "photo_reference" : "ATtYBwI9MuiMLULqaXCI6GZ1eixtGu4uM2YIoPHy8s-kvJKnyx3NnisNkT3ksAAmjw8sIq9WHzVKwamf7HcreKtzgCJXeotlLKNMgkQ1103_ipvJpV4U8Zsdtmc-pirM6A64BLFCqhEqcRaFgXxsOOlmTdLhjxL4au6l-wyohJcj1nBStEe_",
+        "width" : 610
+      }
+    ],
+    "rating" : 4.5,
+    "vicinity" : "2077 Hayes Street, San Francisco",
+    "website" : "https://www.hayespizzeria.com/"
+  },
+  "status" : "OK"
+}

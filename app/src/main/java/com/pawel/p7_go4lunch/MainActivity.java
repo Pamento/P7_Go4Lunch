@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         LocationListener {
 
-    private static final String TAG = "SEARCH";
+    private static final String TAG = "AUTO_COM";
     private MainActivityViewModel mMainActivityViewModel;
     private ActivityMainBinding binding;
     private View view;
@@ -65,7 +65,6 @@ public class MainActivity extends AppCompatActivity
     protected Location mCurrentLocation;
     protected double mLatitude, mLongitude;
     protected LatLng mLatLng;
-    //public static boolean permissionDenied = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +87,7 @@ public class MainActivity extends AppCompatActivity
         if (!Places.isInitialized()) {
             Places.initialize(getApplicationContext(), BuildConfig.API_KEY);
         }
-        PlacesClient placesClient = Places.createClient(this);
+        //PlacesClient placesClient = Places.createClient(this);
     }
 
     private void initMainViewModel() {
@@ -345,4 +344,34 @@ public class MainActivity extends AppCompatActivity
     protected void onResumeFragments() {
         super.onResumeFragments();
     }
+
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        Log.i(TAG, "MAIN_ACTIVITY onStart is");
+//    }
+//
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        Log.i(TAG, "MAIN_ACTIVITY onResume is");
+//    }
+//
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        Log.i(TAG, "MAIN_ACTIVITY onPause is");
+//    }
+//
+//    @Override
+//    protected void onStop() {
+//        super.onStop();
+//        Log.i(TAG, "MAIN_ACTIVITY onStop is ");
+//    }
+//
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        Log.i(TAG, "MAIN_ACTIVITY onDestroy is");
+//    }
 }

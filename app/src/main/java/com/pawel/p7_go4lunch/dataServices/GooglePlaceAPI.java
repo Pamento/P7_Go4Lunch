@@ -1,5 +1,7 @@
 package com.pawel.p7_go4lunch.dataServices;
 
+import com.pawel.p7_go4lunch.BuildConfig;
+import com.pawel.p7_go4lunch.model.autocomplete.AutoResponse;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.RestaurantResult;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.SingleRestaurant;
 
@@ -8,6 +10,8 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 public interface GooglePlaceAPI {
+
+    String KEY = BuildConfig.API_KEY;
 
     /**
      * Request HTTP in Json nearbySearch for list of Restaurants in defined area
@@ -34,28 +38,28 @@ public interface GooglePlaceAPI {
      * @param key     String API key
      * @return an Observable<RestaurantResult>
      */
-//    @GET("details/json?")
-//    Observable<RestaurantResult> getDetailRestaurants (@Query("place_id") String placeId,
-//                                                 @Query("key") String key);
-//    @GET("details/json?fields=vicinity,name,place_id,id,geometry,opening_hours,international_phone_number,website,rating,utc_offset,photos")
+
     @GET("details/json?fields=place_id,international_phone_number,website")
     Observable<SingleRestaurant> getDetailsOfRestaurant(@Query("place_id") String placeId,
                                                         @Query("key") String key);
 
+    @GET("details/json?fields=vicinity,name,geometry,opening_hours,international_phone_number,website,rating,photo&key=" + KEY)
+    Observable<RestaurantResult> getFullDetailRestaurant(@Query("place_id") String placeId);
 
     /**
      * Request HTTP in Json (autocomplete) for Restaurants
      * <p>
-     * example:   https://maps.googleapis.com/maps/api/place/queryautocomplete/json?key=YOUR_API_KEY&language=fr&input=pizza+near%20par
+     * example:   https://maps.googleapis.com/maps/api/place/autocomplete/json?key=YOUR_API_KEY&language=fr&input=pizza+near%20par
+     * test: https://maps.googleapis.com/maps/api/place/autocomplete/json?input=Pizza&types=establishment&language=fr&location=37.76999,-122.44696&radius=500&origin=37.76999,-122.44696&strictbounds&key=YOUR_API_KEY
      *
-     * @param key   String API key
+     * KEY String API key
      * @param input String from EditText
-     * @return an Observable<RestaurantPOJO>
+     * @return an Observable<AutoResponse>
      */
-    @GET("queryautocomplete/json?")
-    Observable<RestaurantResult> getAutocompleteRestaurants(@Query("key") String key,
-                                                            @Query("language") String language,
-                                                            @Query("input") String input,
-                                                            @Query("location") String location,
-                                                            @Query("radius") int radius);
+    @GET("autocomplete/json?types=establishment&strictbounds&key=" + KEY)
+    Observable<AutoResponse> getAutocompleteRestaurants(@Query("input") String input,
+                                                        @Query("language") String language,
+                                                        @Query("radius") int radius,
+                                                        @Query("location") String location,
+                                                        @Query("origin") String origin);
 }

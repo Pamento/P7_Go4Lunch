@@ -10,6 +10,7 @@ import com.pawel.p7_go4lunch.BuildConfig;
 import com.pawel.p7_go4lunch.dataServices.GooglePlaceAPI;
 import com.pawel.p7_go4lunch.dataServices.RetrofitClient;
 import com.pawel.p7_go4lunch.model.Restaurant;
+import com.pawel.p7_go4lunch.model.autocomplete.AutoResponse;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.RestaurantResult;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.Result;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.SingleRestaurant;
@@ -28,8 +29,8 @@ public class GooglePlaceRepository {
     private static final String TAG = "SEARCH";
     private static volatile GooglePlaceRepository instance;
     private final GooglePlaceAPI mGooglePlaceAPIService;
-    private List<Restaurant> mRestaurants = new ArrayList<>();
-    private MutableLiveData<List<Restaurant>> mRestaurantLiveData = new MutableLiveData<>();
+    private final List<Restaurant> mRestaurants = new ArrayList<>();
+    private final MutableLiveData<List<Restaurant>> mRestaurantLiveData = new MutableLiveData<>();
     private static String mCurrentLocation;
     private static LatLng initialLatLng;
     private final Location mCntLocation = new Location("");
@@ -37,11 +38,6 @@ public class GooglePlaceRepository {
 
     public GooglePlaceRepository() {
         mGooglePlaceAPIService = getGooglePlaceApiService();
-    }
-
-
-    public MutableLiveData<List<Restaurant>> getRestaurantLiveData() {
-        return mRestaurantLiveData;
     }
 
     public void setRestaurantLiveData() {
@@ -75,7 +71,6 @@ public class GooglePlaceRepository {
         GooglePlaceRepository.mCurrentLocation = cLoc.getLatitude() + "," + cLoc.getLongitude();
         mCntLocation.setLatitude(cLoc.getLatitude());
         mCntLocation.setLongitude(cLoc.getLongitude());
-
     }
 
     public void setInitialLatLng(LatLng latLng) {
@@ -85,6 +80,13 @@ public class GooglePlaceRepository {
     // .........................................................................STREAMS
     public Observable<RestaurantResult> streamFetchRestaurantsPlaces(String location, int radius) {
         return mGooglePlaceAPIService.getNearbyRestaurants(location, radius, BuildConfig.API_KEY)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .timeout(10, TimeUnit.SECONDS);
+    }
+
+    public Observable<AutoResponse> streamAutocompletePlaces(String input, String lang, int radius, String location, String origin) {
+        return mGooglePlaceAPIService.getAutocompleteRestaurants(input, lang, radius, location, origin)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .timeout(10, TimeUnit.SECONDS);
@@ -103,6 +105,10 @@ public class GooglePlaceRepository {
     public Observable<Result> getRestaurantDetail(String id) {
         return mGooglePlaceAPIService.getDetailsOfRestaurant(id, BuildConfig.API_KEY)
                 .map(SingleRestaurant::getResult);
+    }
+
+    public String getPhoto(String photoReference) {
+        return "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + photoReference + "&key=" + BuildConfig.API_KEY;
     }
 
     public void disposeDisposable() {
@@ -172,9 +178,5 @@ public class GooglePlaceRepository {
             return restaurant;
         }
         return null;
-    }
-
-    public String getPhoto(String photoReference) {
-        return "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + photoReference + "&key=" + BuildConfig.API_KEY;
     }
 }

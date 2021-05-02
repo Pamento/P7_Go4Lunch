@@ -45,7 +45,7 @@ public class FirebaseUserRepository {
     }
 
     public Query getAllUsersFromCollection(String userId) {
-        return userRepository.whereNotEqualTo("uid", userId).orderBy("uid").orderBy("userRestaurant");
+        return userRepository.orderBy("userRestaurant", Query.Direction.DESCENDING);
 //        return userRepository.orderBy(Const.FIREBASE_ADAPTER_QUERY_EMAIL, Query.Direction.DESCENDING);
     }
 

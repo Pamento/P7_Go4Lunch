@@ -15,6 +15,7 @@ import java.util.Calendar;
 import static com.pawel.p7_go4lunch.utils.Const.ALARM_ID;
 import static com.pawel.p7_go4lunch.utils.Const.ALARM_MULTIPLE;
 import static com.pawel.p7_go4lunch.utils.Const.ALARM_SINGLE;
+import static com.pawel.p7_go4lunch.utils.Const.NOTIF_PENDING_ID;
 import static com.pawel.p7_go4lunch.utils.Const.ONE_DAY_IN_MILLIS;
 
 public abstract class AlarmService {
@@ -45,33 +46,37 @@ public abstract class AlarmService {
         Log.i(TAG, "startAlarm: system.Millis " + System.currentTimeMillis());
         Log.i(TAG, "startAlarm ___at: " + hour);
         setCalendar(hour);
-        AlarmManager aMgr = (AlarmManager) Go4Lunch.getContext().getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(Go4Lunch.getContext(), AlarmReceiver.class);
-        intent.putExtra(ALARM_ID, ALARM_SINGLE);
-        PendingIntent alarmIntent = PendingIntent.getBroadcast(Go4Lunch.getContext(), 0, intent, 0);
-        assert aMgr != null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            aMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, mCalendar.getTimeInMillis(), alarmIntent);
-        } else {
-            aMgr.setExact(AlarmManager.RTC_WAKEUP, mCalendar.getTimeInMillis(), alarmIntent);
+        if (mCalendar != null) {
+            AlarmManager aMgr = (AlarmManager) Go4Lunch.getContext().getSystemService(Context.ALARM_SERVICE);
+            Intent intent = new Intent(Go4Lunch.getContext(), AlarmReceiver.class);
+            intent.putExtra(ALARM_ID, ALARM_SINGLE);
+            PendingIntent alarmIntent = PendingIntent.getBroadcast(Go4Lunch.getContext(), NOTIF_PENDING_ID, intent, 0);
+            assert aMgr != null;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                aMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, mCalendar.getTimeInMillis(), alarmIntent);
+            } else {
+                aMgr.setExact(AlarmManager.RTC_WAKEUP, mCalendar.getTimeInMillis(), alarmIntent);
+            }
         }
     }
 
     public static void startRepeatedAlarm(String hour) {
         Log.i(TAG, "startRepeatedAlarm ___at:" + hour);
         setCalendar(hour);
-        AlarmManager aMgr = (AlarmManager) Go4Lunch.getContext().getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(Go4Lunch.getContext(), AlarmReceiver.class);
-        intent.putExtra(ALARM_ID, ALARM_MULTIPLE);
-        PendingIntent alarmIntent = PendingIntent.getBroadcast(Go4Lunch.getContext(), 0, intent, 0);
-        assert aMgr != null;
-        aMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, mCalendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, alarmIntent);
+        if (mCalendar != null) {
+            AlarmManager aMgr = (AlarmManager) Go4Lunch.getContext().getSystemService(Context.ALARM_SERVICE);
+            Intent intent = new Intent(Go4Lunch.getContext(), AlarmReceiver.class);
+            intent.putExtra(ALARM_ID, ALARM_MULTIPLE);
+            PendingIntent alarmIntent = PendingIntent.getBroadcast(Go4Lunch.getContext(), NOTIF_PENDING_ID, intent, 0);
+            assert aMgr != null;
+            aMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, mCalendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, alarmIntent);
+        }
     }
 
     public static PendingIntent isAlarmSet() {
         Log.i(TAG, "isAlarmSet: ");
         Intent intent = new Intent(Go4Lunch.getContext(), AlarmReceiver.class);
-        return PendingIntent.getService(Go4Lunch.getContext(), 0, intent,
+        return PendingIntent.getBroadcast(Go4Lunch.getContext(), NOTIF_PENDING_ID, intent,
                         PendingIntent.FLAG_NO_CREATE);
     }
 

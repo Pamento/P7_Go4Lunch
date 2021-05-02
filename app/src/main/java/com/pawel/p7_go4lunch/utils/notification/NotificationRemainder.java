@@ -67,8 +67,8 @@ public class NotificationRemainder extends ContextWrapper {
 //        .append("Paul");
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = Const.VERBOSE_NOTIFICATION_CHANNEL_NAME;
-            String description = Const.VERBOSE_NOTIFICATION_CHANNEL_DESCRIPTION;
+            CharSequence name = Const.VERBOSE_NOTIF_CHANNEL_NAME;
+            String description = Const.VERBOSE_NOTIF_CHANNEL_DESCRIPT;
             int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel channel =
                     new NotificationChannel(CHANNEL_ID, name, importance);
@@ -89,6 +89,6 @@ public class NotificationRemainder extends ContextWrapper {
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setVibrate(new long[0]);
 
-        NotificationManagerCompat.from(mContext).notify(Const.NOTIFICATION_ID, builder.build());
+        NotificationManagerCompat.from(mContext).notify(Const.NOTIF_ID, builder.build());
     }
 }
