@@ -86,7 +86,7 @@ public class GooglePlaceRepository {
     }
 
     public Observable<AutoResponse> streamAutocompletePlaces(String input, String lang, int radius, String location, String origin) {
-        return mGooglePlaceAPIService.getAutocompleteRestaurants(input, lang, radius, location, origin)
+        return mGooglePlaceAPIService.getAutocompleteRestos(input, lang, radius, location, origin)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .timeout(10, TimeUnit.SECONDS);
@@ -102,8 +102,8 @@ public class GooglePlaceRepository {
                 });
     }
 
-    public Observable<Result> getRestaurantDetail(String id) {
-        return mGooglePlaceAPIService.getDetailsOfRestaurant(id, BuildConfig.API_KEY)
+    public Observable<Result> getRestaurantContact(String id) {
+        return mGooglePlaceAPIService.getContactOfResto(id, BuildConfig.API_KEY)
                 .map(SingleRestaurant::getResult);
     }
 
@@ -131,23 +131,21 @@ public class GooglePlaceRepository {
         }
     }
 
-    public void upDateRestaurantsWithDetails(Result result) {
+    public void upDateRestaurantsWithContact(Result result) {
         Restaurant mRcp;
         for (int i = 0; i < mRestaurants.size(); i++) {
             if (mRestaurants.get(i).getPlaceId().equals(result.getPlaceId())) {
                 mRcp = mRestaurants.get(i);
-                updateAndReplace(result, mRcp);
+                updateAndReplaceResto(result, mRcp);
             }
         }
     }
 
-    private void updateAndReplace(Result result, Restaurant mRcp) {
+    private void updateAndReplaceResto(Result result, Restaurant mRcp) {
         if (mRcp != null) {
             mRcp.setPhoneNumber(result.getInternationalPhoneNumber());
             mRcp.setWebsite(result.getWebsite());
             mRestaurants.set(mRestaurants.indexOf(mRcp), mRcp);
-            Log.i(TAG, "upDateRestaurantsWithDetails::: ");
-            Log.i(TAG, "" + mRcp.toString());
         }
     }
 

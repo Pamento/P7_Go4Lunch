@@ -13,7 +13,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.pawel.p7_go4lunch.MainActivity;
 import com.pawel.p7_go4lunch.dataServices.repositorys.FirebaseUserRepository;
 import com.pawel.p7_go4lunch.dataServices.repositorys.GooglePlaceRepository;
 import com.pawel.p7_go4lunch.model.Restaurant;
@@ -62,7 +61,7 @@ public class RestaurantsViewModel extends ViewModel {
     public void streamCombinedNearbyAndDetailPlace(String location, int radius) {
         mGooglePlaceRepository.getRestaurantNearby(location, radius)
                 .subscribeOn(Schedulers.io())
-                .concatMap((Function<Result, ObservableSource<Result>>) result -> mGooglePlaceRepository.getRestaurantDetail(result.getPlaceId()))
+                .concatMap((Function<Result, ObservableSource<Result>>) result -> mGooglePlaceRepository.getRestaurantContact(result.getPlaceId()))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Result>() {
                     @Override
@@ -72,7 +71,7 @@ public class RestaurantsViewModel extends ViewModel {
 
                     @Override
                     public void onNext(@NonNull Result result) {
-                        mGooglePlaceRepository.upDateRestaurantsWithDetails(result);
+                        mGooglePlaceRepository.upDateRestaurantsWithContact(result);
                     }
 
                     @Override

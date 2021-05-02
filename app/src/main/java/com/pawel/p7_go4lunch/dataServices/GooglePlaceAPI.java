@@ -40,26 +40,33 @@ public interface GooglePlaceAPI {
      */
 
     @GET("details/json?fields=place_id,international_phone_number,website")
-    Observable<SingleRestaurant> getDetailsOfRestaurant(@Query("place_id") String placeId,
-                                                        @Query("key") String key);
-
-    @GET("details/json?fields=vicinity,name,geometry,opening_hours,international_phone_number,website,rating,photo&key=" + KEY)
-    Observable<RestaurantResult> getFullDetailRestaurant(@Query("place_id") String placeId);
+    Observable<SingleRestaurant> getContactOfResto(@Query("place_id") String placeId,
+                                                   @Query("key") String key);
 
     /**
-     * Request HTTP in Json (autocomplete) for Restaurants
+     * Called only with Autocomplete function
+     * @param placeId unique ID of restaurant provided by Google NearBy search
+     * @return Observable<RestaurantResult> (res in Json)
+     */
+    @GET("details/json?fields=vicinity,name,geometry,opening_hours,rating,photo&key=" + KEY)
+    Observable<RestaurantResult> getDetailsOfResto(@Query("place_id") String placeId);
+
+    /**
+     * Request HTTP
+     * (Place Autocomplete[https://developers.google.com/maps/documentation/places/web-service/autocomplete])
+     * for Restaurants
      * <p>
      * example:   https://maps.googleapis.com/maps/api/place/autocomplete/json?key=YOUR_API_KEY&language=fr&input=pizza+near%20par
      * test: https://maps.googleapis.com/maps/api/place/autocomplete/json?input=Pizza&types=establishment&language=fr&location=37.76999,-122.44696&radius=500&origin=37.76999,-122.44696&strictbounds&key=YOUR_API_KEY
      *
      * KEY String API key
      * @param input String from EditText
-     * @return an Observable<AutoResponse>
+     * @return an Observable<AutoResponse> (res in Json)
      */
     @GET("autocomplete/json?types=establishment&strictbounds&key=" + KEY)
-    Observable<AutoResponse> getAutocompleteRestaurants(@Query("input") String input,
-                                                        @Query("language") String language,
-                                                        @Query("radius") int radius,
-                                                        @Query("location") String location,
-                                                        @Query("origin") String origin);
+    Observable<AutoResponse> getAutocompleteRestos(@Query("input") String input,
+                                                   @Query("language") String language,
+                                                   @Query("radius") int radius,
+                                                   @Query("location") String location,
+                                                   @Query("origin") String origin);
 }
