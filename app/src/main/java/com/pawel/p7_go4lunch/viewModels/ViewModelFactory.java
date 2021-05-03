@@ -22,7 +22,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(MainActivityViewModel.class)) {
-            return (T) new MainActivityViewModel(mFirebaseUserRepository);
+            return (T) new MainActivityViewModel(mFirebaseUserRepository, mGooglePlaceRepository);
         }
         if (modelClass.isAssignableFrom(RestaurantsViewModel.class)) {
             return (T) new RestaurantsViewModel(mGooglePlaceRepository, mFirebaseUserRepository);

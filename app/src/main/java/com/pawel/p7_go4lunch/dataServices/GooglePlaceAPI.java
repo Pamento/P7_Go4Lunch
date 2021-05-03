@@ -49,7 +49,7 @@ public interface GooglePlaceAPI {
      * @return Observable<RestaurantResult> (res in Json)
      */
     @GET("details/json?fields=vicinity,name,geometry,opening_hours,rating,photo&key=" + KEY)
-    Observable<RestaurantResult> getDetailsOfResto(@Query("place_id") String placeId);
+    Observable<SingleRestaurant> getDetailsOfResto(@Query("place_id") String placeId);
 
     /**
      * Request HTTP

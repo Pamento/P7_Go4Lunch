@@ -1,33 +1,39 @@
 package com.pawel.p7_go4lunch.model.autocomplete;
 
-public class AutoResponse {
-    private Predictions[] predictions;
+import android.gesture.Prediction;
 
+import java.util.List;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+public class AutoResponse {
+
+    @SerializedName("predictions")
+    @Expose
+    private List<Predictions> predictions = null;
+    @SerializedName("status")
+    @Expose
     private String status;
 
-    public Predictions[] getPredictions ()
-    {
+    public List<Predictions> getPredictions() {
         return predictions;
     }
 
-    public void setPredictions (Predictions[] predictions)
-    {
+    public void setPredictions(List<Predictions> predictions) {
         this.predictions = predictions;
     }
 
-    public String getStatus ()
-    {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus (String status)
-    {
+    public void setStatus(String status) {
         this.status = status;
     }
 
     @Override
     public String toString()
     {
-        return "ClassPojo [predictions = "+predictions+", status = "+status+"]";
+        return "AutoResponse [predictions = "+predictions+", status = "+status+"]";
     }
 }

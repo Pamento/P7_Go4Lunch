@@ -5,7 +5,7 @@
     android:id="@+id/delete_account_linear_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context="com.pawel.p7_go4lunch.SettingsActivity">
+    tools:context="com.pawel.p7_go4lunch.ui.SettingsActivity">
 
     <Button
         android:id="@+id/delete_account_btn"

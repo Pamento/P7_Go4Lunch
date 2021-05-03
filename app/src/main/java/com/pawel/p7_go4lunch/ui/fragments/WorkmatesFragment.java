@@ -1,4 +1,4 @@
-package com.pawel.p7_go4lunch.ui;
+package com.pawel.p7_go4lunch.ui.fragments;
 
 import android.os.Bundle;
 import android.util.Log;

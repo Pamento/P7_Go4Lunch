@@ -1,4 +1,4 @@
-package com.pawel.p7_go4lunch;
+package com.pawel.p7_go4lunch.ui;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -14,8 +14,8 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
+import com.pawel.p7_go4lunch.R;
 import com.pawel.p7_go4lunch.databinding.ActivityAboutRestaurantBinding;
-import com.pawel.p7_go4lunch.databinding.WifiOffBinding;
 import com.pawel.p7_go4lunch.model.Restaurant;
 import com.pawel.p7_go4lunch.model.User;
 import com.pawel.p7_go4lunch.service.AlarmService;
@@ -53,7 +53,7 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
     private AboutRestaurantViewModel mAboutRestaurantVM;
     private View view;
     private ActivityAboutRestaurantBinding mBinding;
-    private WifiOffBinding mWifiOffBinding;
+    private com.pawel.p7_go4lunch.databinding.WifiOffBinding mWifiOffBinding;
     // data
     private User mUser;
     private Restaurant mThisRestaurant;

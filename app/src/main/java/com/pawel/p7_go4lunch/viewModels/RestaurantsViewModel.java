@@ -18,6 +18,7 @@ import com.pawel.p7_go4lunch.dataServices.repositorys.GooglePlaceRepository;
 import com.pawel.p7_go4lunch.model.Restaurant;
 import com.pawel.p7_go4lunch.model.User;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.Result;
+import com.pawel.p7_go4lunch.utils.AutoSearchEvents;
 import com.pawel.p7_go4lunch.utils.WasCalled;
 
 import java.util.ArrayList;
@@ -123,6 +124,10 @@ public class RestaurantsViewModel extends ViewModel {
 
     public LiveData<GoogleMap> getGoogleMap() {
         return mGoogleMap;
+    }
+
+    public LiveData<AutoSearchEvents> getAutoSearchEvent() {
+        return mGooglePlaceRepository.getAutoSearchEvents();
     }
 
     // ................................................................. SETTERS

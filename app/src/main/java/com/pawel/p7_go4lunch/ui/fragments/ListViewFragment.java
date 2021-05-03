@@ -1,23 +1,26 @@
-package com.pawel.p7_go4lunch.ui;
+package com.pawel.p7_go4lunch.ui.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.pawel.p7_go4lunch.AboutRestaurantActivity;
+import com.pawel.p7_go4lunch.ui.AboutRestaurantActivity;
 import com.pawel.p7_go4lunch.databinding.ErrorNoDataFullscreenMessageBinding;
 import com.pawel.p7_go4lunch.databinding.FragmentListViewBinding;
 import com.pawel.p7_go4lunch.databinding.ProgressBarBinding;
 import com.pawel.p7_go4lunch.model.Restaurant;
+import com.pawel.p7_go4lunch.utils.AutoSearchEvents;
 import com.pawel.p7_go4lunch.utils.Const;
 import com.pawel.p7_go4lunch.utils.LocationUtils;
 import com.pawel.p7_go4lunch.utils.adapters.RestaurantAdapter;
@@ -29,7 +32,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ListViewFragment extends Fragment implements RestaurantAdapter.OnItemRestaurantListClickListener {
-
+    private static final String TAG = "AUTO_COM";
+    private RestaurantsViewModel mRestaurantsVM;
     private FragmentListViewBinding mBinding;
     private ProgressBarBinding progressBarBiding;
     private ErrorNoDataFullscreenMessageBinding errorBinding;
@@ -51,8 +55,16 @@ public class ListViewFragment extends Fragment implements RestaurantAdapter.OnIt
 
     private void initVM() {
         ViewModelFactory vmf = Injection.sViewModelFactory();
-        RestaurantsViewModel restoVM = new ViewModelProvider(requireActivity(), vmf).get(RestaurantsViewModel.class);
-        mRestaurants = restoVM.getRestaurantsCache();
+        mRestaurantsVM = new ViewModelProvider(requireActivity(), vmf).get(RestaurantsViewModel.class);
+        mRestaurants = mRestaurantsVM.getRestaurantsCache();
+        setAutocompleteEventObserver();
+    }
+
+    private void setAutocompleteEventObserver() {
+        mRestaurantsVM.getAutoSearchEvent().observe(getViewLifecycleOwner(), autoSearchEvents -> {
+            Log.i(TAG, "ListViewFragment.setAutocompleteEventObserver.onChanged: " + autoSearchEvents);
+            // TODO all cases for AutoSearchEvents
+        });
     }
 
     private void bindIncludesLayouts() {

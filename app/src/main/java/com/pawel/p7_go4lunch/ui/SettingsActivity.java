@@ -1,4 +1,4 @@
-package com.pawel.p7_go4lunch;
+package com.pawel.p7_go4lunch.ui;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
+import com.pawel.p7_go4lunch.R;
 import com.pawel.p7_go4lunch.databinding.SettingsActivityBinding;
 import com.pawel.p7_go4lunch.utils.Const;
 import com.pawel.p7_go4lunch.utils.DialogWidget;

@@ -1,4 +1,4 @@
-package com.pawel.p7_go4lunch.ui;
+package com.pawel.p7_go4lunch.ui.fragments;
 
 import android.Manifest;
 import android.app.Activity;
@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -40,11 +41,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
-import com.pawel.p7_go4lunch.AboutRestaurantActivity;
 import com.pawel.p7_go4lunch.R;
 import com.pawel.p7_go4lunch.databinding.FragmentMapViewBinding;
-import com.pawel.p7_go4lunch.databinding.WifiOffBinding;
 import com.pawel.p7_go4lunch.model.Restaurant;
+import com.pawel.p7_go4lunch.ui.AboutRestaurantActivity;
+import com.pawel.p7_go4lunch.utils.AutoSearchEvents;
 import com.pawel.p7_go4lunch.utils.Const;
 import com.pawel.p7_go4lunch.utils.LocalAppSettings;
 import com.pawel.p7_go4lunch.utils.LocationUtils;
@@ -65,7 +66,7 @@ public class MapViewFragment extends Fragment
 
     private RestaurantsViewModel mMapViewVM;
     private FragmentMapViewBinding mBinding;
-    private WifiOffBinding mWifiOffBinding;
+    private com.pawel.p7_go4lunch.databinding.WifiOffBinding mWifiOffBinding;
     private View view;
     private GoogleMap mGoogleMaps;
     private FragmentActivity mFragmentActivity;
@@ -76,7 +77,7 @@ public class MapViewFragment extends Fragment
     private Activity mActivity;
     private String currentLocation;
     private List<Restaurant> mRestaurants = new ArrayList<>();
-    private static final String TAG = "SEARCH";
+    private static final String TAG = "AUTO_COM";
     private static final String TAG2 = "ASK_LOCATION";
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -96,6 +97,14 @@ public class MapViewFragment extends Fragment
         ViewModelFactory vmf = Injection.sViewModelFactory();
         mMapViewVM = new ViewModelProvider(requireActivity(), vmf).get(RestaurantsViewModel.class);
         mMapViewVM.init();
+        setAutocompleteEventObserver();
+    }
+
+    private void setAutocompleteEventObserver() {
+        mMapViewVM.getAutoSearchEvent().observe(getViewLifecycleOwner(), autoSearchEvents -> {
+            Log.i(TAG, "onChanged: AutoSearchEvent:::: " + autoSearchEvents);
+            // TODO all cases for AutoSearchEvents
+        });
     }
 
     private void onViewModelReadySetObservers() {
@@ -153,8 +162,8 @@ public class MapViewFragment extends Fragment
                     LatLng ll = new LatLng(location.getLatitude(), location.getLongitude());
                     mMapViewVM.setUpCurrentLocation(location, ll);
                     if (mMapViewVM.getRestaurantsCache().isEmpty()) {
-                        fetchRestaurants();
-                        onFetchRestaurants();
+                        //fetchRestaurants();
+                        //onFetchRestaurants();
                         Log.i(TAG, "initMapRestaurant: fetchRestaurants ");
                     } else {
                         mRestaurants = mMapViewVM.getRestaurantsCache();

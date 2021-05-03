@@ -1,4 +1,4 @@
-package com.pawel.p7_go4lunch;
+package com.pawel.p7_go4lunch.ui;
 
 import android.app.Dialog;
 import android.app.SearchManager;
@@ -21,13 +21,15 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.FirebaseUserMetadata;
+import com.pawel.p7_go4lunch.BuildConfig;
+import com.pawel.p7_go4lunch.R;
 import com.pawel.p7_go4lunch.databinding.ActivityMainBinding;
 import com.pawel.p7_go4lunch.databinding.NavigationDrawerHeaderBinding;
+import com.pawel.p7_go4lunch.utils.AutoSearchEvents;
 import com.pawel.p7_go4lunch.utils.Const;
 import com.pawel.p7_go4lunch.utils.GlideApp;
 import com.pawel.p7_go4lunch.utils.ViewWidgets;
@@ -165,11 +167,21 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public boolean onQueryTextSubmit(String query) {
-                // do whatever you want with this submitted query
-
                 Log.i(TAG, " ...onQueryTextSubmit: " + query);
 
                 return true; // signal that we consumed this event
+            }
+        });
+        // Listen focus on SearchView for clean Map or List of Restaurants if true or rebuild NearBy search if false
+        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    mMainActivityViewModel.setAutoSearchEventStatus(AutoSearchEvents.AUTO_START);
+                } else {
+                    mMainActivityViewModel.setAutoSearchEventStatus(AutoSearchEvents.AUTO_STOP);
+                }
+                Log.e(TAG, "onFocusChange: FOCUS__OF__SEARCH_VIEW__WAS__CHANGED with boolean:  " + hasFocus);
             }
         });
         //Log.i(TAG, "setSearchWidget: START ");
