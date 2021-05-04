@@ -2,38 +2,67 @@ package com.pawel.p7_go4lunch.viewModels;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.pawel.p7_go4lunch.dataServices.repositorys.FirebaseUserRepository;
 import com.pawel.p7_go4lunch.dataServices.repositorys.GooglePlaceRepository;
-import com.pawel.p7_go4lunch.model.FavoritesRestaurants;
-import com.pawel.p7_go4lunch.model.Restaurant;
+import com.pawel.p7_go4lunch.model.googleApiPlaces.Result;
 import com.pawel.p7_go4lunch.utils.AutoSearchEvents;
 
-import java.util.List;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class MainActivityViewModel extends ViewModel {
 
-    private final FirebaseUserRepository mFirebaseUserRepository;
+    private final FirebaseUserRepository mFirebaseUserRepo;
     private final GooglePlaceRepository mGooglePlaceRepository;
+    private final CompositeDisposable mDisposable = new CompositeDisposable();
 
     public void init() {
     }
 
     public MainActivityViewModel(FirebaseUserRepository firebaseUserRepository, GooglePlaceRepository googlePlaceRepository) {
-        mFirebaseUserRepository = firebaseUserRepository;
+        mFirebaseUserRepo = firebaseUserRepository;
         mGooglePlaceRepository = googlePlaceRepository;
     }
 
     public void createUser(String uri, String name, String email, String urlImage) {
-        mFirebaseUserRepository.createUser(uri, name, email, urlImage).addOnFailureListener(this.onFailureListener());
+        mFirebaseUserRepo.createUser(uri, name, email, urlImage).addOnFailureListener(this.onFailureListener());
     }
 
-//    public void sendAutocompleteReq() {
-//        mGooglePlaceRepository.
-//    }
+    public void streamCombinedAutocompleteDetailsPlace(String input, String lang, int radius, String location, String origin) {
+        mGooglePlaceRepository.getRestoAutocompleteBy(input,lang,radius,location, origin)
+                .subscribeOn(Schedulers.io())
+                .concatMap(predictions -> mGooglePlaceRepository.getRestaurantDetails(predictions.getPlaceId()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Result>() {
+                    @Override
+                    public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                        mDisposable.add(d);
+                    }
+
+                    @Override
+                    public void onNext(@io.reactivex.annotations.NonNull Result result) {
+                        //mGooglePlaceRepository.upDateRestaurantsWithContact(result);
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        Log.e("ERROR", "API Google Place Autocomplete search ERROR:", e);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        // TODO set Restaurants to GoogleRepo LiveData
+                        mGooglePlaceRepository.setRestaurantLiveData();
+                    }
+                });
+    }
 
     public void setAutoSearchEventStatus(AutoSearchEvents eventStatus) {
         mGooglePlaceRepository.setAutoSearchEvents(eventStatus);

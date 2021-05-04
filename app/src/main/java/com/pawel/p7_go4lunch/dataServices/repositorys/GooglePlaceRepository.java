@@ -1,6 +1,5 @@
 package com.pawel.p7_go4lunch.dataServices.repositorys;
 
-import android.gesture.Prediction;
 import android.location.Location;
 import android.util.Log;
 
@@ -24,11 +23,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class GooglePlaceRepository {
@@ -42,7 +38,7 @@ public class GooglePlaceRepository {
     private final MutableLiveData<List<Restaurant>> mRestaurantLiveData = new MutableLiveData<>();
     private final Location mCntLocation = new Location("");
     private final CompositeDisposable mDisposable = new CompositeDisposable();
-    private MutableLiveData<AutoSearchEvents> mAutoSearchEvents = new MutableLiveData<>(AutoSearchEvents.AUTO_NULL);
+    private final MutableLiveData<AutoSearchEvents> mAutoSearchEvents = new MutableLiveData<>(AutoSearchEvents.AUTO_NULL);
 
     public GooglePlaceRepository() {
         mGooglePlaceAPIService = getGooglePlaceApiService();
@@ -118,74 +114,22 @@ public class GooglePlaceRepository {
                 });
     }
 
-//    public Observable<List<Prediction>> getRestaurantAutocomplete(String input, String lang, int radius, String location, String origin) {
-//        return streamAutocompletePlaces(input, lang, radius, location, origin)
-//                .map(new Function<AutoResponse, Object>() {
-//                    @Override
-//                    public Object apply(@NonNull AutoResponse autoResponse) throws Exception {
-//                        if (autoResponse.getStatus().equals("OK")) {
-//                            setAutoSearchEvents(AutoSearchEvents.AUTO_OK);
-//                            return autoResponse.getPredictions();
-//                        } else if (autoResponse.getStatus().equals("ZERO_RESULT")) {
-//                            setAutoSearchEvents(AutoSearchEvents.AUTO_ZERO_RESULT);
-//                            return null;
-//                        } else {
-//                            setAutoSearchEvents(AutoSearchEvents.AUTO_ERROR);
-//                            return null;
-//                        }
-//                    }
-//                }).concatMap(new Function<Object, ObservableSource<? extends List<Prediction>>>() {
-//                    @Override
-//                    public ObservableSource<? extends List<Prediction>> apply(@NonNull Object o) throws Exception {
-//                        return Observable.fromIterable(o)
-//                                .subscribeOn(Schedulers.io());
-//                    }
-//                });
-//    }
-
-    public Observable<List<Predictions>> getRestoAutocompleteBy(String input, String lang, int radius, String location, String origin) {
+    public Observable<Predictions> getRestoAutocompleteBy(String input, String lang, int radius, String location, String origin) {
         return streamAutocompletePlaces(input, lang, radius, location, origin)
-                .map((Function<AutoResponse, List<Predictions>>) autoResponse -> {
+                .map(autoResponse -> {
                     if (autoResponse.getStatus().equals("OK")) {
-                        setAutoSearchEvents(AutoSearchEvents.AUTO_OK);
+                        GooglePlaceRepository.this.setAutoSearchEvents(AutoSearchEvents.AUTO_OK);
                     } else if (autoResponse.getStatus().equals("ZERO_RESULT")) {
-                        setAutoSearchEvents(AutoSearchEvents.AUTO_ZERO_RESULT);
-                        //return null;
+                        GooglePlaceRepository.this.setAutoSearchEvents(AutoSearchEvents.AUTO_ZERO_RESULT);
                     } else {
-                        setAutoSearchEvents(AutoSearchEvents.AUTO_ERROR);
-                        //return null;
+                        GooglePlaceRepository.this.setAutoSearchEvents(AutoSearchEvents.AUTO_ERROR);
                     }
-
                     return autoResponse.getPredictions();
-                }).flatMap(new Function<Predictions, ObservableSource<List<Predictions>>>() {
-
-                    @Override
-                    public ObservableSource<List<Predictions>> apply(@NonNull Predictions predictions) throws Exception {
-                        return Observable.fromIterable(predictions)
-                                .subscribeOn(Schedulers.io());
-                    }
+                }).flatMap(predictions -> {
+                    GooglePlaceRepository.this.setRestoFromPredictions(predictions);
+                    return Observable.fromIterable(predictions)
+                            .subscribeOn(Schedulers.io());
                 });
-    }
-
-//    public Observable<Predictions> getRestoAutocomBy(String input, String lang, int radius, String location, String origin) {
-//        return streamAutocompletePlaces(input, lang, radius, location, origin)
-//                .map(AutoResponse::getPredictions)
-//                .flatMap(predictions -> {
-//                    setRestoFromPredictions(predictions);
-//                    return Observable.fromIterable(predictions)
-//                            .subscribeOn(Schedulers.io());
-//                });
-//    }
-
-    private void setRestoFromPredictions(List<Predictions> predictions) {
-        if (predictions != null) {
-            for (Predictions prd: predictions) {
-                Restaurant rst = new Restaurant();
-                rst.setPlaceId(prd.getPlaceId());
-                rst.setDistance(prd.getDistanceMeters());
-                mRestaurantsAutoCom.add(rst);
-            }
-        }
     }
 
     public Observable<Result> getRestaurantContact(String placeId) {
@@ -241,35 +185,44 @@ public class GooglePlaceRepository {
     }
 
     public Restaurant createRestaurant(Result result) {
-        Restaurant restaurant = new Restaurant();
+        Restaurant r = new Restaurant();
         Location l = new Location("");
         if (result != null) {
-            if (result.getPlaceId() != null) restaurant.setPlaceId(result.getPlaceId());
-            restaurant.setDateCreated(new Date());
-            if (result.getName() != null) restaurant.setName(result.getName());
-            if (result.getVicinity() != null) restaurant.setAddress(result.getVicinity());
+            if (result.getPlaceId() != null) r.setPlaceId(result.getPlaceId());
+            r.setDateCreated(new Date());
+            if (result.getName() != null) r.setName(result.getName());
+            if (result.getVicinity() != null) r.setAddress(result.getVicinity());
             if (result.getGeometry() != null) {
-                restaurant.setLocation(result.getGeometry().getLocation());
+                r.setLocation(result.getGeometry().getLocation());
                 l.setLatitude(result.getGeometry().getLocation().getLat());
                 l.setLongitude(result.getGeometry().getLocation().getLng());
                 float dt = mCntLocation.distanceTo(l);
-                restaurant.setDistance(Math.round(dt));
+                r.setDistance(Math.round(dt));
             }
             if (result.getOpeningHours() != null)
-                restaurant.setOpeningHours(result.getOpeningHours());
+                r.setOpeningHours(result.getOpeningHours());
             if (result.getPhotos() != null)
-                restaurant.setImage(getPhoto(result.getPhotos().get(0).getPhotoReference()));
-            if (result.getRating() != null) restaurant.setRating(result.getRating());
+                r.setImage(getPhoto(result.getPhotos().get(0).getPhotoReference()));
+            if (result.getRating() != null) r.setRating(result.getRating());
             if (result.getInternationalPhoneNumber() != null)
-                restaurant.setPhoneNumber(result.getInternationalPhoneNumber());
-            if (result.getWebsite() != null) restaurant.setWebsite(result.getWebsite());
-            restaurant.setUserList(new ArrayList<>());
-            return restaurant;
+                r.setPhoneNumber(result.getInternationalPhoneNumber());
+            if (result.getWebsite() != null) r.setWebsite(result.getWebsite());
+            r.setUserList(new ArrayList<>());
+            return r;
         }
         return null;
     }
 
-    private void setRestoAutocomplete() {
-
+    private void setRestoFromPredictions(List<Predictions> predictions) {
+        Log.i(TAG, "setRestoFromPredictions: ");
+        if (predictions != null) {
+            Log.i(TAG, "setRestoFromPredictions: N° " +predictions.size());
+            for (Predictions prd: predictions) {
+                Restaurant rst = new Restaurant();
+                rst.setPlaceId(prd.getPlaceId());
+                rst.setDistance(prd.getDistanceMeters());
+                mRestaurantsAutoCom.add(rst);
+            }
+        }
     }
 }

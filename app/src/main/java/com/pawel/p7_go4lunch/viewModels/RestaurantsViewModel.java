@@ -77,7 +77,7 @@ public class RestaurantsViewModel extends ViewModel {
 
                     @Override
                     public void onError(@NonNull Throwable e) {
-                        Log.e("SEARCH", "onError: ", e);
+                        Log.e("ERROR:", "API Google Place Nearby search ERROR: ", e);
                     }
 
                     @Override
@@ -89,6 +89,7 @@ public class RestaurantsViewModel extends ViewModel {
                     }
                 });
     }
+
 
     public MutableLiveData<List<Restaurant>> getRestaurants() {
         return mGooglePlaceRepository.getRestaurants();
@@ -107,7 +108,8 @@ public class RestaurantsViewModel extends ViewModel {
                 usersRestaurants = queryDocumentSnapshots.toObjects(User.class);
                 for (int i = 0; i < usersRestaurants.size(); i++) {
                     Log.i(TAG, "onSuccess: " + usersRestaurants.get(i).toString());
-                    if (u != null && usersRestaurants.get(i).getEmail().equals(u.getEmail())) usersRestaurants.remove(i);
+                    if (u != null && usersRestaurants.get(i).getEmail().equals(u.getEmail()))
+                        usersRestaurants.remove(i);
                     //usersRestaurants.add(tem.get(i));
                 }
             }
@@ -161,7 +163,7 @@ public class RestaurantsViewModel extends ViewModel {
             List<String> ids = getRestoIdsFromUsers(r.getPlaceId());
             if (ids.size() > 0) {
                 r.setUserList(ids);
-                mRestaurants.set(i,r);
+                mRestaurants.set(i, r);
             }
         }
     }
