@@ -86,7 +86,7 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
             Window w = getWindow();
             w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         }
-        getLocalAppSettings(this);
+        getLocalAppSettings();
         getDrawable();
         getUser();
     }
@@ -394,11 +394,11 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
     @Override
     protected void onResume() {
         super.onResume();
-        getLocalAppSettings(this);
+        getLocalAppSettings();
     }
 
-    private void getLocalAppSettings(Activity activity) {
-        mAppSettings = new LocalAppSettings(activity);
+    private void getLocalAppSettings() {
+        mAppSettings = new LocalAppSettings(this);
     }
 
     @Override

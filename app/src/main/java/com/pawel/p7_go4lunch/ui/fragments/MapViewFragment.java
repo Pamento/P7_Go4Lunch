@@ -18,7 +18,6 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -45,7 +44,6 @@ import com.pawel.p7_go4lunch.R;
 import com.pawel.p7_go4lunch.databinding.FragmentMapViewBinding;
 import com.pawel.p7_go4lunch.model.Restaurant;
 import com.pawel.p7_go4lunch.ui.AboutRestaurantActivity;
-import com.pawel.p7_go4lunch.utils.AutoSearchEvents;
 import com.pawel.p7_go4lunch.utils.Const;
 import com.pawel.p7_go4lunch.utils.LocalAppSettings;
 import com.pawel.p7_go4lunch.utils.LocationUtils;
@@ -77,6 +75,7 @@ public class MapViewFragment extends Fragment
     private Activity mActivity;
     private String currentLocation;
     private List<Restaurant> mRestaurants = new ArrayList<>();
+    //private String autocompleteStatus;
     private static final String TAG = "AUTO_COM";
     private static final String TAG2 = "ASK_LOCATION";
 
@@ -102,8 +101,13 @@ public class MapViewFragment extends Fragment
 
     private void setAutocompleteEventObserver() {
         mMapViewVM.getAutoSearchEvent().observe(getViewLifecycleOwner(), autoSearchEvents -> {
-            Log.i(TAG, "onChanged: AutoSearchEvent:::: " + autoSearchEvents);
+            Log.i(TAG, "mapViewFragment.EventObserver: AutoSearchEvent::::__ " + autoSearchEvents);
             // TODO all cases for AutoSearchEvents
+            // if AUTO_ERROR display SnackBar message
+            // TODO if AUTO_START
+            // mGoogleMap.clear()
+            // TODO if AUTO_STOP
+            // call faction which get RestaurantCache and display them on Map
         });
     }
 
@@ -158,19 +162,22 @@ public class MapViewFragment extends Fragment
             Log.i(TAG, "START initMapRestaurant: :else ");
             Objects.requireNonNull(LocationUtils.getCurrentDeviceLocation()).observe(getViewLifecycleOwner(), location -> {
                 if (location != null) {
+                    // TODO Add if for AutoEventStatus
                     Log.i(TAG, "initMapRestaurant: " + location);
                     LatLng ll = new LatLng(location.getLatitude(), location.getLongitude());
                     mMapViewVM.setUpCurrentLocation(location, ll);
-                    if (mMapViewVM.getRestaurantsCache().isEmpty()) {
-                        //fetchRestaurants();
-                        //onFetchRestaurants();
-                        Log.i(TAG, "initMapRestaurant: fetchRestaurants ");
-                    } else {
-                        mRestaurants = mMapViewVM.getRestaurantsCache();
-                        if (mRestaurants != null) setRestaurantMarksOnMap();
-                    }
+                    observeRestaurantAPIResponse();
+//                    if (mMapViewVM.getRestaurantsCache().isEmpty()) {
+//                        //fetchRestaurants();
+//                        //onFetchRestaurants();
+//                        Log.i(TAG, "initMapRestaurant: fetchRestaurants ");
+//                    } else {
+//                        mRestaurants = mMapViewVM.getRestaurantsCache();
+//                        if (mRestaurants != null) setRestaurantMarksOnMap();
+//                    }
 
                     moveCamera(location, mAppSettings.getPerimeter());
+                    // FAB of functionality: "Back of camera upon user position"
                     onViewModelReadySetObservers();
                 }
             });
@@ -211,10 +218,20 @@ public class MapViewFragment extends Fragment
 
     }
 
+    private void observeRestaurantAPIResponse() {
+        mMapViewVM.getRestaurants().observe(getViewLifecycleOwner(), restaurants -> {
+            Log.i(TAG, "MapVF.observeRestaurantAPIResponse: resto.size() " + restaurants.size());
+            // TODO start set markers on map
+            mRestaurants = restaurants;
+            setRestaurantMarksOnMap();
+        });
+    }
+
+    // TODO verification if this fun is Welcome here !!
     private void fetchRestaurants() {
         mMapViewVM.fetchRestaurants(mAppSettings.getRadius());
     }
-
+    // TODO verification if this fun is Welcome here !!
     private void onFetchRestaurants() {
         mMapViewVM.getRestaurants().observe(getViewLifecycleOwner(), restaurants -> {
             mRestaurants = restaurants;

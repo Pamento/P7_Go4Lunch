@@ -18,7 +18,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class MainActivityViewModel extends ViewModel {
-
+    private static final String TAG = "AUTO_COM";
     private final FirebaseUserRepository mFirebaseUserRepo;
     private final GooglePlaceRepository mGooglePlaceRepository;
     private final CompositeDisposable mDisposable = new CompositeDisposable();
@@ -43,12 +43,14 @@ public class MainActivityViewModel extends ViewModel {
                 .subscribe(new Observer<Result>() {
                     @Override
                     public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                        Log.i(TAG, "MainActivityVM.onSubscribe: ");
                         mDisposable.add(d);
                     }
 
                     @Override
                     public void onNext(@io.reactivex.annotations.NonNull Result result) {
-                        //mGooglePlaceRepository.upDateRestaurantsWithContact(result);
+                        Log.i(TAG, "MainActivityVM.onNext: ");
+                        mGooglePlaceRepository.findRestoForUpdates(result,false);
                     }
 
                     @Override
@@ -59,9 +61,14 @@ public class MainActivityViewModel extends ViewModel {
                     @Override
                     public void onComplete() {
                         // TODO set Restaurants to GoogleRepo LiveData
+                        Log.i(TAG, "MainActivityVM.onComplete ");
                         mGooglePlaceRepository.setRestaurantLiveData();
                     }
                 });
+    }
+
+    public String getCurrentLocation() {
+        return mGooglePlaceRepository.getCurrentLocation();
     }
 
     public void setAutoSearchEventStatus(AutoSearchEvents eventStatus) {

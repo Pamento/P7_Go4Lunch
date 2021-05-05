@@ -32,6 +32,7 @@ import com.pawel.p7_go4lunch.databinding.NavigationDrawerHeaderBinding;
 import com.pawel.p7_go4lunch.utils.AutoSearchEvents;
 import com.pawel.p7_go4lunch.utils.Const;
 import com.pawel.p7_go4lunch.utils.GlideApp;
+import com.pawel.p7_go4lunch.utils.LocalAppSettings;
 import com.pawel.p7_go4lunch.utils.ViewWidgets;
 import com.pawel.p7_go4lunch.utils.di.Injection;
 import com.pawel.p7_go4lunch.viewModels.MainActivityViewModel;
@@ -65,8 +66,10 @@ public class MainActivity extends AppCompatActivity
             new AuthUI.IdpConfig.FacebookBuilder().build());
     protected FirebaseUser mFirebaseUser;
     protected Location mCurrentLocation;
+    protected String mCurrentLocationStr;
     protected double mLatitude, mLongitude;
     protected LatLng mLatLng;
+    private LocalAppSettings mAppSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +92,7 @@ public class MainActivity extends AppCompatActivity
         if (!Places.isInitialized()) {
             Places.initialize(getApplicationContext(), BuildConfig.API_KEY);
         }
+        getLocalAppSettings();
         //PlacesClient placesClient = Places.createClient(this);
     }
 
@@ -145,6 +149,9 @@ public class MainActivity extends AppCompatActivity
         } else return super.onOptionsItemSelected(item);
     }
 
+    private void getLocalAppSettings() {
+        mAppSettings = new LocalAppSettings(this);
+    }
 
     private void setSearch(Menu menu) {
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -156,11 +163,16 @@ public class MainActivity extends AppCompatActivity
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextChange(String newText) {
-                // do whatever you want with this changed text
                 Log.i(TAG, " __onQueryTextChange: " + newText);
-
-                if ((newText.length() > 0) && (newText.length() % 3 == 0)) {
+//                if ((newText.length() > 0) && (newText.length() % 3 == 0)) {
+//                    Log.i(TAG, "onQueryTextChange: ___________________________________________ " + newText.length());
+//                }
+                if ((newText.length() >= 3)) {
                     Log.i(TAG, "onQueryTextChange: ___________________________________________ " + newText.length());
+                    mMainActivityViewModel
+                            .streamCombinedAutocompleteDetailsPlace(
+                                    newText,getResources().getString(R.string.app_language),
+                                    mAppSettings.getRadius(),mCurrentLocationStr,mCurrentLocationStr);
                 }
                 return true; // signal that we consumed this event
             }
@@ -173,16 +185,14 @@ public class MainActivity extends AppCompatActivity
             }
         });
         // Listen focus on SearchView for clean Map or List of Restaurants if true or rebuild NearBy search if false
-        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    mMainActivityViewModel.setAutoSearchEventStatus(AutoSearchEvents.AUTO_START);
-                } else {
-                    mMainActivityViewModel.setAutoSearchEventStatus(AutoSearchEvents.AUTO_STOP);
-                }
-                Log.e(TAG, "onFocusChange: FOCUS__OF__SEARCH_VIEW__WAS__CHANGED with boolean:  " + hasFocus);
+        searchView.setOnQueryTextFocusChangeListener((v, hasFocus) -> {
+            mCurrentLocationStr = mMainActivityViewModel.getCurrentLocation();
+            if (hasFocus) {
+                mMainActivityViewModel.setAutoSearchEventStatus(AutoSearchEvents.AUTO_START);
+            } else {
+                mMainActivityViewModel.setAutoSearchEventStatus(AutoSearchEvents.AUTO_STOP);
             }
+            Log.e(TAG, "onFocusChange: FOCUS__OF__SEARCH_VIEW__WAS__CHANGED with boolean:  " + hasFocus);
         });
         //Log.i(TAG, "setSearchWidget: START ");
         // Get the intent, verify the action and get the query

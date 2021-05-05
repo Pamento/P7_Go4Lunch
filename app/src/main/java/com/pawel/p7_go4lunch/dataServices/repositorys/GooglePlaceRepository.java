@@ -28,7 +28,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class GooglePlaceRepository {
-    private static final String TAG = "SEARCH";
+    private static final String TAG = "AUTO_COM";
     private static volatile GooglePlaceRepository instance;
     private static String mCurrentLocation;
     private static LatLng initialLatLng;
@@ -45,7 +45,10 @@ public class GooglePlaceRepository {
     }
 
     public void setRestaurantLiveData() {
-        mRestaurantLiveData.setValue(mRestaurants);
+        Log.i(TAG, "GooglePlaceRepository.setRestaurantLiveData: Resto + Details:::");
+        Log.i(TAG, "GooglePlaceRepository.setRestaurantLiveData: " + mRestaurantsAutoCom.get(0).toString());
+
+        mRestaurantLiveData.setValue(mRestaurantsAutoCom);
     }
 
     public void setAutoSearchEvents(AutoSearchEvents autoSearchEvents) {
@@ -76,6 +79,10 @@ public class GooglePlaceRepository {
 
     public MutableLiveData<AutoSearchEvents> getAutoSearchEvents() {
         return mAutoSearchEvents;
+    }
+
+    public String getCurrentLocation() {
+        return mCurrentLocation;
     }
 
     // .........................................................................SETTERS
@@ -117,11 +124,15 @@ public class GooglePlaceRepository {
     public Observable<Predictions> getRestoAutocompleteBy(String input, String lang, int radius, String location, String origin) {
         return streamAutocompletePlaces(input, lang, radius, location, origin)
                 .map(autoResponse -> {
+                    Log.i(TAG, "getRestoAutocompleteBy: getStatus( " + autoResponse.getStatus());
                     if (autoResponse.getStatus().equals("OK")) {
+                        Log.i(TAG, "getRestoAutocompleteBy: OK");
                         GooglePlaceRepository.this.setAutoSearchEvents(AutoSearchEvents.AUTO_OK);
                     } else if (autoResponse.getStatus().equals("ZERO_RESULT")) {
+                        Log.i(TAG, "getRestoAutocompleteBy: ZERO");
                         GooglePlaceRepository.this.setAutoSearchEvents(AutoSearchEvents.AUTO_ZERO_RESULT);
                     } else {
+                        Log.e(TAG, "getRestoAutocompleteBy: ERROR");
                         GooglePlaceRepository.this.setAutoSearchEvents(AutoSearchEvents.AUTO_ERROR);
                     }
                     return autoResponse.getPredictions();
@@ -138,6 +149,7 @@ public class GooglePlaceRepository {
     }
 
     public Observable<Result> getRestaurantDetails(String placeId) {
+        Log.i(TAG, "GooglePlaceRepository.getRestaurantDetails: placeId:: " + placeId);
         return mGooglePlaceAPIService.getDetailsOfResto(placeId)
                 .map(SingleRestaurant::getResult);
     }
@@ -166,21 +178,66 @@ public class GooglePlaceRepository {
         }
     }
 
-    public void upDateRestaurantsWithContact(Result result) {
-        Restaurant mRcp;
-        for (int i = 0; i < mRestaurants.size(); i++) {
-            if (mRestaurants.get(i).getPlaceId().equals(result.getPlaceId())) {
-                mRcp = mRestaurants.get(i);
-                updateAndReplaceResto(result, mRcp);
+    public void findRestoForUpdates(Result result, boolean apiPlace) {
+        Log.i(TAG, "findRestoForUpdates: " + result.getName());
+        Log.i(TAG, "findRestoForUpdates: should by false: " + apiPlace);
+        List<Restaurant> lR;
+        Restaurant rcp;
+        if (apiPlace) {
+            lR = mRestaurants;
+        } else {
+            lR = mRestaurantsAutoCom;
+        }
+        Log.i(TAG, "findRestoForUpdates: temporaries List<Restaurant> lR::: " + lR.size());
+        if (lR.size() > 0)
+            Log.i(TAG, "findRestoForUpdates: temporaries List<Restaurant> if( lR.size > 0 )::: " + lR.size());
+        if (lR != null) {
+            Log.i(TAG, "findRestoForUpdates: mRestoAuto_ID" + lR.get(0).getPlaceId());
+            Log.i(TAG, "findRestoForUpdates: result_ID " + result.getPlaceId());
+            for (int i = 0; i < lR.size(); i++) {
+                Log.i(TAG, "findRestoForUpdates: inside LOOP");
+                if (lR.get(i).getPlaceId().equals(result.getPlaceId())) {
+                    Log.i(TAG, "findRestoForUpdates: inside loop");
+                    rcp = lR.get(i);
+                    if (apiPlace) updateRestoWithContact(result, rcp, apiPlace);
+                    else updateRestoWithDetails(result, rcp);
+                }
             }
         }
     }
 
-    private void updateAndReplaceResto(Result result, Restaurant mRcp) {
-        if (mRcp != null) {
-            mRcp.setPhoneNumber(result.getInternationalPhoneNumber());
-            mRcp.setWebsite(result.getWebsite());
-            mRestaurants.set(mRestaurants.indexOf(mRcp), mRcp);
+    private void updateRestoWithDetails(Result result, Restaurant rcp) {
+        Log.i(TAG, "GooglePlaceRepository.updateRestoWithDetails: ");
+//        Location l = new Location("");
+        if (result != null) {
+            Log.i(TAG, "GooglePlaceRepository.updateRestoWithDetails: result " + result.getName());
+            rcp.setDateCreated(new Date());
+            if (result.getName() != null) rcp.setName(result.getName());
+            if (result.getVicinity() != null) rcp.setAddress(result.getVicinity());
+            if (result.getGeometry() != null) {
+                Log.d(TAG, "GooglePlaceRepository.updateRestoWithDetails.getLocation: Location " + result.getGeometry().getLocation());
+                rcp.setLocation(result.getGeometry().getLocation());
+//                l.setLatitude(result.getGeometry().getLocation().getLat());
+//                l.setLongitude(result.getGeometry().getLocation().getLng());
+//                float dt = mCntLocation.distanceTo(l);
+//                rcp.setDistance(Math.round(dt));
+            }
+            if (result.getOpeningHours() != null)
+                rcp.setOpeningHours(result.getOpeningHours());
+            if (result.getPhotos() != null)
+                rcp.setImage(getPhoto(result.getPhotos().get(0).getPhotoReference()));
+            if (result.getRating() != null) rcp.setRating(result.getRating());
+            rcp.setUserList(new ArrayList<>());
+            mRestaurantsAutoCom.set(mRestaurantsAutoCom.indexOf(rcp), rcp);
+        }
+    }
+
+    private void updateRestoWithContact(Result result, Restaurant rcp, boolean apiPlace) {
+        if (rcp != null) {
+            rcp.setPhoneNumber(result.getInternationalPhoneNumber());
+            rcp.setWebsite(result.getWebsite());
+            if (apiPlace) mRestaurants.set(mRestaurants.indexOf(rcp), rcp);
+            else mRestaurantsAutoCom.set(mRestaurantsAutoCom.indexOf(rcp), rcp);
         }
     }
 
@@ -216,8 +273,8 @@ public class GooglePlaceRepository {
     private void setRestoFromPredictions(List<Predictions> predictions) {
         Log.i(TAG, "setRestoFromPredictions: ");
         if (predictions != null) {
-            Log.i(TAG, "setRestoFromPredictions: N° " +predictions.size());
-            for (Predictions prd: predictions) {
+            Log.i(TAG, "setRestoFromPredictions:size N° " + predictions.size());
+            for (Predictions prd : predictions) {
                 Restaurant rst = new Restaurant();
                 rst.setPlaceId(prd.getPlaceId());
                 rst.setDistance(prd.getDistanceMeters());

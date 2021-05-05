@@ -35,7 +35,7 @@ import io.reactivex.schedulers.Schedulers;
 
 public class RestaurantsViewModel extends ViewModel {
 
-    private static final String TAG = "SEARCH";
+    private static final String TAG = "AUTO_COM";
     private final GooglePlaceRepository mGooglePlaceRepository;
     private final FirebaseUserRepository mFirebaseUserRepository;
     private final CompositeDisposable mDisposable = new CompositeDisposable();
@@ -72,7 +72,7 @@ public class RestaurantsViewModel extends ViewModel {
 
                     @Override
                     public void onNext(@NonNull Result result) {
-                        mGooglePlaceRepository.upDateRestaurantsWithContact(result);
+                        mGooglePlaceRepository.findRestoForUpdates(result, true);
                     }
 
                     @Override
@@ -92,6 +92,7 @@ public class RestaurantsViewModel extends ViewModel {
 
 
     public MutableLiveData<List<Restaurant>> getRestaurants() {
+        Log.i(TAG, "RestaurantsVM.getRestaurants: ");
         return mGooglePlaceRepository.getRestaurants();
     }
 

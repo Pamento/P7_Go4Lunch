@@ -48,7 +48,7 @@ public interface GooglePlaceAPI {
      * @param placeId unique ID of restaurant provided by Google NearBy search
      * @return Observable<RestaurantResult> (res in Json)
      */
-    @GET("details/json?fields=vicinity,name,geometry,opening_hours,rating,photo&key=" + KEY)
+    @GET("details/json?fields=place_id,vicinity,name,geometry,opening_hours,rating,photo&key=" + KEY)
     Observable<SingleRestaurant> getDetailsOfResto(@Query("place_id") String placeId);
 
     /**
