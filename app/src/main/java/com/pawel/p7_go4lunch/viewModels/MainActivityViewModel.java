@@ -43,13 +43,12 @@ public class MainActivityViewModel extends ViewModel {
                 .subscribe(new Observer<Result>() {
                     @Override
                     public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
-                        Log.i(TAG, "MainActivityVM.onSubscribe: ");
                         mDisposable.add(d);
                     }
 
                     @Override
                     public void onNext(@io.reactivex.annotations.NonNull Result result) {
-                        Log.i(TAG, "MainActivityVM.onNext: ");
+                        Log.i(TAG, "MainActivityVM.onNext: result.getName()::: " + result.getName());
                         mGooglePlaceRepository.findRestoForUpdates(result,false);
                     }
 

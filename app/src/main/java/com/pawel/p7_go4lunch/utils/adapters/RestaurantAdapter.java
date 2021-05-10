@@ -39,7 +39,12 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
 
         Restaurant restaurant = mRestaurants.get(position);
         String d = holder.itemView.getResources().getString(R.string.distance_to_restaurant, restaurant.getDistance());
-        String w = holder.itemView.getResources().getString(R.string.workmate_number, restaurant.getUserList().size());
+        int n = 0;
+        String w = "";
+        if (restaurant.getUserList() != null) {
+            n = restaurant.getUserList().size();
+            w = holder.itemView.getResources().getString(R.string.workmate_number, restaurant.getUserList().size());
+        }
         String h = holder.itemView.getResources().getString(R.string.close_now);
         if (restaurant.getOpeningHours() != null && restaurant.getOpeningHours().getOpenNow())
             h = holder.itemView.getResources().getString(R.string.open_now);
@@ -47,7 +52,13 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
         holder.restaurantAddress.setText(restaurant.getAddress());
         holder.restaurantOpeningTime.setText(h);
         holder.restaurantDistanceFromUser.setText(d);
-        holder.restaurantWorkmatesNumber.setText(w);
+        if (n > 0)
+            holder.restaurantWorkmatesNumber.setText(w);
+        else {
+            holder.restaurantWorkmatesNumber.setVisibility(View.GONE);
+            holder.workmatesIcon.setVisibility(View.GONE);
+        }
+
         holder.restaurantRatingBar.setRating((float)restaurant.getRating());
         // Restaurant image
         GlideApp.with(holder.restaurantImage.getContext())
@@ -70,6 +81,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
         AppCompatTextView restaurantDistanceFromUser;
         AppCompatTextView restaurantWorkmatesNumber;
         AppCompatImageView restaurantImage;
+        AppCompatImageView workmatesIcon;
         AppCompatRatingBar restaurantRatingBar;
         OnItemRestaurantListClickListener mOnItemRestaurantListClickListener;
 
@@ -80,6 +92,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
             restaurantOpeningTime = vBinding.listRestaurantOpenTime;
             restaurantDistanceFromUser = vBinding.listRestaurantDistance;
             restaurantWorkmatesNumber = vBinding.listRestaurantNumberWorkmates;
+            workmatesIcon = vBinding.listRestaurantIcPersona;
             restaurantImage = vBinding.listRestaurantImage;
             restaurantRatingBar = vBinding.listRestaurantRatingBar;
             mOnItemRestaurantListClickListener = onItemRestaurantListClickListener;
@@ -88,7 +101,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
 
         @Override
         public void onClick(View v) {
-            mOnItemRestaurantListClickListener.onItemRestaurantListClick(getAdapterPosition());
+            mOnItemRestaurantListClickListener.onItemRestaurantListClick(getAbsoluteAdapterPosition());
         }
     }
 

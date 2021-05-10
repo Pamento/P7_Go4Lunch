@@ -2,7 +2,6 @@ package com.pawel.p7_go4lunch.ui;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -47,7 +46,7 @@ import java.util.Objects;
 
 public class AboutRestaurantActivity extends AppCompatActivity implements WorkmateAdapter.OnItemClickListener {
 
-    private static final String TAG = "NOTIF";
+    private static final String TAG = "AUTO_COM";
 
     // view
     private AboutRestaurantViewModel mAboutRestaurantVM;
@@ -126,14 +125,11 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
     }
 
     private void getRestaurantFromGoogleMap() {
-        mAboutRestaurantVM.getRestaurant(restaurantId).observe(this, restaurant -> {
-            mThisRestaurant = restaurant;
-            // isSetAlarmRemainder() send true if is set.
+            mThisRestaurant = mAboutRestaurantVM.getRestoSelected(restaurantId);
             isChosen = mUser.getUserRestaurant() != null
                     && mUser.getUserRestaurant().getPlaceId().equals(mThisRestaurant.getPlaceId())
                     && isSetAlarmRemainder();
             updateUI();
-        });
     }
 
     private void getRestaurantFromUser() {

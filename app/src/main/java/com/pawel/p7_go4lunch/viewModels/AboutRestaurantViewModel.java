@@ -12,15 +12,12 @@ import com.pawel.p7_go4lunch.dataServices.repositorys.GooglePlaceRepository;
 import com.pawel.p7_go4lunch.model.Restaurant;
 import com.pawel.p7_go4lunch.model.User;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class AboutRestaurantViewModel extends ViewModel {
 
     private final GooglePlaceRepository mGooglePlaceRepository;
     private final FirebaseUserRepository mFirebaseUserRepository;
-    private List<Restaurant> mRestaurantsList = new ArrayList<>();
-    private final MutableLiveData<Restaurant> mRestaurant = new MutableLiveData<>();
     private final MutableLiveData<User> mUser = new MutableLiveData<>();
 
     public AboutRestaurantViewModel(GooglePlaceRepository googlePlaceRepository, FirebaseUserRepository firebaseUserRepository) {
@@ -29,7 +26,6 @@ public class AboutRestaurantViewModel extends ViewModel {
     }
 
     public void init() {
-        mRestaurantsList = mGooglePlaceRepository.getRestaurantsCache();
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (firebaseUser != null) getUserFromFirestore(firebaseUser.getUid());
     }
@@ -44,20 +40,8 @@ public class AboutRestaurantViewModel extends ViewModel {
         return mFirebaseUserRepository.getUsersWithTheSameRestaurant(restoId);
     }
 
-    public void getRestaurantsList() {
-        if (mRestaurantsList.isEmpty()) {
-            this.mRestaurantsList = mGooglePlaceRepository.getRestaurantsCache();
-        }
-    }
-
-    public LiveData<Restaurant> getRestaurant(String placeID) {
-        if (mRestaurantsList.isEmpty()) getRestaurantsList();
-        for (Restaurant rst: mRestaurantsList) {
-            if (rst.getPlaceId().equals(placeID)) {
-                mRestaurant.setValue(rst);
-            }
-        }
-        return mRestaurant;
+    public Restaurant getRestoSelected(String placeId) {
+        return mGooglePlaceRepository.getRestoSelected(placeId);
     }
 
     public LiveData<User> getUser() {

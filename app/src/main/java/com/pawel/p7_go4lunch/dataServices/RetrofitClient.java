@@ -34,6 +34,8 @@ public class RetrofitClient {
     //    public static GooglePlaceAPI getRequestApi(){
 //        return requestApi;
 //    }
+
+    // with OkHttp3 full version API 21 +
     public static GooglePlaceAPI getRequestApi() {
         final HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -45,4 +47,12 @@ public class RetrofitClient {
                 .build();
         return retrofit.create(GooglePlaceAPI.class);
     }
+//    public static GooglePlaceAPI getRequestApi() {
+//        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl(Const.GOOGLE_BASE_URL)
+//                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+//                .addConverterFactory(GsonConverterFactory.create())
+//                .build();
+//        return retrofit.create(GooglePlaceAPI.class);
+//    }
 }

@@ -28,6 +28,7 @@
     <!-- Main Activity __menu_toolbar -->
     <string name="search">search</string>
     <string name="search_hint">Search a restaurant</string>
+    <string name="search_no_resto_ms">There are no restaurants for this search.</string>
 
     <!-- Fragment map view -->
     <string name="current_location_not_found">Unable to get current location.</string>
@@ -106,6 +107,9 @@
 
     <!-- GPS request in MapViewFragment -->
     <string name="fail_ask_gps_signal">Please check with Google Maps if your position is called correctly by Your phone.</string>
+
+    <!-- Workmates list -->
+    <string name="resto_list_non_data">There is no restaurant to display.</string>
 
     <!-- Workmates list -->
     <string name="workmate_anonymous">Workmate</string>

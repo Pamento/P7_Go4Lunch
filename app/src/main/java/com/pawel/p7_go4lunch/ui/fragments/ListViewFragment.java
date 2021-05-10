@@ -9,14 +9,13 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.pawel.p7_go4lunch.databinding.MessageNoRestoBinding;
 import com.pawel.p7_go4lunch.ui.AboutRestaurantActivity;
-import com.pawel.p7_go4lunch.databinding.ErrorNoDataFullscreenMessageBinding;
 import com.pawel.p7_go4lunch.databinding.FragmentListViewBinding;
 import com.pawel.p7_go4lunch.databinding.ProgressBarBinding;
 import com.pawel.p7_go4lunch.model.Restaurant;
@@ -36,8 +35,9 @@ public class ListViewFragment extends Fragment implements RestaurantAdapter.OnIt
     private RestaurantsViewModel mRestaurantsVM;
     private FragmentListViewBinding mBinding;
     private ProgressBarBinding progressBarBiding;
-    private ErrorNoDataFullscreenMessageBinding errorBinding;
+    private MessageNoRestoBinding mMessageNoRestoBinding;
     private List<Restaurant> mRestaurants = new ArrayList<>();
+    private AutoSearchEvents autoEvent = AutoSearchEvents.AUTO_NULL;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -48,7 +48,10 @@ public class ListViewFragment extends Fragment implements RestaurantAdapter.OnIt
         if (LocationUtils.isWifiOn()) wifiOffBinding.mapWifiOff.setVisibility(View.VISIBLE);
         else {
             setProgressBar();
-            setRecyclerView();
+            // initially the recyclerView start with list of Resto from NearBy
+            isRestoReceived();
+            // Then, hi listen for the change
+            observeRestaurantAPIResponse();
         }
         return mBinding.getRoot();
     }
@@ -56,41 +59,81 @@ public class ListViewFragment extends Fragment implements RestaurantAdapter.OnIt
     private void initVM() {
         ViewModelFactory vmf = Injection.sViewModelFactory();
         mRestaurantsVM = new ViewModelProvider(requireActivity(), vmf).get(RestaurantsViewModel.class);
+        // TODO replace getRestoCache with getRestaurant() -> mRestaurant
         mRestaurants = mRestaurantsVM.getRestaurantsCache();
         setAutocompleteEventObserver();
     }
 
     private void setAutocompleteEventObserver() {
-        mRestaurantsVM.getAutoSearchEvent().observe(getViewLifecycleOwner(), autoSearchEvents -> {
+        mRestaurantsVM.getAutoSearchEventList().observe(getViewLifecycleOwner(), autoSearchEvents -> {
             Log.i(TAG, "ListViewFragment.setAutocompleteEventObserver.onChanged: " + autoSearchEvents);
+            autoEvent = autoSearchEvents;
+            if (autoSearchEvents.equals(AutoSearchEvents.AUTO_SEARCH_EMPTY)) {
+                mRestaurants.clear();
+                updateRecyclerView();
+                displayRestoInRecyclerV();
+            }
             // TODO all cases for AutoSearchEvents
+            // if AUTO_ERROR display SnackBar message
+            // TODO if AUTO_START
+            // List.clear() ?
+            // TODO if AUTO_STOP
+            // call faction which get RestaurantCache and display them on Map
         });
     }
 
     private void bindIncludesLayouts() {
         View progressBinding = mBinding.restaurantProgressBar.getRoot();
         progressBarBiding = ProgressBarBinding.bind(progressBinding);
-        View errorViewBinding = mBinding.restaurantFullscreenNoData.getRoot();
-        errorBinding = ErrorNoDataFullscreenMessageBinding.bind(errorViewBinding);
+        View msNoRestoViewBinding = mBinding.restaurantFullscreenNoData.getRoot();
+        mMessageNoRestoBinding = MessageNoRestoBinding.bind(msNoRestoViewBinding);
     }
 
     private void setProgressBar() {
         progressBarBiding.progressBarLayout.setVisibility(View.VISIBLE);
     }
 
-    private void setRecyclerView() {
+    private void observeRestaurantAPIResponse() {
+        Log.i(TAG, "ListViewFragment.observeRestaurantAPIResponse: ");
+        // TODO : check what is he listening : getRestaurants
+        // Is listening: mRestaurantLiveData in GoogleRepo
+        mRestaurantsVM.getRestaurants().observe(getViewLifecycleOwner(), restaurants -> {
+            Log.i(TAG, "OB__ ListViewFragment.observeRestaurantAPIResponse: " + restaurants.size());
+            mRestaurants = restaurants;
+            updateRecyclerView();
+        });
+    }
+
+    private void updateRecyclerView() {
+        isRestoReceived();
+    }
+
+    private void isRestoReceived() {
+        Log.i(TAG, "RUN _ListViewFragment.isRestoReceived: RUN");
         if (mRestaurants.isEmpty()) {
+            Log.i(TAG, "isRestoReceived: if (mRestaurants.isEmpty()");
             new android.os.Handler().postDelayed(
                     () -> {
                         // This'll run 600 milliseconds later
+                        if (autoEvent.equals(AutoSearchEvents.AUTO_NULL)) {
+                            mMessageNoRestoBinding.messageNoResto.setVisibility(View.VISIBLE);
+                        } else {
+                            mMessageNoRestoBinding.messageNoResto.setVisibility(View.GONE);
+                        }
                         progressBarBiding.progressBarLayout.setVisibility(View.GONE);
-                        errorBinding.errorNoData.setVisibility(View.VISIBLE);
                     },
                     600);
         } else {
+            displayRestoInRecyclerV();
+        }
+    }
+
+    private void displayRestoInRecyclerV() {
+        if (!mRestaurants.isEmpty() || !autoEvent.equals(AutoSearchEvents.AUTO_NULL)) {
+            Log.i(TAG, "m_ displayRestoInRecyclerV: mRestaurants.isFully");
+
             RecyclerView recView = mBinding.restaurantRecyclerView;
             RestaurantAdapter adapter = new RestaurantAdapter(mRestaurants, this);
-            mBinding.restaurantProgressBar.progressBarLayout.setVisibility(View.GONE);
             recView.setAdapter(adapter);
             recView.setLayoutManager(new LinearLayoutManager(requireContext()));
             recView.addItemDecoration(new DividerItemDecoration(recView.getContext(), DividerItemDecoration.VERTICAL));
@@ -109,7 +152,7 @@ public class ListViewFragment extends Fragment implements RestaurantAdapter.OnIt
     public void onDestroyView() {
         super.onDestroyView();
         progressBarBiding = null;
-        errorBinding = null;
+        mMessageNoRestoBinding = null;
         mBinding = null;
     }
 }

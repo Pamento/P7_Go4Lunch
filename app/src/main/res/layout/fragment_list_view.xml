@@ -6,28 +6,35 @@
     android:layout_height="match_parent"
     tools:context=".ui.fragments.ListViewFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/restaurant_recyclerView"
+    <LinearLayout
+        android:id="@+id/wrapper_recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="?attr/actionBarSize"
         android:layout_marginBottom="@dimen/size_h"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:listitem="@layout/item_restaurant" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/restaurant_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/item_restaurant" />
+    </LinearLayout>
+
 
     <include
         android:id="@+id/list_wifi_off"
-        layout="@layout/wifi_off"/>
+        layout="@layout/wifi_off" />
 
     <include
         android:id="@+id/restaurant_progress_bar"
-        layout="@layout/progress_bar"/>
+        layout="@layout/progress_bar" />
 
     <include
         android:id="@+id/restaurant_fullscreen_no_data"
-        layout="@layout/error_no_data_fullscreen_message"/>
+        layout="@layout/message_no_resto" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -49,6 +49,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -164,6 +165,9 @@ public class MainActivity extends AppCompatActivity
             @Override
             public boolean onQueryTextChange(String newText) {
                 Log.i(TAG, " __onQueryTextChange: " + newText);
+                if (newText.length() == 0) {
+                    mMainActivityViewModel.setAutoSearchEventStatus(AutoSearchEvents.AUTO_SEARCH_EMPTY);
+                }
 //                if ((newText.length() > 0) && (newText.length() % 3 == 0)) {
 //                    Log.i(TAG, "onQueryTextChange: ___________________________________________ " + newText.length());
 //                }
@@ -171,16 +175,14 @@ public class MainActivity extends AppCompatActivity
                     Log.i(TAG, "onQueryTextChange: ___________________________________________ " + newText.length());
                     mMainActivityViewModel
                             .streamCombinedAutocompleteDetailsPlace(
-                                    newText,getResources().getString(R.string.app_language),
-                                    mAppSettings.getRadius(),mCurrentLocationStr,mCurrentLocationStr);
+                                    newText, getResources().getString(R.string.app_language),
+                                    mAppSettings.getRadius(), mCurrentLocationStr, mCurrentLocationStr);
                 }
                 return true; // signal that we consumed this event
             }
 
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Log.i(TAG, " ...onQueryTextSubmit: " + query);
-
                 return true; // signal that we consumed this event
             }
         });
@@ -194,7 +196,6 @@ public class MainActivity extends AppCompatActivity
             }
             Log.e(TAG, "onFocusChange: FOCUS__OF__SEARCH_VIEW__WAS__CHANGED with boolean:  " + hasFocus);
         });
-        //Log.i(TAG, "setSearchWidget: START ");
         // Get the intent, verify the action and get the query
         Intent intent = getIntent();
         //Log.i(TAG, "setSearchWidget: intent.getAction(): " + intent.getAction());
@@ -325,6 +326,7 @@ public class MainActivity extends AppCompatActivity
         String uid = firebaseUser.getUid();
         String name = TextUtils.isEmpty(firebaseUser.getDisplayName()) ? "" : firebaseUser.getDisplayName();
         String email = TextUtils.isEmpty(firebaseUser.getEmail()) ? "" : firebaseUser.getEmail();
+        // TODO Pixel API 19 ne reconnait pas Uri ?!
         String urlImage = Uri.EMPTY.equals(firebaseUser.getPhotoUrl()) ? "" : firebaseUser.getPhotoUrl().toString();
         mMainActivityViewModel.createUser(uid, name, email, urlImage);
     }
@@ -343,7 +345,7 @@ public class MainActivity extends AppCompatActivity
 
     @Nullable
     protected FirebaseUser getCurrentUser() {
-         return FirebaseAuth.getInstance().getCurrentUser();
+        return FirebaseAuth.getInstance().getCurrentUser();
     }
 
     protected Boolean isCurrentUserLogged() {

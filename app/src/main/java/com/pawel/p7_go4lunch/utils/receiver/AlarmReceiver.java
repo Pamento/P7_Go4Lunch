@@ -79,10 +79,14 @@ public class AlarmReceiver extends BroadcastReceiver {
 //        }
         int alarmId = mIntent.getIntExtra(Const.ALARM_ID, -1);
         Log.i(TAG, "checkForNextNotif: alarmId from PendingIntent :__:: " + alarmId);
-        if (mAppSettings.isNotif_recurrence() && alarmId == ALARM_MULTIPLE) {
-            // if so, everything is fine, continue
-            Log.i(TAG, "checkForNextNotif: ALARM_MULTIPLE _OK. alarmID:: _" + alarmId);
-        } else AlarmService.cancelAlarm();
+        if (!(mAppSettings.isNotif_recurrence() && alarmId == ALARM_MULTIPLE)) {
+            AlarmService.cancelAlarm();
+        }
+// If test pass mal, revien sur condition;
+//        if (mAppSettings.isNotif_recurrence() && alarmId == ALARM_MULTIPLE) {
+//            // if so, everything is fine, continue
+//            Log.i(TAG, "checkForNextNotif: ALARM_MULTIPLE _OK. alarmID:: _" + alarmId);
+//        } else AlarmService.cancelAlarm();
 
         // Recurrence of notification was changed between set of alarm and display of notification
         if (mAppSettings.isNotif_recurrence() && alarmId == ALARM_SINGLE) {

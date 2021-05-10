@@ -6,5 +6,6 @@ public enum AutoSearchEvents {
     AUTO_ZERO_RESULT,
     AUTO_ERROR,
     AUTO_STOP,
+    AUTO_SEARCH_EMPTY,
     AUTO_NULL
 }

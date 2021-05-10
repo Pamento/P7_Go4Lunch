@@ -9,10 +9,8 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.pawel.p7_go4lunch.dataServices.repositorys.FirebaseUserRepository;
 import com.pawel.p7_go4lunch.dataServices.repositorys.GooglePlaceRepository;
 import com.pawel.p7_go4lunch.model.Restaurant;
@@ -101,18 +99,14 @@ public class RestaurantsViewModel extends ViewModel {
     }
 
     public void getUsersWithChosenRestaurant() {
-        mFirebaseUserRepository.getUsersWithChosenRestaurant().get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
-                //List<User> tem = queryDocumentSnapshots.toObjects(User.class);
-                usersRestaurants = queryDocumentSnapshots.toObjects(User.class);
-                for (int i = 0; i < usersRestaurants.size(); i++) {
-                    Log.i(TAG, "onSuccess: " + usersRestaurants.get(i).toString());
-                    if (u != null && usersRestaurants.get(i).getEmail().equals(u.getEmail()))
-                        usersRestaurants.remove(i);
-                    //usersRestaurants.add(tem.get(i));
-                }
+        mFirebaseUserRepository.getUsersWithChosenRestaurant().get().addOnSuccessListener(queryDocumentSnapshots -> {
+            FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
+            //List<User> tem = queryDocumentSnapshots.toObjects(User.class);
+            usersRestaurants = queryDocumentSnapshots.toObjects(User.class);
+            for (int i = 0; i < usersRestaurants.size(); i++) {
+                if (u != null && usersRestaurants.get(i).getEmail().equals(u.getEmail()))
+                    usersRestaurants.remove(i);
+                //usersRestaurants.add(tem.get(i));
             }
         });
     }
@@ -131,6 +125,10 @@ public class RestaurantsViewModel extends ViewModel {
 
     public LiveData<AutoSearchEvents> getAutoSearchEvent() {
         return mGooglePlaceRepository.getAutoSearchEvents();
+    }
+
+    public LiveData<AutoSearchEvents> getAutoSearchEventList() {
+        return mGooglePlaceRepository.getAutoSearchEvent();
     }
 
     // ................................................................. SETTERS

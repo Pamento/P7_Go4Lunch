@@ -34,7 +34,7 @@ public class GooglePlaceRepository {
     private static LatLng initialLatLng;
     private final GooglePlaceAPI mGooglePlaceAPIService;
     private final List<Restaurant> mRestaurants = new ArrayList<>();
-    private final List<Restaurant> mRestaurantsAutoCom = new ArrayList<>();
+    private List<Restaurant> mRestaurantsAutoCom = new ArrayList<>();
     private final MutableLiveData<List<Restaurant>> mRestaurantLiveData = new MutableLiveData<>();
     private final Location mCntLocation = new Location("");
     private final CompositeDisposable mDisposable = new CompositeDisposable();
@@ -45,9 +45,6 @@ public class GooglePlaceRepository {
     }
 
     public void setRestaurantLiveData() {
-        Log.i(TAG, "GooglePlaceRepository.setRestaurantLiveData: Resto + Details:::");
-        Log.i(TAG, "GooglePlaceRepository.setRestaurantLiveData: " + mRestaurantsAutoCom.get(0).toString());
-
         mRestaurantLiveData.setValue(mRestaurantsAutoCom);
     }
 
@@ -81,8 +78,20 @@ public class GooglePlaceRepository {
         return mAutoSearchEvents;
     }
 
+    public MutableLiveData<AutoSearchEvents> getAutoSearchEvent() {
+        return mAutoSearchEvents;
+    }
+
     public String getCurrentLocation() {
         return mCurrentLocation;
+    }
+
+    public Restaurant getRestoSelected(String placeId) {
+        List<Restaurant> rL = mRestaurantLiveData.getValue();
+        for (Restaurant r: rL) {
+            if (r.getPlaceId().equals(placeId)) return r;
+        }
+        return null;
     }
 
     // .........................................................................SETTERS
@@ -124,11 +133,13 @@ public class GooglePlaceRepository {
     public Observable<Predictions> getRestoAutocompleteBy(String input, String lang, int radius, String location, String origin) {
         return streamAutocompletePlaces(input, lang, radius, location, origin)
                 .map(autoResponse -> {
+                    String s = autoResponse.getStatus();
                     Log.i(TAG, "getRestoAutocompleteBy: getStatus( " + autoResponse.getStatus());
-                    if (autoResponse.getStatus().equals("OK")) {
+                    Log.i(TAG, "getRestoAutocompleteBy: local string == " + s);
+                    if (s.equals("OK")) {
                         Log.i(TAG, "getRestoAutocompleteBy: OK");
                         GooglePlaceRepository.this.setAutoSearchEvents(AutoSearchEvents.AUTO_OK);
-                    } else if (autoResponse.getStatus().equals("ZERO_RESULT")) {
+                    } else if (s.equals("ZERO_RESULTS")) {
                         Log.i(TAG, "getRestoAutocompleteBy: ZERO");
                         GooglePlaceRepository.this.setAutoSearchEvents(AutoSearchEvents.AUTO_ZERO_RESULT);
                     } else {
@@ -179,8 +190,6 @@ public class GooglePlaceRepository {
     }
 
     public void findRestoForUpdates(Result result, boolean apiPlace) {
-        Log.i(TAG, "findRestoForUpdates: " + result.getName());
-        Log.i(TAG, "findRestoForUpdates: should by false: " + apiPlace);
         List<Restaurant> lR;
         Restaurant rcp;
         if (apiPlace) {
@@ -188,16 +197,9 @@ public class GooglePlaceRepository {
         } else {
             lR = mRestaurantsAutoCom;
         }
-        Log.i(TAG, "findRestoForUpdates: temporaries List<Restaurant> lR::: " + lR.size());
-        if (lR.size() > 0)
-            Log.i(TAG, "findRestoForUpdates: temporaries List<Restaurant> if( lR.size > 0 )::: " + lR.size());
-        if (lR != null) {
-            Log.i(TAG, "findRestoForUpdates: mRestoAuto_ID" + lR.get(0).getPlaceId());
-            Log.i(TAG, "findRestoForUpdates: result_ID " + result.getPlaceId());
+        if (lR.size() > 0) {
             for (int i = 0; i < lR.size(); i++) {
-                Log.i(TAG, "findRestoForUpdates: inside LOOP");
                 if (lR.get(i).getPlaceId().equals(result.getPlaceId())) {
-                    Log.i(TAG, "findRestoForUpdates: inside loop");
                     rcp = lR.get(i);
                     if (apiPlace) updateRestoWithContact(result, rcp, apiPlace);
                     else updateRestoWithDetails(result, rcp);
@@ -272,13 +274,16 @@ public class GooglePlaceRepository {
 
     private void setRestoFromPredictions(List<Predictions> predictions) {
         Log.i(TAG, "setRestoFromPredictions: ");
+        mRestaurantsAutoCom = new ArrayList<>();
         if (predictions != null) {
             Log.i(TAG, "setRestoFromPredictions:size N° " + predictions.size());
             for (Predictions prd : predictions) {
-                Restaurant rst = new Restaurant();
-                rst.setPlaceId(prd.getPlaceId());
-                rst.setDistance(prd.getDistanceMeters());
-                mRestaurantsAutoCom.add(rst);
+                if (prd.getTypes().contains("restaurant")) {
+                    Restaurant rst = new Restaurant();
+                    rst.setPlaceId(prd.getPlaceId());
+                    rst.setDistance(prd.getDistanceMeters());
+                    mRestaurantsAutoCom.add(rst);
+                }
             }
         }
     }

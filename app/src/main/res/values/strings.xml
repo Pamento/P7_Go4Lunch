@@ -35,6 +35,7 @@
     <!-- Main Activity __menu_toolbar -->
     <string name="search">recherche</string>
     <string name="search_hint">Cherche un restaurant</string>
+    <string name="search_no_resto_ms">Il n\'y a pas des restaurant pour cette recherche.</string>
 
     <!-- Login Firebase -->
     <string name="slogan">Trouvez une restaurant sympa et invite tes collèques à dîner!</string>
@@ -116,6 +117,9 @@
     <string name="fail_ask_gps_signal">Veuillez vérifier avec Google Maps si votre position est correctement appelée par votre téléphone.</string>
 
     <!-- Workmates list -->
+    <string name="resto_list_non_data">Il n\'y a pas de restaurant à afficher</string>
+
+    <!-- Workmates list -->
     <string name="workmate_anonymous">Collègue</string>
     <string name="workmate_eat_at">%1$s mange à (%2$s)</string>
     <string name="workmate_not_decide">%s n\'a pas encore décidé</string>
@@ -123,7 +127,7 @@
     <string name="about_restaurant_workmate_going_there">%s y vas!</string>
     <string name="about_restaurant_workmates_empty_list">Personne n\'a encore rejoint cet endroit.</string>
 
-    <!-- Restaurant list (RecyclerView) -->
+    <!-- Restaurant list (item of RecyclerView) -->
     <string name="workmate_number">(%d)</string>
     <string name="distance_to_restaurant">%dm</string>
     <string name="open_now">Ouvert à cette heure</string>
