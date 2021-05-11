@@ -40,8 +40,8 @@ public class RestaurantsViewModel extends ViewModel {
     private MutableLiveData<GoogleMap> mGoogleMap;
     private final MutableLiveData<Location> mCurrentLocation = new MutableLiveData<>();
     private String mCurrentLocS;
-    private List<Restaurant> mRestaurants = new ArrayList<>();
-    private List<User> usersRestaurants = new ArrayList<>();
+    //private List<Restaurant> mRestaurants = new ArrayList<>();
+    private List<User> usersGoingToChosenResto = new ArrayList<>();
 
     public RestaurantsViewModel(GooglePlaceRepository googlePlaceRepository, FirebaseUserRepository firebaseUserRepository) {
         mGooglePlaceRepository = googlePlaceRepository;
@@ -50,9 +50,9 @@ public class RestaurantsViewModel extends ViewModel {
 
     public void init() {
         mGoogleMap = new MutableLiveData<>();
-        if (!mGooglePlaceRepository.getRestaurantsCache().isEmpty()) {
-            mRestaurants = mGooglePlaceRepository.getRestaurantsCache();
-        }
+//        if (!mGooglePlaceRepository.getRestaurantsCache().isEmpty()) {
+//            mRestaurants = mGooglePlaceRepository.getRestaurantsCache();
+//        }
         getUsersWithChosenRestaurant();
     }
 
@@ -81,9 +81,8 @@ public class RestaurantsViewModel extends ViewModel {
                     @Override
                     public void onComplete() {
                         mGooglePlaceRepository.setRestaurantLiveData();
-                        mRestaurants = mGooglePlaceRepository.getRestaurantsCache();
-                        updateUserRestaurants();
-                        Log.i("SEARCH", "onComplete: mRestaurants.size(" + mRestaurants.size() + ")");
+//                        updateUserRestaurants();
+                        Log.i("SEARCH", "RestaurantsVM.onComplete");
                     }
                 });
     }
@@ -94,18 +93,14 @@ public class RestaurantsViewModel extends ViewModel {
         return mGooglePlaceRepository.getRestaurants();
     }
 
-    public List<Restaurant> getRestaurantsCache() {
-        return mGooglePlaceRepository.getRestaurantsCache();
-    }
-
     public void getUsersWithChosenRestaurant() {
         mFirebaseUserRepository.getUsersWithChosenRestaurant().get().addOnSuccessListener(queryDocumentSnapshots -> {
             FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
             //List<User> tem = queryDocumentSnapshots.toObjects(User.class);
-            usersRestaurants = queryDocumentSnapshots.toObjects(User.class);
-            for (int i = 0; i < usersRestaurants.size(); i++) {
-                if (u != null && usersRestaurants.get(i).getEmail().equals(u.getEmail()))
-                    usersRestaurants.remove(i);
+            usersGoingToChosenResto = queryDocumentSnapshots.toObjects(User.class);
+            for (int i = 0; i < usersGoingToChosenResto.size(); i++) {
+                if (u != null && usersGoingToChosenResto.get(i).getEmail().equals(u.getEmail()))
+                    usersGoingToChosenResto.remove(i);
                 //usersRestaurants.add(tem.get(i));
             }
         });
@@ -155,30 +150,31 @@ public class RestaurantsViewModel extends ViewModel {
         getUsersWithChosenRestaurant();
     }
 
-    private void updateUserRestaurants() {
-        int itr = mRestaurants.size();
-        for (int i = 0; i < itr; i++) {
-            Restaurant r = mRestaurants.get(i);
-            List<String> ids = getRestoIdsFromUsers(r.getPlaceId());
-            if (ids.size() > 0) {
-                r.setUserList(ids);
-                mRestaurants.set(i, r);
-            }
-        }
-    }
+    // TODO !!!! Is this function is set for Autocomplete ?
+//    private void updateUserRestaurants() {
+//        // TODO UpdateRestoWithUserRestarants with Transformations.map ?
+//        int itr = mRestaurants.size();
+//        for (int i = 0; i < itr; i++) {
+//            Restaurant r = mRestaurants.get(i);
+//            List<String> ids = getRestoIdsFromUsers(r.getPlaceId());
+//            if (ids.size() > 0) {
+//                r.setUserList(ids);
+//                mRestaurants.set(i, r);
+//            }
+//        }
+//    }
 
     private List<String> getRestoIdsFromUsers(String placeId) {
-        int itr = usersRestaurants.size();
+        int itr = usersGoingToChosenResto.size();
         List<String> id = new ArrayList<>();
         if (itr > 0) {
             for (int i = 0; i < itr; i++) {
-                User us = usersRestaurants.get(i);
+                User us = usersGoingToChosenResto.get(i);
                 if (us.getUserRestaurant() != null && us.getUserRestaurant().getPlaceId().equals(placeId)) {
                     id.add(us.getUserRestaurant().getPlaceId());
                 }
             }
         }
-
         return id;
     }
 

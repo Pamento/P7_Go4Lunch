@@ -76,6 +76,7 @@ public class MapViewFragment extends Fragment
     private Activity mActivity;
     private String currentLocation;
     private List<Restaurant> mRestaurants = new ArrayList<>();
+    private AutoSearchEvents autoEvent = AutoSearchEvents.AUTO_NULL;
     //private String autocompleteStatus;
     private static final String TAG = "AUTO_COM";
     private static final String TAG2 = "ASK_LOCATION";
@@ -102,6 +103,7 @@ public class MapViewFragment extends Fragment
 
     private void setAutocompleteEventObserver() {
         mRestaurantsVM.getAutoSearchEvent().observe(getViewLifecycleOwner(), autoSearchEvents -> {
+            autoEvent = autoSearchEvents;
             Log.i(TAG, "mapViewFragment.EventObserver: AutoSearchEvent::::__ " + autoSearchEvents);
             if (autoSearchEvents.equals(AutoSearchEvents.AUTO_ZERO_RESULT)) {
                 Log.i(TAG, "setAutocompleteEventObserver: SNACK_BAR // SNACK_BAR ..//.. SNACK_BAR autoEvent:::: " +autoSearchEvents);
@@ -171,14 +173,14 @@ public class MapViewFragment extends Fragment
                     LatLng ll = new LatLng(location.getLatitude(), location.getLongitude());
                     mRestaurantsVM.setUpCurrentLocation(location, ll);
                     observeRestaurantAPIResponse();
-                    if (mRestaurantsVM.getRestaurantsCache().isEmpty()) {
-                        //fetchRestaurants();
-                        //onFetchRestaurants();
-                        Log.i(TAG, "initMapRestaurant: fetchRestaurants ");
-                    } else {
-                        mRestaurants = mRestaurantsVM.getRestaurantsCache();
-                        if (mRestaurants != null) setRestaurantMarksOnMap();
-                    }
+//                    if (mRestaurantsVM.getRestaurantsCache().isEmpty()) {
+//                        fetchRestaurants();
+//                        //onFetchRestaurants();
+//                        Log.i(TAG, "initMapRestaurant: fetchRestaurants ");
+//                    } else {
+//                        mRestaurants = mRestaurantsVM.getRestaurantsCache();
+//                        if (mRestaurants != null) setRestaurantMarksOnMap();
+//                    }
 
                     moveCamera(location, mAppSettings.getPerimeter());
                     // FAB of functionality: "Back of camera upon user position"

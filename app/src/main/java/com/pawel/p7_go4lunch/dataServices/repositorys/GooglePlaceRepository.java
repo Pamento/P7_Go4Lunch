@@ -63,11 +63,17 @@ public class GooglePlaceRepository {
     }
 
     public MutableLiveData<List<Restaurant>> getRestaurants() {
+        if (mRestaurantLiveData.getValue() == null) {
+            setRestaurantsCache();
+        }
         return mRestaurantLiveData;
     }
 
-    public List<Restaurant> getRestaurantsCache() {
-        return mRestaurants;
+    public void setRestaurantsCache() {
+//        if (mRestaurants.isEmpty()) fetchRestaurants();
+//        else mRestaurantLiveData.setValue(mRestaurants);
+        // TODO added mRestaurantLiveData.setValue(mRestaurants); before rebuild for cache
+        mRestaurantLiveData.setValue(mRestaurants);
     }
 
     public LatLng getInitialLatLng() {
@@ -88,8 +94,10 @@ public class GooglePlaceRepository {
 
     public Restaurant getRestoSelected(String placeId) {
         List<Restaurant> rL = mRestaurantLiveData.getValue();
-        for (Restaurant r: rL) {
-            if (r.getPlaceId().equals(placeId)) return r;
+        if (rL != null) {
+            for (Restaurant r : rL) {
+                if (r.getPlaceId().equals(placeId)) return r;
+            }
         }
         return null;
     }
@@ -189,10 +197,10 @@ public class GooglePlaceRepository {
         }
     }
 
-    public void findRestoForUpdates(Result result, boolean apiPlace) {
+    public void findRestoForUpdates(Result result, boolean isNearByAPI) {
         List<Restaurant> lR;
         Restaurant rcp;
-        if (apiPlace) {
+        if (isNearByAPI) {
             lR = mRestaurants;
         } else {
             lR = mRestaurantsAutoCom;
@@ -201,7 +209,7 @@ public class GooglePlaceRepository {
             for (int i = 0; i < lR.size(); i++) {
                 if (lR.get(i).getPlaceId().equals(result.getPlaceId())) {
                     rcp = lR.get(i);
-                    if (apiPlace) updateRestoWithContact(result, rcp, apiPlace);
+                    if (isNearByAPI) updateRestoWithContact(result, rcp);
                     else updateRestoWithDetails(result, rcp);
                 }
             }
@@ -234,12 +242,11 @@ public class GooglePlaceRepository {
         }
     }
 
-    private void updateRestoWithContact(Result result, Restaurant rcp, boolean apiPlace) {
+    private void updateRestoWithContact(Result result, Restaurant rcp) {
         if (rcp != null) {
             rcp.setPhoneNumber(result.getInternationalPhoneNumber());
             rcp.setWebsite(result.getWebsite());
-            if (apiPlace) mRestaurants.set(mRestaurants.indexOf(rcp), rcp);
-            else mRestaurantsAutoCom.set(mRestaurantsAutoCom.indexOf(rcp), rcp);
+            mRestaurants.set(mRestaurants.indexOf(rcp), rcp);
         }
     }
 

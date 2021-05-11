@@ -52,6 +52,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -111,7 +112,7 @@ public class MainActivity extends AppCompatActivity
             return true;
         } else if (GoogleApiAvailability.getInstance().isUserResolvableError(available)) {
             Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(MainActivity.this, available, Const.ERROR_DIALOG_REQUEST);
-            dialog.show();
+            if (dialog != null) dialog.show();
         } else {
             ViewWidgets.showSnackBar(1, view, getString(R.string.google_maps_not_available));
         }
@@ -143,7 +144,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.toolbar_search_icon) {
-            //TODO add action
+            //TODO add action filter for list (?)
             Log.i(TAG, "onOptionsItemSelected: ");
             ViewWidgets.showSnackBar(0, view, "Search");
             return true;
@@ -293,19 +294,21 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        FirebaseUserMetadata userMetadata;
         if (requestCode == Const.RC_SIGN_IN) {
             IdpResponse response = IdpResponse.fromResultIntent(data);
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
                 FirebaseUser firebaseUser = getCurrentUser();
-                if (firebaseUser != null) mFirebaseUser = firebaseUser;
-                FirebaseUserMetadata userMetadata = firebaseUser.getMetadata();
-                if (userMetadata != null && isSignInFirstTime(userMetadata)) {
-                    saveNewUser(firebaseUser);
+                if (firebaseUser != null) {
+                    mFirebaseUser = firebaseUser;
+                    userMetadata = firebaseUser.getMetadata();
+                    if (userMetadata != null && isSignInFirstTime(userMetadata)) {
+                        saveNewUser(firebaseUser);
+                    }
+                    updateUiNavigationDrawerMenu(firebaseUser);
+                    ViewWidgets.showSnackBar(0, view, getString(R.string.login_succeed));
                 }
-                ViewWidgets.showSnackBar(0, view, getString(R.string.login_succeed));
-                updateUiNavigationDrawerMenu(firebaseUser);
-                // TODO If it's correct to cal startMainActivity here ?
                 startMainActivity();
             } else {
                 // Sign in failed. If response is null the user canceled the
@@ -326,8 +329,8 @@ public class MainActivity extends AppCompatActivity
         String uid = firebaseUser.getUid();
         String name = TextUtils.isEmpty(firebaseUser.getDisplayName()) ? "" : firebaseUser.getDisplayName();
         String email = TextUtils.isEmpty(firebaseUser.getEmail()) ? "" : firebaseUser.getEmail();
-        // TODO Pixel API 19 ne reconnait pas Uri ?!
-        String urlImage = Uri.EMPTY.equals(firebaseUser.getPhotoUrl()) ? "" : firebaseUser.getPhotoUrl().toString();
+        // TODO Pixel API 19 don't recognise the Uri ?!
+        String urlImage = Uri.EMPTY.equals(firebaseUser.getPhotoUrl()) ? "" : Objects.requireNonNull(firebaseUser.getPhotoUrl()).toString();
         mMainActivityViewModel.createUser(uid, name, email, urlImage);
     }
 
