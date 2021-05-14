@@ -115,7 +115,7 @@
     <string name="workmate_anonymous">Workmate</string>
     <string name="workmate_eat_at">%1$s is eating at (%2$s)</string>
     <string name="workmate_not_decide">%s hasn\'t decided yet</string>
-    <string name="workmates_message_empty_recycler_view">Sorry, there was an error.\nPlease, try again later.</string>
+    <string name="fetching_data_error_ms">Sorry, there was an error.\nPlease, try again later.</string>
     <string name="about_restaurant_workmate_going_there">%s is joining!</string>
     <string name="about_restaurant_workmates_empty_list">No One joining this place yet.</string>
 

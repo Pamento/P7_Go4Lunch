@@ -59,9 +59,7 @@ public class MainActivityViewModel extends ViewModel {
 
                     @Override
                     public void onComplete() {
-                        // TODO set Restaurants to GoogleRepo LiveData
-                        Log.i(TAG, "MainActivityVM.onComplete ");
-                        mGooglePlaceRepository.setRestaurantLiveData();
+                        mGooglePlaceRepository.setRestaurantLiveData(null);
                     }
                 });
     }

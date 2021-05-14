@@ -13,5 +13,5 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_margin="@dimen/size_b"
-        android:text="@string/workmates_message_empty_recycler_view" />
+        android:text="@string/fetching_data_error_ms" />
 </RelativeLayout>

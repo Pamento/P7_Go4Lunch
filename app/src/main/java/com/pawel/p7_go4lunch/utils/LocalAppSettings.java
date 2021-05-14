@@ -29,7 +29,7 @@ public class LocalAppSettings {
         notification = prefs.getBoolean("notification", false);
         hour = prefs.getString("hour", "12");
         localisation = prefs.getBoolean("localisation", true);
-        perimeter = prefs.getString("perimeter", "1000");
+        perimeter = prefs.getString("perimeter", "500");
         notif_recurrence = prefs.getBoolean("repeat", false);
     }
 
@@ -46,7 +46,7 @@ public class LocalAppSettings {
     }
 
     public int getRadius() {
-        int rValue = 1000;
+        int rValue = 500;
         if (perimeter.equals("max")) return 6000;
         else {
             try {

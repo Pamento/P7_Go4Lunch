@@ -1,5 +1,7 @@
 package com.pawel.p7_go4lunch.model;
 
+import androidx.annotation.NonNull;
+
 import com.google.firebase.firestore.ServerTimestamp;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.Location;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.OpeningHours;
@@ -146,6 +148,12 @@ public class Restaurant {
 
     public void setUserList(@Nullable List<String> userList) {
         this.userList = userList;
+    }
+
+    @NonNull
+    @Override
+    public Restaurant clone() throws CloneNotSupportedException {
+        return new Restaurant();
     }
 
     @Override

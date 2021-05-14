@@ -121,7 +121,6 @@ public class MainActivity extends AppCompatActivity
 
     // ____________ Main Activity with 3 fragments _____________________
     private void startMainActivity() {
-        Log.i(TAG, "startMainActivity: START");
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
@@ -135,6 +134,7 @@ public class MainActivity extends AppCompatActivity
     // ____________ Toolbar search _____________________
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        // TODO filter for listFragment
         getMenuInflater().inflate(R.menu.toolbar_search_menu, menu);
         setSearch(menu);
         return super.onCreateOptionsMenu(menu);
@@ -156,6 +156,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setSearch(Menu menu) {
+        String searchViewInput = "";
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         final SearchView searchView = (SearchView) menu.findItem(R.id.toolbar_search_icon).getActionView();
 //        final MenuItem searchMenuItem = menu.findItem(R.id.toolbar_search_icon);
@@ -165,15 +166,11 @@ public class MainActivity extends AppCompatActivity
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextChange(String newText) {
-                Log.i(TAG, " __onQueryTextChange: " + newText);
+                Log.i(TAG, " __onQueryTextChange: ___________________________________________ " + newText);
                 if (newText.length() == 0) {
                     mMainActivityViewModel.setAutoSearchEventStatus(AutoSearchEvents.AUTO_SEARCH_EMPTY);
                 }
-//                if ((newText.length() > 0) && (newText.length() % 3 == 0)) {
-//                    Log.i(TAG, "onQueryTextChange: ___________________________________________ " + newText.length());
-//                }
                 if ((newText.length() >= 3)) {
-                    Log.i(TAG, "onQueryTextChange: ___________________________________________ " + newText.length());
                     mMainActivityViewModel
                             .streamCombinedAutocompleteDetailsPlace(
                                     newText, getResources().getString(R.string.app_language),
@@ -193,19 +190,21 @@ public class MainActivity extends AppCompatActivity
             if (hasFocus) {
                 mMainActivityViewModel.setAutoSearchEventStatus(AutoSearchEvents.AUTO_START);
             } else {
-                mMainActivityViewModel.setAutoSearchEventStatus(AutoSearchEvents.AUTO_STOP);
+                if (searchViewInput.equals(""))
+                    mMainActivityViewModel.setAutoSearchEventStatus(AutoSearchEvents.AUTO_STOP);
             }
             Log.e(TAG, "onFocusChange: FOCUS__OF__SEARCH_VIEW__WAS__CHANGED with boolean:  " + hasFocus);
         });
         // Get the intent, verify the action and get the query
-        Intent intent = getIntent();
-        //Log.i(TAG, "setSearchWidget: intent.getAction(): " + intent.getAction());
-        //Log.i(TAG, "setSearchWidget: intent.ACTION: " + Intent.ACTION_SEARCH);
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query = intent.getStringExtra(SearchManager.QUERY);
-            //Log.i(TAG, "setSearchWidget: SEARCH_QUERY: " + query);
-            //doMySearch(query);
-        }
+        // TODO cache:: I have comment this for auto_com; if search don't work, uncomment this.
+//        Intent intent = getIntent();
+//        //Log.i(TAG, "setSearchWidget: intent.getAction(): " + intent.getAction());
+//        //Log.i(TAG, "setSearchWidget: intent.ACTION: " + Intent.ACTION_SEARCH);
+//        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+//            String query = intent.getStringExtra(SearchManager.QUERY);
+//            //Log.i(TAG, "setSearchWidget: SEARCH_QUERY: " + query);
+//            //doMySearch(query);
+//        }
     }
 
     private void setNavigationDrawer() {
@@ -220,9 +219,10 @@ public class MainActivity extends AppCompatActivity
         binding.drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         // set information on the user into the drawer header
-        if (getCurrentUser() != null) {
-            updateUiNavigationDrawerMenu(getCurrentUser());
-        }
+        // TODO cache:: I have comment this. If something go wrong with Drawer Menu, uncomment this.
+//        if (getCurrentUser() != null) {
+//            updateUiNavigationDrawerMenu(getCurrentUser());
+//        }
     }
 
     private void updateUiNavigationDrawerMenu(FirebaseUser user) {

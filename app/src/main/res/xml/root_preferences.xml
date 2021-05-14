@@ -49,7 +49,7 @@
             app:title="Localisation" />
 
         <ListPreference
-            app:defaultValue="1000"
+            app:defaultValue="500"
             app:dependency="localisation"
             app:entries="@array/perimeter_entries"
             app:entryValues="@array/perimeter_values"

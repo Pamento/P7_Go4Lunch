@@ -27,6 +27,7 @@
     <string name="wii_off">Problème de connexion réseau.</string>
     <string name="google_maps_not_available">Le service Google Maps n\'est pas disponible.</string>
     <string name="localisation_not_available">Il vous faut activer le localisation pour bon fonctionnement de l\'application. </string>
+    <string name="fetching_data_error_ms">Désolé, il y a une erreur.\nVeuillez réessayer ultérieurement.</string>
 
     <!-- Main Activity __menu_drawer -->
     <string name="menu_persona_description">Image de la personne connecté</string>
@@ -123,7 +124,6 @@
     <string name="workmate_anonymous">Collègue</string>
     <string name="workmate_eat_at">%1$s mange à (%2$s)</string>
     <string name="workmate_not_decide">%s n\'a pas encore décidé</string>
-    <string name="workmates_message_empty_recycler_view">Désolé, il y a une erreur.\nVeuillez réessayer ultérieurement.</string>
     <string name="about_restaurant_workmate_going_there">%s y vas!</string>
     <string name="about_restaurant_workmates_empty_list">Personne n\'a encore rejoint cet endroit.</string>
 

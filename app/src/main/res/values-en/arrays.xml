@@ -2,6 +2,7 @@
 <resources>
 
     <string-array name="perimeter_entries">
+        <item>500m</item>
         <item>1 km</item>
         <item>2 km</item>
         <item>3 km</item>
@@ -9,6 +10,7 @@
         <item>No limits</item>
     </string-array>
     <string-array name="perimeter_values">
+        <item>500</item>
         <item>1000</item>
         <item>2000</item>
         <item>3000</item>
