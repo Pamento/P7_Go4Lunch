@@ -4,8 +4,8 @@ import android.location.Location;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -46,23 +46,25 @@ public class RestaurantsViewModel extends ViewModel {
     private int mRadius = 500;
     private List<Restaurant> mRestaurants = new ArrayList<>();
     private InMemoryRestosCache mCache;
+    private MediatorLiveData<List<Restaurant>> mRestaurantWithUsers;
+    private List<Restaurant> tempRestos = new ArrayList<>();
     //
-    private List<User> usersGoingToChosenResto = new ArrayList<>();
+    private MutableLiveData<List<User>> usersGoingToChosenResto;
 
     public RestaurantsViewModel(GooglePlaceRepository googlePlaceRepository, FirebaseUserRepository firebaseUserRepository) {
         mGooglePlaceRepository = googlePlaceRepository;
         mFirebaseUserRepository = firebaseUserRepository;
+        mRestaurantWithUsers = new MediatorLiveData<>();
     }
 
     public void init() {
-        getUsersWithChosenRestaurant();
         mCache = InMemoryRestosCache.getInstance();
-        Log.i(TAG, "RVM__ init: CACHE.Restaurants.IDs::: " + mCache.getRestosID().size());
+        usersGoingToChosenResto = new MutableLiveData<>();
+        mergeRestoWithUsers();
     }
 
     // ................................................................. GETTERS
     public void streamCombinedNearbyAndDetailPlace(String location, int radius) {
-        Log.i(TAG, "RVM__ streamCombinedNearbyAndDetailPlace: self_CAll");
         mGooglePlaceRepository.getRestaurantNearby(location, radius)
                 .subscribeOn(Schedulers.io())
                 .concatMap((Function<Result, ObservableSource<Result>>) result -> mGooglePlaceRepository.getRestaurantContact(result.getPlaceId()))
@@ -86,14 +88,11 @@ public class RestaurantsViewModel extends ViewModel {
                     @Override
                     public void onComplete() {
                         mGooglePlaceRepository.setRestaurantLiveData(true);
-                        Log.i("SEARCH", "RestaurantsVM.onComplete");
                     }
                 });
     }
 
-    public void getRestosFromCacheOrNetwork(AutoSearchEvents events) {
-        Log.i(TAG, "RVM__ XXXXXXXXXXXXX.getRestosFromCacheOrNetwork: autoEvent " + events);
-        Log.i(TAG, "RVM__ XXXXXXXXXXXXX.getRestosFromCacheOrNetwork: mRestaurants.size( " + mRestaurants.size() + " )");
+    public void getRestosFromCacheOrNetwork() {
         mCache.getRestos().subscribe(new Observer<List<Restaurant>>() {
             @Override
             public void onSubscribe(@NonNull Disposable d) {
@@ -133,26 +132,53 @@ public class RestaurantsViewModel extends ViewModel {
         });
     }
 
-    public LiveData<List<Restaurant>> getRestaurantWithUsers = Transformations.map(mGooglePlaceRepository.getRestaurants(), input -> {
-        List<Restaurant> tempL = new ArrayList<>();
-        Log.i(TAG, "RVM__ getRestaurants: _in: TRANSFORMATIONS.MAP():  usersGoingToChosenResto.size()::n°: " + usersGoingToChosenResto.size());
-        Log.i(TAG, "RVM__ getRestaurants: _in: TRANSFORMATIONS.MAP().input::n°: " + input.size());
-        if (input.size() > 0) {
-            //Log.i(TAG, "RVM__ getRestaurants: _in: TRANSFORMATIONS.MAP().input.get(0)::: " + input.get(0).toString());
-            int itr = input.size();
-            for (int i = 0; i < itr; i++) {
-                Restaurant r = input.get(i);
-                List<String> ids = getRestoIdsFromUsers(r.getPlaceId());
-                if (ids.size() > 0) {
-                    Log.i(TAG, "RVM__ getRestaurants: _in: TRANSFORMATIONS.MAP() _in: for -> if ( ids > 0 ) " + ids.size());
-                    r.setUserList(ids);
-                }
-                tempL.add(r);
+    private void mergeRestoWithUsers() {
+        Log.i(TAG, "RVM__ mergeRestoWithUsers: MEDIATOR-liveData");
+        mRestaurantWithUsers.postValue(new ArrayList<>());
+
+        mRestaurantWithUsers.addSource(mGooglePlaceRepository.getRestaurants(), restaurants -> {
+            Log.i(TAG, "RVM__ mergeRestoWithUsers: MEDIATOR-LiveData: addSource::1: mGooglePlaceRepository.getRestaurants();");
+            if (restaurants != null) {
+                Log.i(TAG, "RVM__ mergeRestoWithUsers: MEDIATOR-liveData restos.size::: " + restaurants.size());
+                tempRestos = restaurants;
+                getUsersWithChosenRestaurant();
             }
-        }
-        Log.i(TAG, "RVM__ getRestaurants: _in: TRANSFORMATIONS.MAP().tempL.size()::n°: " + tempL.size());
-        return tempL;
-    });
+        });
+        mRestaurantWithUsers.addSource(usersGoingToChosenResto, new androidx.lifecycle.Observer<List<User>>() {
+            final List<Restaurant> tempL = new ArrayList<>();
+
+            @Override
+            public void onChanged(List<User> users) {
+                Log.i(TAG, "RVM__ mergeRestoWithUsers: MEDIATOR-LiveData: addSource::2: usersGoingToChosenResto;");
+                if (users != null && users.size() > 0) {
+                    if (tempRestos.size() > 0) {
+                        int itr = tempRestos.size();
+                        for (int i = 0; i < itr; i++) {
+                            Restaurant r = tempRestos.get(i);
+                            List<String> ids = getRestoIdsFromUsers(r.getPlaceId(), users);
+                            if (ids.size() > 0) {
+                                r.setUserList(ids);
+                            }
+                            tempL.add(r);
+                        }
+                        mRestaurantWithUsers.setValue(tempL);
+                    }
+                } else {
+                    mRestaurantWithUsers.setValue(tempRestos);
+                }
+            }
+        });
+    }
+
+    public void unsubscribeRestoWithUsers() {
+        mRestaurantWithUsers.removeSource(mGooglePlaceRepository.getRestaurants());
+        mRestaurantWithUsers.removeSource(usersGoingToChosenResto);
+    }
+
+    public LiveData<List<Restaurant>> getRestaurantWithUsers() {
+        Log.i(TAG, "RVM__ getRestaurantWithUsers: call --> MEDIATOR-LiveData");
+        return mRestaurantWithUsers;
+    }
 
     // This method get all users whom has chosen already his restaurant for lunch
     public void getUsersWithChosenRestaurant() {
@@ -160,11 +186,14 @@ public class RestaurantsViewModel extends ViewModel {
             String email = "";
             FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
             if (fUser != null) email = fUser.getEmail();
-            usersGoingToChosenResto = queryDocumentSnapshots.toObjects(User.class);
-            for (Iterator<User> itr = usersGoingToChosenResto.iterator(); itr.hasNext(); ) {
+            List<User> us = queryDocumentSnapshots.toObjects(User.class);
+            Log.i(TAG, "RVM__ getUsersWithChosenRestaurant: us.size(Bi) " + us.size());
+            for (Iterator<User> itr = us.iterator(); itr.hasNext(); ) {
                 User user = itr.next();
                 if (email != null && email.equals(user.getEmail())) itr.remove();
             }
+            Log.i(TAG, "RVM__ getUsersWithChosenRestaurant: us.size(Af) " + us.size());
+            usersGoingToChosenResto.setValue(us);
         });
     }
 
@@ -207,12 +236,12 @@ public class RestaurantsViewModel extends ViewModel {
         mGoogleMap = googleMap;
     }
 
-    private List<String> getRestoIdsFromUsers(String placeId) {
-        int sizeL = usersGoingToChosenResto.size();
+    private List<String> getRestoIdsFromUsers(String placeId, List<User> users) {
+        int sizeL = users.size();
         List<String> ids = new ArrayList<>();
         if (sizeL > 0) {
             for (int i = 0; i < sizeL; i++) {
-                User us = usersGoingToChosenResto.get(i);
+                User us = users.get(i);
                 if (us.getUserRestaurant() != null && us.getUserRestaurant().getPlaceId().equals(placeId)) {
                     ids.add(us.getUserRestaurant().getPlaceId());
                 }

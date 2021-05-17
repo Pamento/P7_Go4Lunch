@@ -54,12 +54,6 @@ public class GooglePlaceRepository {
     }
 
     public void setRestaurantLiveData(boolean isNearby) {
-        Log.i(TAG, "GR__setRestaurantLiveData: ");
-        //AutoSearchEvents aE = mAutoSearchEvents.getValue();
-        // TODO cache:: we lack here the condition to go back from autocomplete search to NearBy,
-        //  if AutoSearchEvents.AUTO_EMPTY or _STOP we need do the same. At least ...
-        //  in Fragments if we detect change type EMPTY || STOP, than in GoogleRepo setAutoSearchEvent to NULL. ???
-//        if (aE != null && aE.equals(AutoSearchEvents.AUTO_NULL)) {
         if (isNearby) {
             Log.i(TAG, "GR__setRestaurantLiveData: from NET");
             mRestaurantLiveData.setValue(mRestaurants);
@@ -67,7 +61,6 @@ public class GooglePlaceRepository {
             mCache.setLocation(mCrntLocation);
         } else {
             Log.i(TAG, "GR__setRestaurantLiveData: from AUTO_COM");
-            // if AutoSearchEvents.AUTO_NULL == false than Autocomplete API is working and mRestaurantsAutoCom is set
             mRestaurantLiveData.setValue(mRestaurantsAutoCom);
         }
     }
@@ -87,11 +80,6 @@ public class GooglePlaceRepository {
     }
 
     public LiveData<List<Restaurant>> getRestaurants() {
-        // TODO cache:: what to do with this ? here?
-        Log.i(TAG, "GPR__ getRestaurants.mRestaurantLiveData ");
-//        if (mRestaurantLiveData.getValue() == null) {
-//            //setRestaurantsCache();
-//        }
         return mRestaurantLiveData;
     }
 

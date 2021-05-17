@@ -96,36 +96,27 @@ public class ListViewFragment extends Fragment implements RestaurantAdapter.OnIt
 
     private void setAutocompleteEventObserver() {
         mRestaurantsVM.getAutoSearchEventList().observe(getViewLifecycleOwner(), autoSearchEvents -> {
-            Log.i(TAG, "LVM__ .setAutocompleteEventObserver.onChanged: " + autoSearchEvents);
             autoEvent = autoSearchEvents;
             switch (autoSearchEvents) {
                 case AUTO_START:
                 case AUTO_SEARCH_EMPTY:
-                    Log.i(TAG, "LVM__ switch.setAutocompleteEventObserver: " + autoSearchEvents);
                     mRestaurants.clear();
                     updateRecyclerView();
                     break;
                 case AUTO_ZERO_RESULT:
-                    Log.i(TAG, "LVM__ switch.setAutocompleteEventObserver: TOAST__TOAST: " + autoSearchEvents);
                     String msg = getString(R.string.search_no_resto_ms);
                     showToast(msg);
                     break;
                 case AUTO_ERROR:
-                    Log.e(TAG, "LVM__ switch.setAutocompleteEventObserver: TOAST__TOAST: " + autoSearchEvents);
                     String msgE = getString(R.string.fetching_data_error_ms);
                     showToast(msgE);
                     break;
                 case AUTO_OK:
-                    // TODO cache:: tell to user how much restaurant was find
-                    String restoFound =  view.getResources().getString(R.string.number_resto_found, mRestaurants.size());
+                    String restoFound = view.getResources().getString(R.string.number_resto_found, mRestaurants.size());
                     showToast(restoFound);
-                    Log.i(TAG, "setAutocompleteEventObserver: " + mRestaurants.size());
                     break;
                 case AUTO_STOP:
-                    Log.i(TAG, "LVM__ switch.setAutocompleteEventObserver: " + autoSearchEvents);
-                    mRestaurantsVM.getRestosFromCacheOrNetwork(autoSearchEvents);
-                    // TODO cache:: is it a good idea ?
-                    //mRestaurantsVM.setAutoSearchEvent(AutoSearchEvents.AUTO_NULL);
+                    mRestaurantsVM.getRestosFromCacheOrNetwork();
                     break;
                 default:
                     break;
@@ -153,7 +144,12 @@ public class ListViewFragment extends Fragment implements RestaurantAdapter.OnIt
 
     private void observeRestaurantAPIResponse() {
         Log.i(TAG, "LVM__.observeRestaurantAPIResponse: ");
-        mRestaurantsVM.getRestaurantWithUsers.observe(getViewLifecycleOwner(), observerRestos);
+        mRestaurantsVM.getRestaurantWithUsers().observe(getViewLifecycleOwner(), observerRestos);
+//        mRestaurantsVM.getRestaurantWithUsers.observe(getViewLifecycleOwner(), observerRestos);
+    }
+
+    private void unsubscribeRestaurants() {
+        mRestaurantsVM.getRestaurantWithUsers().removeObserver(observerRestos);
     }
 
     private void updateRecyclerView() {
@@ -162,21 +158,9 @@ public class ListViewFragment extends Fragment implements RestaurantAdapter.OnIt
 
     private void isRestoReceived() {
         Log.i(TAG, "RUN LVM__.isRestoReceived: RUN");
-//        if ((mRestaurants.isEmpty() && autoEvent.equals(AutoSearchEvents.AUTO_NULL)) || autoEvent.equals(AutoSearchEvents.AUTO_ZERO_RESULT)) {
         if (mRestaurants.isEmpty() && autoEvent.equals(AutoSearchEvents.AUTO_NULL)) {
-            Log.i(TAG, "LVM__ isRestoReceived: if (mRestaurants.isEmpty()");
-            new android.os.Handler().postDelayed(
-                    () -> {
-                        // This'll run 600 milliseconds later
-                        progressBarBiding.progressBarLayout.setVisibility(View.GONE);
-//                        if (autoEvent.equals(AutoSearchEvents.AUTO_NULL)) {
-//                            mMessageNoRestoBinding.messageNoResto.setVisibility(View.VISIBLE);
-//                        } else {
-//                            mMessageNoRestoBinding.messageNoResto.setVisibility(View.GONE);
-//                        }
-                        mMessageNoRestoBinding.messageNoResto.setVisibility(View.VISIBLE);
-                    },
-                    200);
+            progressBarBiding.progressBarLayout.setVisibility(View.GONE);
+            mMessageNoRestoBinding.messageNoResto.setVisibility(View.VISIBLE);
         } else {
             Log.i(TAG, "LVM__ isRestoReceived: mRestaurants.isFULL");
             progressBarBiding.progressBarLayout.setVisibility(View.GONE);
@@ -195,7 +179,6 @@ public class ListViewFragment extends Fragment implements RestaurantAdapter.OnIt
     }
 
     private void displayRestoInRecyclerV() {
-        // TODO cache:: here it need to check only mResto empty & !auto_NULL for make recycler empty if result of search is 0.
         if (!mRestaurants.isEmpty() || !autoEvent.equals(AutoSearchEvents.AUTO_NULL)) {
             Log.i(TAG, "LVM__ m_ displayRestoInRecycler: mRestaurants.isFully");
             Log.i(TAG, "LVM__ m_ displayRestoInRecycler: mRestaurants.size() " + mRestaurants.size());
@@ -211,6 +194,21 @@ public class ListViewFragment extends Fragment implements RestaurantAdapter.OnIt
         Intent intent = new Intent(getActivity(), AboutRestaurantActivity.class);
         intent.putExtra(Const.EXTRA_KEY_RESTAURANT, restaurant.getPlaceId());
         startActivity(intent);
+    }
+
+    @Override
+    public void onStop() {
+        Log.i(TAG, "LVF__ onStop: UNSUBSCRIBE observable RESTO");
+        unsubscribeRestaurants();
+        mRestaurantsVM.unsubscribeRestoWithUsers();
+        super.onStop();
+    }
+
+    @Override
+    public void onPause() {
+        Log.i(TAG, "LVF__ onPause: unsubscribe observer ?");
+        //unsubscribeRestaurants();
+        super.onPause();
     }
 
     @Override

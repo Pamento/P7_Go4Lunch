@@ -207,16 +207,6 @@ public class MainActivity extends AppCompatActivity
                 return true; // signal that we consumed this event
             }
         });
-        // Get the intent, verify the action and get the query
-        // TODO cache:: I have comment this for auto_com; if search don't work, uncomment this.
-//        Intent intent = getIntent();
-//        //Log.i(TAG, "setSearchWidget: intent.getAction(): " + intent.getAction());
-//        //Log.i(TAG, "setSearchWidget: intent.ACTION: " + Intent.ACTION_SEARCH);
-//        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-//            String query = intent.getStringExtra(SearchManager.QUERY);
-//            //Log.i(TAG, "setSearchWidget: SEARCH_QUERY: " + query);
-//            //doMySearch(query);
-//        }
     }
 
     private void setAutoSearchEventStatus(boolean isSearchViewCollapse, AutoSearchEvents event) {
