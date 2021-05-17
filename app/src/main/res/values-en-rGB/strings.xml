@@ -33,6 +33,7 @@
     <!-- Fragment map view -->
     <string name="current_location_not_found">Unable to get current location.</string>
     <string name="error_get_map">Google Map unavailable.</string>
+    <string name="number_resto_found">%x restaurant/s was found.</string>
 
     <!-- Login Firebase -->
     <string name="slogan">Find a nice restaurant and invite your co-workers for lunch!</string>

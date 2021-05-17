@@ -3,6 +3,7 @@ package com.pawel.p7_go4lunch.dataServices.repositorys;
 import android.location.Location;
 import android.util.Log;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -23,8 +24,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Nullable;
-
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -39,7 +38,7 @@ public class GooglePlaceRepository {
     private final List<Restaurant> mRestaurants = new ArrayList<>();
     private List<Restaurant> mRestaurantsAutoCom = new ArrayList<>();
     private final MutableLiveData<List<Restaurant>> mRestaurantLiveData = new MutableLiveData<>();
-    private final Location mCntLocation = new Location("");
+    private final Location mCrntLocation = new Location("");
     private final CompositeDisposable mDisposable = new CompositeDisposable();
     private final MutableLiveData<AutoSearchEvents> mAutoSearchEvents = new MutableLiveData<>(AutoSearchEvents.AUTO_NULL);
     private final InMemoryRestosCache mCache = InMemoryRestosCache.getInstance();
@@ -48,26 +47,28 @@ public class GooglePlaceRepository {
         mGooglePlaceAPIService = getGooglePlaceApiService();
     }
 
-    public void setRestaurantLiveData(@Nullable List<Restaurant> restaurantList) {
+    public void setRestaurantLiveData(List<Restaurant> restaurantList) {
         Log.i(TAG, "GR__setRestaurantLiveData: ");
-        if (restaurantList == null) {
-            AutoSearchEvents aE = mAutoSearchEvents.getValue();
-            // TODO cache:: we lack here the condition to go back from autocomplete search to NearBy,
-            //  if AutoSearchEvents.AUTO_EMPTY or _STOP we need do the same. At least ...
-            //  in Fragments if we detect change type EMPTY || STOP, than in GoogleRepo setAutoSearchEvent to NULL. ???
-            if (aE != null && aE.equals(AutoSearchEvents.AUTO_NULL)) {
-                Log.i(TAG, "GR__setRestaurantLiveData: from NET");
-                mRestaurantLiveData.setValue(mRestaurants);
-                mCache.cacheRestoInMemory(mRestaurants);
-                mCache.setLocation(mCntLocation);
-            } else {
-                Log.i(TAG, "GR__setRestaurantLiveData: from AUTO_COM");
-                // if AutoSearchEvents.AUTO_NULL == false than Autocomplete API is working and mRestaurantsAutoCom is set
-                mRestaurantLiveData.setValue(mRestaurantsAutoCom);
-            }
+        Log.i(TAG, "GR__setRestaurantLiveData: from CACHE");
+        mRestaurantLiveData.setValue(restaurantList);
+    }
+
+    public void setRestaurantLiveData(boolean isNearby) {
+        Log.i(TAG, "GR__setRestaurantLiveData: ");
+        //AutoSearchEvents aE = mAutoSearchEvents.getValue();
+        // TODO cache:: we lack here the condition to go back from autocomplete search to NearBy,
+        //  if AutoSearchEvents.AUTO_EMPTY or _STOP we need do the same. At least ...
+        //  in Fragments if we detect change type EMPTY || STOP, than in GoogleRepo setAutoSearchEvent to NULL. ???
+//        if (aE != null && aE.equals(AutoSearchEvents.AUTO_NULL)) {
+        if (isNearby) {
+            Log.i(TAG, "GR__setRestaurantLiveData: from NET");
+            mRestaurantLiveData.setValue(mRestaurants);
+            mCache.cacheRestoInMemory(mRestaurants);
+            mCache.setLocation(mCrntLocation);
         } else {
-            Log.i(TAG, "GR__setRestaurantLiveData: from CACHE");
-            mRestaurantLiveData.setValue(restaurantList);
+            Log.i(TAG, "GR__setRestaurantLiveData: from AUTO_COM");
+            // if AutoSearchEvents.AUTO_NULL == false than Autocomplete API is working and mRestaurantsAutoCom is set
+            mRestaurantLiveData.setValue(mRestaurantsAutoCom);
         }
     }
 
@@ -85,7 +86,7 @@ public class GooglePlaceRepository {
         return RetrofitClient.getRequestApi();
     }
 
-    public MutableLiveData<List<Restaurant>> getRestaurants() {
+    public LiveData<List<Restaurant>> getRestaurants() {
         // TODO cache:: what to do with this ? here?
         Log.i(TAG, "GPR__ getRestaurants.mRestaurantLiveData ");
 //        if (mRestaurantLiveData.getValue() == null) {
@@ -98,11 +99,11 @@ public class GooglePlaceRepository {
         return initialLatLng;
     }
 
-    public MutableLiveData<AutoSearchEvents> getAutoSearchEvents() {
+    public LiveData<AutoSearchEvents> getAutoSearchEvents() {
         return mAutoSearchEvents;
     }
 
-    public MutableLiveData<AutoSearchEvents> getAutoSearchEvent() {
+    public LiveData<AutoSearchEvents> getAutoSearchEvent() {
         return mAutoSearchEvents;
     }
 
@@ -123,8 +124,8 @@ public class GooglePlaceRepository {
     // .........................................................................SETTERS
     public void setCurrentLocation(Location cLoc) {
         GooglePlaceRepository.mCurrentLocation = cLoc.getLatitude() + "," + cLoc.getLongitude();
-        mCntLocation.setLatitude(cLoc.getLatitude());
-        mCntLocation.setLongitude(cLoc.getLongitude());
+        mCrntLocation.setLatitude(cLoc.getLatitude());
+        mCrntLocation.setLongitude(cLoc.getLongitude());
     }
 
     public void setInitialLatLng(LatLng latLng) {
@@ -281,7 +282,7 @@ public class GooglePlaceRepository {
                 r.setLocation(result.getGeometry().getLocation());
                 l.setLatitude(result.getGeometry().getLocation().getLat());
                 l.setLongitude(result.getGeometry().getLocation().getLng());
-                float dt = mCntLocation.distanceTo(l);
+                float dt = mCrntLocation.distanceTo(l);
                 r.setDistance(Math.round(dt));
             }
             if (result.getOpeningHours() != null)

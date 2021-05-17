@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -21,6 +22,7 @@ import com.pawel.p7_go4lunch.utils.AutoSearchEvents;
 import com.pawel.p7_go4lunch.utils.WasCalled;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import io.reactivex.ObservableSource;
@@ -35,15 +37,13 @@ import io.reactivex.schedulers.Schedulers;
 public class RestaurantsViewModel extends ViewModel {
 
     private static final String TAG = "AUTO_COM";
-    private final GooglePlaceRepository mGooglePlaceRepository;
+    private GooglePlaceRepository mGooglePlaceRepository = GooglePlaceRepository.getInstance();
     private final FirebaseUserRepository mFirebaseUserRepository;
     private final CompositeDisposable mDisposable = new CompositeDisposable();
     private GoogleMap mGoogleMap;
     private final MutableLiveData<Location> mCurrentLocation = new MutableLiveData<>();
     private String mCurrentLocS;
     private int mRadius = 500;
-
-    // TODO cache:: add line below
     private List<Restaurant> mRestaurants = new ArrayList<>();
     private InMemoryRestosCache mCache;
     //
@@ -75,9 +75,6 @@ public class RestaurantsViewModel extends ViewModel {
 
                     @Override
                     public void onNext(@NonNull Result result) {
-                        // TODO cache:: this work must by done here in VM ?
-                        // NOT, because the GoogleRepo.getRestaurantsNearBy.setRestaurantsNearby(results);
-                        // TODO cache::.
                         mGooglePlaceRepository.findRestoForUpdates(result, true);
                     }
 
@@ -88,12 +85,7 @@ public class RestaurantsViewModel extends ViewModel {
 
                     @Override
                     public void onComplete() {
-                        // TODO cache:: on complete set RestaurantsViewModel.this.mRestaurants
-                        // TODO cache:: mCache.saveInCache( mRestaurants );
-                        mGooglePlaceRepository.setRestaurantLiveData(null);
-                        // TODO cache:: updateUserRestaurants(); should by added ind Transformations.map in
-                        //  RestoVM.GetRestaurants from GoogleRepo
-//                        updateUserRestaurants();
+                        mGooglePlaceRepository.setRestaurantLiveData(true);
                         Log.i("SEARCH", "RestaurantsVM.onComplete");
                     }
                 });
@@ -101,7 +93,7 @@ public class RestaurantsViewModel extends ViewModel {
 
     public void getRestosFromCacheOrNetwork(AutoSearchEvents events) {
         Log.i(TAG, "RVM__ XXXXXXXXXXXXX.getRestosFromCacheOrNetwork: autoEvent " + events);
-        Log.i(TAG, "RVM__ XXXXXXXXXXXXX.getRestosFromCacheOrNetwork: mRestaurants.size( " + mRestaurants.size());
+        Log.i(TAG, "RVM__ XXXXXXXXXXXXX.getRestosFromCacheOrNetwork: mRestaurants.size( " + mRestaurants.size() + " )");
         mCache.getRestos().subscribe(new Observer<List<Restaurant>>() {
             @Override
             public void onSubscribe(@NonNull Disposable d) {
@@ -111,9 +103,13 @@ public class RestaurantsViewModel extends ViewModel {
             @Override
             public void onNext(@NonNull List<Restaurant> restaurants) {
                 Log.i(TAG, "onNext: restaurants param::: " + restaurants.size());
+                Log.i(TAG, "onNext: mRestaurants param::: " + mRestaurants.size());
                 mRestaurants = restaurants;
                 if (mRestaurants.size() == 0) Log.i(TAG, "onNext_???_ size(): ZERO");
-                else Log.i(TAG, "onNext_???_ size(): resto.size(" + mRestaurants.size());
+                else {
+                    Log.i(TAG, "onNext: __???__resto:::" + mRestaurants.get(0).getName());
+                    Log.i(TAG, "onNext_???_ size(): resto.size(" + mRestaurants.size());
+                }
             }
 
             @Override
@@ -133,34 +129,41 @@ public class RestaurantsViewModel extends ViewModel {
                     Log.i(TAG, "RVM__ onComplete: mGooglePlaceRepository.setRestaurantLiveData(mRestaurants)::: " + mRestaurants.size());
                     mGooglePlaceRepository.setRestaurantLiveData(mRestaurants);
                 }
-                Log.i(TAG, "RVM__ onComplete: BEFORE .clear() _" + mRestaurants.size());
-                mRestaurants.clear();
-                Log.i(TAG, "RVM__ onComplete: AFTER .clear() _" + mRestaurants.size());
             }
         });
     }
 
-
-    // TODO cache:: modify in Transforms.switchMap ???
-    public MutableLiveData<List<Restaurant>> getRestaurants() {
-
-        // TODO cache:: in case when user go back from other activity we need decide here or elsewhere
-        //  how we manage get back of restaurant from cache if is there or restart NearBy
-        if (mRestaurants.size() == 0) {
-            Log.i(TAG, "RVM__ getRestaurants");
-            getRestosFromCacheOrNetwork(AutoSearchEvents.AUTO_NULL);
+    public LiveData<List<Restaurant>> getRestaurantWithUsers = Transformations.map(mGooglePlaceRepository.getRestaurants(), input -> {
+        List<Restaurant> tempL = new ArrayList<>();
+        Log.i(TAG, "RVM__ getRestaurants: _in: TRANSFORMATIONS.MAP():  usersGoingToChosenResto.size()::n°: " + usersGoingToChosenResto.size());
+        Log.i(TAG, "RVM__ getRestaurants: _in: TRANSFORMATIONS.MAP().input::n°: " + input.size());
+        if (input.size() > 0) {
+            //Log.i(TAG, "RVM__ getRestaurants: _in: TRANSFORMATIONS.MAP().input.get(0)::: " + input.get(0).toString());
+            int itr = input.size();
+            for (int i = 0; i < itr; i++) {
+                Restaurant r = input.get(i);
+                List<String> ids = getRestoIdsFromUsers(r.getPlaceId());
+                if (ids.size() > 0) {
+                    Log.i(TAG, "RVM__ getRestaurants: _in: TRANSFORMATIONS.MAP() _in: for -> if ( ids > 0 ) " + ids.size());
+                    r.setUserList(ids);
+                }
+                tempL.add(r);
+            }
         }
-        return mGooglePlaceRepository.getRestaurants();
-    }
+        Log.i(TAG, "RVM__ getRestaurants: _in: TRANSFORMATIONS.MAP().tempL.size()::n°: " + tempL.size());
+        return tempL;
+    });
 
     // This method get all users whom has chosen already his restaurant for lunch
     public void getUsersWithChosenRestaurant() {
         mFirebaseUserRepository.getUsersWithChosenRestaurant().get().addOnSuccessListener(queryDocumentSnapshots -> {
-            FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
+            String email = "";
+            FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
+            if (fUser != null) email = fUser.getEmail();
             usersGoingToChosenResto = queryDocumentSnapshots.toObjects(User.class);
-            for (int i = 0; i < usersGoingToChosenResto.size(); i++) {
-                if (u != null && usersGoingToChosenResto.get(i).getEmail().equals(u.getEmail()))
-                    usersGoingToChosenResto.remove(i);
+            for (Iterator<User> itr = usersGoingToChosenResto.iterator(); itr.hasNext(); ) {
+                User user = itr.next();
+                if (email != null && email.equals(user.getEmail())) itr.remove();
             }
         });
     }
@@ -204,38 +207,18 @@ public class RestaurantsViewModel extends ViewModel {
         mGoogleMap = googleMap;
     }
 
-    public void fetchRestaurants(int radius) {
-        Log.i(TAG, "fFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFetchRestaurants: " + mCurrentLocS);
-        streamCombinedNearbyAndDetailPlace(mCurrentLocS, radius);
-        getUsersWithChosenRestaurant();
-    }
-
-    // TODO cache:: !!!! Is this function is set for Autocomplete ?
-//    private void updateUserRestaurants() {
-//        // TODO UpdateRestoWithUserRestarants with Transformations.map ?
-//        int itr = mRestaurants.size();
-//        for (int i = 0; i < itr; i++) {
-//            Restaurant r = mRestaurants.get(i);
-//            List<String> ids = getRestoIdsFromUsers(r.getPlaceId());
-//            if (ids.size() > 0) {
-//                r.setUserList(ids);
-//                mRestaurants.set(i, r);
-//            }
-//        }
-//    }
-
     private List<String> getRestoIdsFromUsers(String placeId) {
-        int itr = usersGoingToChosenResto.size();
-        List<String> id = new ArrayList<>();
-        if (itr > 0) {
-            for (int i = 0; i < itr; i++) {
+        int sizeL = usersGoingToChosenResto.size();
+        List<String> ids = new ArrayList<>();
+        if (sizeL > 0) {
+            for (int i = 0; i < sizeL; i++) {
                 User us = usersGoingToChosenResto.get(i);
                 if (us.getUserRestaurant() != null && us.getUserRestaurant().getPlaceId().equals(placeId)) {
-                    id.add(us.getUserRestaurant().getPlaceId());
+                    ids.add(us.getUserRestaurant().getPlaceId());
                 }
             }
         }
-        return id;
+        return ids;
     }
 
     public void disposeDisposable() {

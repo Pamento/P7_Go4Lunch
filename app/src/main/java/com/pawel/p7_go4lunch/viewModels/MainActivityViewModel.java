@@ -59,7 +59,7 @@ public class MainActivityViewModel extends ViewModel {
 
                     @Override
                     public void onComplete() {
-                        mGooglePlaceRepository.setRestaurantLiveData(null);
+                        mGooglePlaceRepository.setRestaurantLiveData(false);
                     }
                 });
     }

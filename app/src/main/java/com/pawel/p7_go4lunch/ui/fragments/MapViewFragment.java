@@ -8,7 +8,9 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
+import android.text.Html;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -137,7 +139,13 @@ public class MapViewFragment extends Fragment
         setAutocompleteEventObserver();
         observeGetRestaurants();
         // TODO cache:: where is the best place to call restaurant
-        //mRestaurantsVM.getRestosFromCacheOrNetwork(autoEvent);
+//        mRestaurantsVM.getRestosFromCacheOrNetwork(autoEvent);
+    }
+
+    private void showToast(String msg) {
+        Toast toast = Toast.makeText(getActivity(), Html.fromHtml("<font color='#FF5721' ><b>" + msg + "</b></font>"), Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.TOP, 0, 0);
+        toast.show();
     }
 
     private void setAutocompleteEventObserver() {
@@ -145,6 +153,7 @@ public class MapViewFragment extends Fragment
             autoEvent = autoSearchEvents;
             Log.i(TAG, "MVF__ .EventObserver: AutoSearchEvent::::__ " + autoSearchEvents);
             switch (autoSearchEvents) {
+                case AUTO_START:
                 case AUTO_SEARCH_EMPTY:
                     Log.i(TAG, "MVM__ setAutocompleteEventObserver: " + autoSearchEvents);
                     mRestaurants.clear();
@@ -153,12 +162,14 @@ public class MapViewFragment extends Fragment
                 case AUTO_ZERO_RESULT:
                     Log.i(TAG, "MVM__ setAutocompleteEventObserver: SNACK_BAR // SNACK_BAR ..//.. SNACK_BAR autoEvent:::: " + autoSearchEvents);
                     //ViewWidgets.showSnackBar(0, view, getString(R.string.search_no_resto_ms));
-                    Toast.makeText(getActivity(), getString(R.string.search_no_resto_ms), Toast.LENGTH_SHORT).show();
+                    String msg = getString(R.string.search_no_resto_ms);
+                    showToast(msg);
                     break;
                 case AUTO_ERROR:
                     Log.e(TAG, "MVM__ setAutocompleteEventObserver: SNACK_BAR // SNACK_BAR ..//.. SNACK_BAR autoEvent:::: " + autoSearchEvents);
                     //ViewWidgets.showSnackBar(0, view, getString(R.string.fetching_data_error_ms));
-                    Toast.makeText(getActivity(), getString(R.string.fetching_data_error_ms), Toast.LENGTH_SHORT).show();
+                    String msgE = getString(R.string.fetching_data_error_ms);
+                    showToast(msgE);
                     break;
                 case AUTO_STOP:
                     mRestaurants.clear();
@@ -170,6 +181,64 @@ public class MapViewFragment extends Fragment
         });
     }
 
+    private void showToastRestosNr() {
+        Log.i(TAG, "MVF__ showToastRestosNr.setAutocompleteEventObserver: " + mRestaurants.size());
+        String restoFound = view.getResources().getString(R.string.number_resto_found, mRestaurants.size());
+        showToast(restoFound);
+    }
+
+    final Observer<Location> getLocation = new Observer<Location>() {
+        @Override
+        public void onChanged(Location location) {
+            if (location != null) {
+                // TODO Add if for AutoEventStatus
+                Log.i(TAG, "MVF__ m_initMapRestaurant.getLocation: " + location);
+                LatLng ll = new LatLng(location.getLatitude(), location.getLongitude());
+                // TODO cache:: how to get appSettings from SharedPreferences in ViewModel ?
+                mRestaurantsVM.setUpCurrentLocation(location, ll, mAppSettings.getRadius());
+                Log.i(TAG, "onChanged: AutoSearchEvent::: " + autoEvent);
+                if (autoEvent.equals(AutoSearchEvents.AUTO_NULL)) {
+                    getRestaurantFromSource();
+                } else {
+                    removeGetLocationObserver();
+                }
+                moveCamera(location, mAppSettings.getPerimeter());
+                // TODO cache:: test if the map will display the restaurants Markers on map
+                Log.i(TAG, "MVF__ m_observerLocation.onChanged: BEFORE: setRestaurantMarksOnMap(); mRestaurants.size()::: " + mRestaurants.size());
+                setRestaurantMarksOnMap();
+                // FAB of functionality: "Back of camera upon user position"
+                onViewModelReadySetObservers();
+            }
+        }
+    };
+
+    private void getRestaurantFromSource() {
+        Log.i(TAG, "MVF__ getRestaurantFromSource: && REMOVE___OBSERVER-LOCATION");
+        mRestaurantsVM.getRestosFromCacheOrNetwork(autoEvent);
+        removeGetLocationObserver();
+    }
+
+    private void removeGetLocationObserver() {
+        Objects.requireNonNull(LocationUtils.getCurrentDeviceLocation()).removeObserver(getLocation);
+    }
+
+    final Observer<Location> observeLocation = new Observer<Location>() {
+        @Override
+        public void onChanged(Location location) {
+            if (location == null) {
+                ViewWidgets.showSnackBar(0, view, getResources().getString(R.string.current_location_not_found));
+                LocationUtils.LocationDisabledDialog.newInstance().show(mFragmentActivity.getSupportFragmentManager(), "dialog");
+            } else {
+                // TODO Add if for AutoEventStatus
+                Log.i(TAG, "MVF__ m_onViewModelReadySetObservers.observeLocation " + location);
+                LatLng ll = new LatLng(location.getLatitude(), location.getLongitude());
+                mRestaurantsVM.setUpCurrentLocation(location, ll, mAppSettings.getRadius());
+                // moveCamera to go back on User current position, without any other action
+                moveCamera(location, mAppSettings.getPerimeter());
+            }
+        }
+    };
+
     /**
      * This is where we can add markers or lines, add listeners or move the camera.
      * Override
@@ -178,21 +247,10 @@ public class MapViewFragment extends Fragment
      * }
      */
     private void initMapRestaurant() {
-        if (mGoogleMaps == null) mGoogleMaps = mRestaurantsVM.getGoogleMap();
+        //if (mGoogleMaps == null) mGoogleMaps = mRestaurantsVM.getGoogleMap();
         if (mAppSettings.isLocalisation()) {
             Log.i(TAG, "MVF__ START initMapRestaurant: :else ");
-            Objects.requireNonNull(LocationUtils.getCurrentDeviceLocation()).observe(getViewLifecycleOwner(), location -> {
-                if (location != null) {
-                    // TODO Add if for AutoEventStatus
-                    Log.i(TAG, "MVF__ initMapRestaurant: " + location);
-                    LatLng ll = new LatLng(location.getLatitude(), location.getLongitude());
-                    // TODO cache:: how to get appSettings from SharedPreferences in ViewModel ?
-                    mRestaurantsVM.setUpCurrentLocation(location, ll, mAppSettings.getRadius());
-                    moveCamera(location, mAppSettings.getPerimeter());
-                    // FAB of functionality: "Back of camera upon user position"
-                    onViewModelReadySetObservers();
-                }
-            });
+            Objects.requireNonNull(LocationUtils.getCurrentDeviceLocation()).observe(getViewLifecycleOwner(), getLocation);
         } else {
             ViewWidgets.showSnackBar(1, view, getString(R.string.ask_location_local_settings_message));
         }
@@ -232,19 +290,17 @@ public class MapViewFragment extends Fragment
         mBinding.fabCurrentLocation.setVisibility(View.VISIBLE);
         mBinding.fabCurrentLocation.setOnClickListener(v -> {
             Log.i(TAG, "MVF__ initMapRestaurant: FAB_OnClick");
-            Objects.requireNonNull(LocationUtils.getCurrentDeviceLocation()).observe(getViewLifecycleOwner(), location -> {
-                if (location == null) {
-                    ViewWidgets.showSnackBar(0, view, getResources().getString(R.string.current_location_not_found));
-                    LocationUtils.LocationDisabledDialog.newInstance().show(mFragmentActivity.getSupportFragmentManager(), "dialog");
-                }
-            });
+            Objects.requireNonNull(LocationUtils.getCurrentDeviceLocation()).observe(getViewLifecycleOwner(), observeLocation);
         });
     }
 
     Observer<List<Restaurant>> mObserverRestos = (Observer<List<Restaurant>>) restaurants -> {
+        Log.i(TAG, "MVF__ .OOOOOOOOOOOOOOOOOO.observeRestaurantAPIResponse");
         if (restaurants != null) {
             Log.i(TAG, "MVF__ .OOOOOOOOOOOOOOOOOO.observeRestaurantAPIResponse: resto.size() " + restaurants.size());
+            Log.i(TAG, "MVF__ .OOOOOOOOOOOOOOOOOO.observeRestaurantAPIResponse: autoEvent::: " + autoEvent);
             mRestaurants = restaurants;
+            if (autoEvent.equals(AutoSearchEvents.AUTO_OK)) showToastRestosNr();
             setRestaurantMarksOnMap();
         }
     };
@@ -252,9 +308,9 @@ public class MapViewFragment extends Fragment
     // Observe restos in RestaurantViewModel
     private void observeGetRestaurants() {
         Log.i(TAG, "MVF__ observeGetRestaurants: OOOBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
-        mRestaurantsVM.getRestaurants().observe(getViewLifecycleOwner(), mObserverRestos);
+        mRestaurantsVM.getRestaurantWithUsers.observe(getViewLifecycleOwner(), mObserverRestos);
     }
-//
+
 //    private void removeObserverOnRestoAPIResponse() {
 //        mRestaurantsVM.getRestaurants().removeObserver(mObserverRestos);
 //    }
@@ -269,6 +325,7 @@ public class MapViewFragment extends Fragment
             mGoogleMaps.clear();
             for (Restaurant rst : mRestaurants) {
                 if (rst != null) {
+                    Log.i(TAG, "MVF__ setRestaurantMarksOnMap: MARKERS ___google mRestaurants[].size() " + rst.getName());
                     LatLng latLng = new LatLng(rst.getLocation().getLat(), rst.getLocation().getLng());
                     Marker marker;
                     if (rst.getUserList() != null) {

@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity
     protected double mLatitude, mLongitude;
     protected LatLng mLatLng;
     private LocalAppSettings mAppSettings;
+    private boolean isCollapse = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,19 +157,41 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setSearch(Menu menu) {
-        String searchViewInput = "";
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         final SearchView searchView = (SearchView) menu.findItem(R.id.toolbar_search_icon).getActionView();
-//        final MenuItem searchMenuItem = menu.findItem(R.id.toolbar_search_icon);
-        assert searchManager != null;
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        if (searchManager != null) {
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        }
         //searchView.setIconifiedByDefault(false);
+        // Listen for expand & collapse the SearchView.
+        MenuItem item = menu.findItem(R.id.toolbar_search_icon);
+        item.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                isCollapse = false;
+                setAutoSearchEventStatus(false, AutoSearchEvents.AUTO_START);
+                Log.i(TAG, "MainA__ setSearch.onMenuItemActionExpand: EXPAND=false ::: " + isCollapse);
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                // Keep this values below to time of implement filter on listViewResto.
+                //MainA__ onMenuItemActionExpand. item.id::: 2131296835
+                //MainA__ onMenuItemActionCollapse: toolbar_search_icon.id::: 2131296835
+                isCollapse = true;
+                Log.i(TAG, "MainA__ setSearch.onMenuItemActionCollapse: COLLAPSE=true ::: " + isCollapse);
+                setAutoSearchEventStatus(true, AutoSearchEvents.AUTO_STOP);
+                return true;
+            }
+        });
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextChange(String newText) {
-                Log.i(TAG, " __onQueryTextChange: ___________________________________________ " + newText);
-                if (newText.length() == 0) {
-                    mMainActivityViewModel.setAutoSearchEventStatus(AutoSearchEvents.AUTO_SEARCH_EMPTY);
+                mCurrentLocationStr = mMainActivityViewModel.getCurrentLocation();
+                Log.i(TAG, " __onQueryTextChange: ___________________________________________ \"" + newText + "\"");
+                if (newText.length() == 0 && !isCollapse) {
+                    setAutoSearchEventStatus(false, AutoSearchEvents.AUTO_SEARCH_EMPTY);
                 }
                 if ((newText.length() >= 3)) {
                     mMainActivityViewModel
@@ -184,17 +207,6 @@ public class MainActivity extends AppCompatActivity
                 return true; // signal that we consumed this event
             }
         });
-        // Listen focus on SearchView for clean Map or List of Restaurants if true or rebuild NearBy search if false
-        searchView.setOnQueryTextFocusChangeListener((v, hasFocus) -> {
-            mCurrentLocationStr = mMainActivityViewModel.getCurrentLocation();
-            if (hasFocus) {
-                mMainActivityViewModel.setAutoSearchEventStatus(AutoSearchEvents.AUTO_START);
-            } else {
-                if (searchViewInput.equals(""))
-                    mMainActivityViewModel.setAutoSearchEventStatus(AutoSearchEvents.AUTO_STOP);
-            }
-            Log.e(TAG, "onFocusChange: FOCUS__OF__SEARCH_VIEW__WAS__CHANGED with boolean:  " + hasFocus);
-        });
         // Get the intent, verify the action and get the query
         // TODO cache:: I have comment this for auto_com; if search don't work, uncomment this.
 //        Intent intent = getIntent();
@@ -205,6 +217,14 @@ public class MainActivity extends AppCompatActivity
 //            //Log.i(TAG, "setSearchWidget: SEARCH_QUERY: " + query);
 //            //doMySearch(query);
 //        }
+    }
+
+    private void setAutoSearchEventStatus(boolean isSearchViewCollapse, AutoSearchEvents event) {
+        if (isSearchViewCollapse) {
+            mMainActivityViewModel.setAutoSearchEventStatus(AutoSearchEvents.AUTO_STOP);
+        } else {
+            mMainActivityViewModel.setAutoSearchEventStatus(event);
+        }
     }
 
     private void setNavigationDrawer() {
@@ -372,17 +392,18 @@ public class MainActivity extends AppCompatActivity
         super.onResumeFragments();
     }
 
-//    @Override
+    //    @Override
 //    protected void onStart() {
 //        super.onStart();
 //        Log.i(TAG, "MAIN_ACTIVITY onStart is");
 //    }
 //
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        Log.i(TAG, "MAIN_ACTIVITY onResume is");
-//    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getLocalAppSettings();
+        Log.i(TAG, "MAIN_ACTIVITY onResume is");
+    }
 //
 //    @Override
 //    protected void onPause() {

@@ -19,7 +19,7 @@ import java.util.List;
 
 public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder> {
 
-    private final List<Restaurant> mRestaurants;
+    private List<Restaurant> mRestaurants;
     private final OnItemRestaurantListClickListener mListClickListener;
 
     public RestaurantAdapter(List<Restaurant> restaurants, OnItemRestaurantListClickListener listClickListener) {
@@ -71,6 +71,11 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
     @Override
     public int getItemCount() {
         return mRestaurants.size();
+    }
+
+    public void updateList(List<Restaurant> restos) {
+        this.mRestaurants = restos;
+        notifyDataSetChanged();
     }
 
     // ....................................................ViewHolder

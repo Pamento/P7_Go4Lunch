@@ -50,6 +50,7 @@
     <!-- Fragment map view -->
     <string name="current_location_not_found">Impossible d\'obtenir la position actuelle.</string>
     <string name="error_get_map">Rupture de stock !\nGoogle Map indisponible.</string>
+    <string name="number_resto_found">%x restaurant/s était trouvé.</string>
 
     <!-- About the restaurant activity -->
     <string name="action_settings">Paramètres</string>
@@ -85,7 +86,7 @@
     <string name="notification_repeat_more">Rappel tous les jours</string>
     <string name="notification_title">T\'as faim</string>
     <string name="notification_intro">Tu vas manger en compagnie de:</string>
-    <string name="notification_no_workmates_go">Aucun collègue n\'y mange pas.</string>
+    <string name="notification_no_workmates_go">Aucun collègue n\'y va pas.</string>
     <string name="hour">Heure d\'affichage</string>
     <string name="localisation_category">Localisation</string>
     <string name="account_category">Compte</string>
@@ -122,7 +123,7 @@
 
     <!-- Workmates list -->
     <string name="workmate_anonymous">Collègue</string>
-    <string name="workmate_eat_at">%1$s mange à (%2$s)</string>
+    <string name="workmate_eat_at">%1$s se restaure à (%2$s)</string>
     <string name="workmate_not_decide">%s n\'a pas encore décidé</string>
     <string name="about_restaurant_workmate_going_there">%s y vas!</string>
     <string name="about_restaurant_workmates_empty_list">Personne n\'a encore rejoint cet endroit.</string>
