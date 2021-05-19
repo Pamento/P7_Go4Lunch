@@ -64,6 +64,7 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
     private Drawable ic_notLike;
     private Drawable ic_rest_chosen;
     private Drawable ic_rest_not_chosen;
+    private Drawable ic_full_star;
     private Drawable ic_empty_star;
     private LocalAppSettings mAppSettings;
 
@@ -101,6 +102,7 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
         ic_notLike = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_star_primary_36, null);
         ic_rest_chosen = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_check_circle_32, null);
         ic_rest_not_chosen = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_check_circle_red_32, null);
+        ic_full_star = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_star_24, null);
         ic_empty_star = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_star_border_24, null);
     }
 
@@ -206,19 +208,19 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
             double starsRange = Math.round(mThisRestaurant.getRating() * 3 / 5);
             switch ((int) starsRange) {
                 case 1:
-                    mBinding.abInclude.aboutTheRestStar1.setVisibility(View.VISIBLE);
+                    mBinding.abInclude.aboutTheRestStar1.setImageDrawable(ic_full_star);
                     mBinding.abInclude.aboutTheRestStar2.setImageDrawable(ic_empty_star);
                     mBinding.abInclude.aboutTheRestStar3.setImageDrawable(ic_empty_star);
                     break;
                 case 2:
-                    mBinding.abInclude.aboutTheRestStar1.setVisibility(View.VISIBLE);
-                    mBinding.abInclude.aboutTheRestStar2.setVisibility(View.VISIBLE);
+                    mBinding.abInclude.aboutTheRestStar1.setImageDrawable(ic_full_star);
+                    mBinding.abInclude.aboutTheRestStar2.setImageDrawable(ic_full_star);
                     mBinding.abInclude.aboutTheRestStar3.setImageDrawable(ic_empty_star);
                     break;
                 case 3:
-                    mBinding.abInclude.aboutTheRestStar1.setVisibility(View.VISIBLE);
-                    mBinding.abInclude.aboutTheRestStar2.setVisibility(View.VISIBLE);
-                    mBinding.abInclude.aboutTheRestStar3.setVisibility(View.VISIBLE);
+                    mBinding.abInclude.aboutTheRestStar1.setImageDrawable(ic_full_star);
+                    mBinding.abInclude.aboutTheRestStar2.setImageDrawable(ic_full_star);
+                    mBinding.abInclude.aboutTheRestStar3.setImageDrawable(ic_full_star);
                     break;
                 default:
                     mBinding.abInclude.aboutTheRestStar1.setImageDrawable(ic_empty_star);

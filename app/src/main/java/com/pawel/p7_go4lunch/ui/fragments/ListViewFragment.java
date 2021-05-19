@@ -83,8 +83,7 @@ public class ListViewFragment extends Fragment implements RestaurantAdapter.OnIt
 
     private void showToast(String msg) {
         Toast toast = Toast.makeText(getActivity(), Html.fromHtml("<font color='#FF5721' ><b>" + msg + "</b></font>"), Toast.LENGTH_SHORT);
-//        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-        toast.setGravity(Gravity.TOP, 0, 0);
+        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
         toast.show();
     }
 

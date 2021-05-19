@@ -44,8 +44,7 @@
                 android:layout_toEndOf="@+id/about_the_rest_name"
                 android:contentDescription="@string/star1"
                 android:paddingTop="@dimen/size_s"
-                android:src="@drawable/ic_baseline_star_24"
-                android:visibility="invisible" />
+                tools:src="@drawable/ic_baseline_star_24" />
 
             <ImageView
                 android:id="@+id/about_the_rest_star_2"
@@ -54,8 +53,7 @@
                 android:layout_toEndOf="@+id/about_the_rest_star_1"
                 android:contentDescription="@string/star2"
                 android:paddingTop="@dimen/size_s"
-                android:src="@drawable/ic_baseline_star_24"
-                android:visibility="invisible" />
+                tools:src="@drawable/ic_baseline_star_24" />
 
             <ImageView
                 android:id="@+id/about_the_rest_star_3"
@@ -64,8 +62,7 @@
                 android:layout_toEndOf="@+id/about_the_rest_star_2"
                 android:contentDescription="@string/star3"
                 android:paddingTop="@dimen/size_s"
-                android:src="@drawable/ic_baseline_star_24"
-                android:visibility="invisible" />
+                tools:src="@drawable/ic_baseline_star_24" />
 
             <TextView
                 android:id="@+id/about_the_rest_address"
