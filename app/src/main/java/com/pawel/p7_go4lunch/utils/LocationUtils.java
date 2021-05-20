@@ -41,6 +41,8 @@ public abstract class LocationUtils {
                     @Override
                     public void onGranted() {
                         // TODO check if device has location & network enabled (Kitkat & above)
+                        // solution
+                        // https://stackoverflow.com/questions/17591147/how-to-get-current-location-in-android
                         Task<android.location.Location> getLocation = fusedLocationProviderClient.getLastLocation();
                         getLocation.addOnCompleteListener(task -> {
                             if (task.isSuccessful() && (task.getResult() != null)) {
