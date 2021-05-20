@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity
     protected LatLng mLatLng;
     private LocalAppSettings mAppSettings;
     private boolean isCollapse = true;
+    private boolean isMapFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,6 +135,27 @@ public class MainActivity extends AppCompatActivity
         NavigationUI.setupWithNavController(binding.navView, navController);
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        // Remove filters from Menu if Map Fragment is displayed.
+        if (isMapFragment) {
+            Log.i(TAG, "MainA__ onPrepareOptionsMenu: MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
+            Log.i(TAG, "onPrepareOptionsMenu: isMapFragment ::: " + isMapFragment);
+            menu.removeItem(R.id.filter_AZ);
+            menu.removeItem(R.id.filter_rating);
+        }
+        return true;
+    }
+
+    // Fun: updateMenuItems is run from fragments to remove filters from Map Fragment and add it to ListRestaurants.
+    public void updateMenuItems(boolean isMapF) {
+        Log.i(TAG, "MainA__ onPrepareOptionsMenu: MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
+        Log.i(TAG, "updateMenuItems: " + isMapF);
+        isMapFragment = isMapF;
+        // invalidateOptionsMenu: internal function of OS Android to rerun onPrepareOptionsMenu
+        this.invalidateOptionsMenu();
+    }
     // ____________ Toolbar search _____________________
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

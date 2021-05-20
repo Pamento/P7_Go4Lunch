@@ -8,13 +8,20 @@
         android:title="@string/search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="collapseActionView|ifRoom" />
-
-    <item
-        android:id="@+id/filter_rating"
-        android:focusable="false"
-        android:title="@string/filter_by_rating" />
     <item
         android:id="@+id/filter_AZ"
         android:focusable="false"
         android:title="@string/filter_AZ" />
+    <item
+        android:id="@+id/filter_rating"
+        android:focusable="false"
+        android:title="@string/filter_by_rating" >
+        <menu>
+            <item android:id="@+id/filter_rating_3stars"
+                android:title="@string/filter_by_rating_3stars"/>
+            <item android:id="@+id/filter_rating_2stars"
+                android:title="@string/filter_by_rating_2stars"/>
+        </menu>
+    </item>
+
 </menu>

@@ -38,6 +38,8 @@
     <string name="search_hint">Cherche un restaurant</string>
     <string name="search_no_resto_ms">Il n\'y a pas des restaurant pour cette recherche.</string>
     <string name="filter_by_rating">Notation</string>
+    <string name="filter_by_rating_3stars">3 étoiles</string>
+    <string name="filter_by_rating_2stars">2 étoiles</string>
     <string name="filter_AZ" translatable="false">A - Z</string>
 
     <!-- Login Firebase -->

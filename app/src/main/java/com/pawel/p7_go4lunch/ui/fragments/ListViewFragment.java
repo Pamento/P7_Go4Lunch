@@ -25,6 +25,7 @@ import com.pawel.p7_go4lunch.ui.AboutRestaurantActivity;
 import com.pawel.p7_go4lunch.databinding.FragmentListViewBinding;
 import com.pawel.p7_go4lunch.databinding.ProgressBarBinding;
 import com.pawel.p7_go4lunch.model.Restaurant;
+import com.pawel.p7_go4lunch.ui.MainActivity;
 import com.pawel.p7_go4lunch.utils.AutoSearchEvents;
 import com.pawel.p7_go4lunch.utils.Const;
 import com.pawel.p7_go4lunch.utils.LocationUtils;
@@ -43,6 +44,7 @@ public class ListViewFragment extends Fragment implements RestaurantAdapter.OnIt
     private ProgressBarBinding progressBarBiding;
     private MessageNoRestoBinding mMessageNoRestoBinding;
     private View view;
+    private MainActivity mMainActivity;
     private List<Restaurant> mRestaurants = new ArrayList<>();
     private RestaurantAdapter adapter;
     private AutoSearchEvents autoEvent = AutoSearchEvents.AUTO_NULL;
@@ -60,6 +62,10 @@ public class ListViewFragment extends Fragment implements RestaurantAdapter.OnIt
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         //super.onViewCreated(view, savedInstanceState);
         Log.i(TAG, "onViewCreated: super.onViewCreated is inactive");
+        Log.i(TAG, "LVF__ onViewCreated: MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
+
+        mMainActivity = (MainActivity) getActivity();
+        mMainActivity.updateMenuItems(false);
         setAutocompleteEventObserver();
         com.pawel.p7_go4lunch.databinding.WifiOffBinding wifiOffBinding = mBinding.listWifiOff;
         if (LocationUtils.isWifiOn()) wifiOffBinding.mapWifiOff.setVisibility(View.VISIBLE);

@@ -12,6 +12,7 @@ import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -48,6 +49,7 @@ import com.pawel.p7_go4lunch.R;
 import com.pawel.p7_go4lunch.databinding.FragmentMapViewBinding;
 import com.pawel.p7_go4lunch.model.Restaurant;
 import com.pawel.p7_go4lunch.ui.AboutRestaurantActivity;
+import com.pawel.p7_go4lunch.ui.MainActivity;
 import com.pawel.p7_go4lunch.utils.AutoSearchEvents;
 import com.pawel.p7_go4lunch.utils.Const;
 import com.pawel.p7_go4lunch.utils.LocalAppSettings;
@@ -80,6 +82,7 @@ public class MapViewFragment extends Fragment
     private LocationCallback locationCallback;
     private LocalAppSettings mAppSettings;
     private Activity mActivity;
+    private MainActivity mMainActivity;
     private String currentLocation;
     private List<Restaurant> mRestaurants = new ArrayList<>();
     private AutoSearchEvents autoEvent = AutoSearchEvents.AUTO_NULL;
@@ -97,6 +100,15 @@ public class MapViewFragment extends Fragment
         if ((mActivity != null) && (mAppSettings == null)) getLocalAppSettings(mActivity);
         initMap();
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Log.i(TAG, "MVF__ onPrepareOptionsMenu: MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
+        Log.i(TAG, "onViewCreated: updateMenuItems(true);");
+        mMainActivity = (MainActivity) getActivity();
+        mMainActivity.updateMenuItems(true);
     }
 
     private void initViewModel() {
@@ -175,19 +187,19 @@ public class MapViewFragment extends Fragment
         @Override
         public void onChanged(Location location) {
             if (location != null) {
-                Log.i(TAG, "MVF__ m_initMapRestaurant.getLocation: " + location);
-                LatLng ll = new LatLng(location.getLatitude(), location.getLongitude());
-                mRestaurantsVM.setUpCurrentLocation(location, ll, mAppSettings.getRadius());
-                Log.i(TAG, "onChanged: AutoSearchEvent::: " + autoEvent);
-                if (autoEvent.equals(AutoSearchEvents.AUTO_NULL)) {
-                    getRestaurantFromSource();
-                } else {
-                    removeGetLocationObserver();
-                }
-                moveCamera(location, mAppSettings.getPerimeter());
-                setRestaurantMarksOnMap();
-                // FAB of functionality: "Back of camera upon user position"
-                onViewModelReadySetObservers();
+//                Log.i(TAG, "MVF__ m_initMapRestaurant.getLocation: " + location);
+//                LatLng ll = new LatLng(location.getLatitude(), location.getLongitude());
+//                mRestaurantsVM.setUpCurrentLocation(location, ll, mAppSettings.getRadius());
+//                Log.i(TAG, "onChanged: AutoSearchEvent::: " + autoEvent);
+//                if (autoEvent.equals(AutoSearchEvents.AUTO_NULL)) {
+//                    getRestaurantFromSource();
+//                } else {
+//                    removeGetLocationObserver();
+//                }
+//                moveCamera(location, mAppSettings.getPerimeter());
+//                setRestaurantMarksOnMap();
+//                // FAB of functionality: "Back of camera upon user position"
+//                onViewModelReadySetObservers();
             }
         }
     };
