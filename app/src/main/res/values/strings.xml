@@ -37,6 +37,8 @@
     <string name="search">recherche</string>
     <string name="search_hint">Cherche un restaurant</string>
     <string name="search_no_resto_ms">Il n\'y a pas des restaurant pour cette recherche.</string>
+    <string name="filter_by_rating">Notation</string>
+    <string name="filter_AZ" translatable="false">A - Z</string>
 
     <!-- Login Firebase -->
     <string name="slogan">Trouvez une restaurant sympa et invite tes collèques à dîner!</string>

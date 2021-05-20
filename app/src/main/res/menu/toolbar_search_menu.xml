@@ -2,9 +2,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:id="@+id/toolbar_search_icon"
+    <item
+        android:id="@+id/toolbar_search_icon"
         android:icon="@drawable/ic_baseline_search_24"
         android:title="@string/search"
-        app:showAsAction="collapseActionView|ifRoom"
-        app:actionViewClass="androidx.appcompat.widget.SearchView" />
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="collapseActionView|ifRoom" />
+
+    <item
+        android:id="@+id/filter_rating"
+        android:focusable="false"
+        android:title="@string/filter_by_rating" />
+    <item
+        android:id="@+id/filter_AZ"
+        android:focusable="false"
+        android:title="@string/filter_AZ" />
 </menu>

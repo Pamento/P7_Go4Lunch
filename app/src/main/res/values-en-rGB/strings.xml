@@ -29,6 +29,7 @@
     <string name="search">search</string>
     <string name="search_hint">Search a restaurant</string>
     <string name="search_no_resto_ms">There are no restaurants for this search.</string>
+    <string name="filter_by_rating">Rating</string>
 
     <!-- Fragment map view -->
     <string name="current_location_not_found">Unable to get current location.</string>
