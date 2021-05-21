@@ -5,10 +5,16 @@ import android.util.Log;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.tasks.OnFailureListener;
+import com.pawel.p7_go4lunch.dataServices.cache.InMemoryRestosCache;
 import com.pawel.p7_go4lunch.dataServices.repositorys.FirebaseUserRepository;
 import com.pawel.p7_go4lunch.dataServices.repositorys.GooglePlaceRepository;
+import com.pawel.p7_go4lunch.model.Restaurant;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.Result;
 import com.pawel.p7_go4lunch.utils.AutoSearchEvents;
+import com.pawel.p7_go4lunch.utils.FilterRestaurants;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -22,6 +28,8 @@ public class MainActivityViewModel extends ViewModel {
     private final FirebaseUserRepository mFirebaseUserRepo;
     private final GooglePlaceRepository mGooglePlaceRepository;
     private final CompositeDisposable mDisposable = new CompositeDisposable();
+    private List<Restaurant> mRestaurants = new ArrayList<>();
+    private final InMemoryRestosCache mCache;
 
     public void init() {
     }
@@ -29,6 +37,7 @@ public class MainActivityViewModel extends ViewModel {
     public MainActivityViewModel(FirebaseUserRepository firebaseUserRepository, GooglePlaceRepository googlePlaceRepository) {
         mFirebaseUserRepo = firebaseUserRepository;
         mGooglePlaceRepository = googlePlaceRepository;
+        mCache = InMemoryRestosCache.getInstance();
     }
 
     public void createUser(String uri, String name, String email, String urlImage) {
@@ -73,5 +82,49 @@ public class MainActivityViewModel extends ViewModel {
     }
     protected OnFailureListener onFailureListener() {
         return e -> Log.e("CREATE_USER", "onFailure: ", e);
+    }
+
+    public void filterRestaurantBy(int filterType) {
+        mCache.getRestos().subscribe(new Observer<List<Restaurant>>() {
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+                mDisposable.add(d);
+            }
+
+            @Override
+            public void onNext(@NonNull List<Restaurant> restaurants) {
+                if (restaurants != null) {
+                    Log.i(TAG, "MainA__ onNext: restos::: "  + restaurants.size());
+                    if (filterType == 0) mRestaurants = restaurants;
+                    else if (filterType == 1) {
+                        Log.i(TAG, "MainA__ onNext: FilterRestaurants.byAZ(restaurants) mRestaurants::Bi:: "  + mRestaurants.size());
+                        mRestaurants = FilterRestaurants.byAZ(restaurants);
+                        Log.i(TAG, "MainA__ onNext: FilterRestaurants.byAZ(restaurants) mRestaurants::Af:: "  + mRestaurants.size());
+                    } else {
+                        Log.i(TAG, "MainA__ onNext: FilterRestaurants.byRating(restaurants, filterType) mRestaurants::Bi:: "  + mRestaurants.size());
+                        mRestaurants = FilterRestaurants.byRating(restaurants, filterType);
+                        Log.i(TAG, "MainA__ onNext: FilterRestaurants.byRating(restaurants, filterType) mRestaurants::Af:: "  + mRestaurants.size());
+                    }
+                }
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                Log.e("ERROR", "onError: at MainActivityViewModel Error: ", e);
+            }
+
+            @Override
+            public void onComplete() {
+                mGooglePlaceRepository.setRestaurantLiveData(mRestaurants);
+            }
+        });
+    }
+
+
+    public void disposeDisposable() {
+        if (mDisposable.isDisposed()) {
+            mDisposable.dispose();
+        }
+        mGooglePlaceRepository.disposeDisposable();
     }
 }

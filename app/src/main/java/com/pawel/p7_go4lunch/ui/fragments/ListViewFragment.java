@@ -44,7 +44,6 @@ public class ListViewFragment extends Fragment implements RestaurantAdapter.OnIt
     private ProgressBarBinding progressBarBiding;
     private MessageNoRestoBinding mMessageNoRestoBinding;
     private View view;
-    private MainActivity mMainActivity;
     private List<Restaurant> mRestaurants = new ArrayList<>();
     private RestaurantAdapter adapter;
     private AutoSearchEvents autoEvent = AutoSearchEvents.AUTO_NULL;
@@ -61,21 +60,15 @@ public class ListViewFragment extends Fragment implements RestaurantAdapter.OnIt
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         //super.onViewCreated(view, savedInstanceState);
-        Log.i(TAG, "onViewCreated: super.onViewCreated is inactive");
-        Log.i(TAG, "LVF__ onViewCreated: MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
 
-        mMainActivity = (MainActivity) getActivity();
-        mMainActivity.updateMenuItems(false);
+        MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity.updateMenuItems(false);
         setAutocompleteEventObserver();
         com.pawel.p7_go4lunch.databinding.WifiOffBinding wifiOffBinding = mBinding.listWifiOff;
         if (LocationUtils.isWifiOn()) wifiOffBinding.mapWifiOff.setVisibility(View.VISIBLE);
         else {
-            Log.i(TAG, "LVF__ onViewCreated: setProgressBar()");
             Log.i(TAG, "LVF__ onViewCreated: observeRestaurantAPIResponse()");
             setProgressBar();
-            // initially the recyclerView start with list of Resto from NearBy
-            //isRestoReceived();
-            // Then, hi listen for the change
             observeRestaurantAPIResponse();
         }
         setRecyclerView();
@@ -106,7 +99,7 @@ public class ListViewFragment extends Fragment implements RestaurantAdapter.OnIt
                 case AUTO_START:
                 case AUTO_SEARCH_EMPTY:
                     mRestaurants.clear();
-                    updateRecyclerView();
+                    isRestoReceived();
                     break;
                 case AUTO_ZERO_RESULT:
                     String msg = getString(R.string.search_no_resto_ms);
@@ -141,28 +134,21 @@ public class ListViewFragment extends Fragment implements RestaurantAdapter.OnIt
     }
 
     final Observer<List<Restaurant>> observerRestos = restaurants -> {
-        Log.i(TAG, "LVM__ OB_ observeRestaurantAPIResponse: " + restaurants.size());
+        Log.i(TAG, "LVM__ OB_ observeRestaurantAPIResponse restaurants.size()::: " + restaurants.size());
         mRestaurants = restaurants;
         if (autoEvent.equals(AutoSearchEvents.AUTO_OK)) showToastRestosNr();
-        updateRecyclerView();
+        isRestoReceived();
     };
 
     private void observeRestaurantAPIResponse() {
-        Log.i(TAG, "LVM__.observeRestaurantAPIResponse: ");
         mRestaurantsVM.getRestaurantWithUsers().observe(getViewLifecycleOwner(), observerRestos);
-//        mRestaurantsVM.getRestaurantWithUsers.observe(getViewLifecycleOwner(), observerRestos);
     }
 
     private void unsubscribeRestaurants() {
         mRestaurantsVM.getRestaurantWithUsers().removeObserver(observerRestos);
     }
 
-    private void updateRecyclerView() {
-        isRestoReceived();
-    }
-
     private void isRestoReceived() {
-        Log.i(TAG, "RUN LVM__.isRestoReceived: RUN");
         if (mRestaurants.isEmpty() && autoEvent.equals(AutoSearchEvents.AUTO_NULL)) {
             progressBarBiding.progressBarLayout.setVisibility(View.GONE);
             mMessageNoRestoBinding.messageNoResto.setVisibility(View.VISIBLE);

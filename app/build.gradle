@@ -113,7 +113,10 @@ dependencies {
 //    implementation "com.squareup.okhttp3:okhttp:3.12.13"
     // third try:
     implementation ("com.squareup.okhttp3:okhttp:3.12.12"){
-        force = true //API 19 support
+        //force = true //API 19 support
+        version {
+            strictly("3.12.12")//API 19 - 21 support
+        }
     }
     implementation 'com.squareup.okhttp3:logging-interceptor:3.12.12'
 }

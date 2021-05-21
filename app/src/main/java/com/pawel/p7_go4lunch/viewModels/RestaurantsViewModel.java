@@ -46,7 +46,7 @@ public class RestaurantsViewModel extends ViewModel {
     private int mRadius = 500;
     private List<Restaurant> mRestaurants = new ArrayList<>();
     private InMemoryRestosCache mCache;
-    private MediatorLiveData<List<Restaurant>> mRestaurantWithUsers;
+    private final MediatorLiveData<List<Restaurant>> mRestaurantWithUsers;
     private List<Restaurant> tempRestos = new ArrayList<>();
     //
     private MutableLiveData<List<User>> usersGoingToChosenResto;
@@ -137,9 +137,10 @@ public class RestaurantsViewModel extends ViewModel {
         mRestaurantWithUsers.postValue(new ArrayList<>());
 
         mRestaurantWithUsers.addSource(mGooglePlaceRepository.getRestaurants(), restaurants -> {
-            Log.i(TAG, "RVM__ mergeRestoWithUsers: MEDIATOR-LiveData: addSource::1: mGooglePlaceRepository.getRestaurants();");
+            Log.i(TAG, "RVM__ mergeRestoWithUsers__ (MEDIATOR-LiveData)__ addSource::1: mGooglePlaceRepository.getRestaurants();");
             if (restaurants != null) {
-                Log.i(TAG, "RVM__ mergeRestoWithUsers: MEDIATOR-liveData restos.size::: " + restaurants.size());
+                Log.i(TAG, "RVM__ mergeRestoWithUsers__ (MEDIATOR-LiveData)__ restaurants.size::: " + restaurants.size());
+                Log.i(TAG, "RVM__ mergeRestoWithUsers__ (MEDIATOR-LiveData)__ tempRestos.size::: " + tempRestos.size());
                 tempRestos = restaurants;
                 getUsersWithChosenRestaurant();
             }
@@ -149,7 +150,7 @@ public class RestaurantsViewModel extends ViewModel {
 
             @Override
             public void onChanged(List<User> users) {
-                Log.i(TAG, "RVM__ mergeRestoWithUsers: MEDIATOR-LiveData: addSource::2: usersGoingToChosenResto;");
+                if (tempL.size() > 0) tempL.clear();
                 if (users != null && users.size() > 0) {
                     if (tempRestos.size() > 0) {
                         int itr = tempRestos.size();
@@ -187,12 +188,10 @@ public class RestaurantsViewModel extends ViewModel {
             FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
             if (fUser != null) email = fUser.getEmail();
             List<User> us = queryDocumentSnapshots.toObjects(User.class);
-            Log.i(TAG, "RVM__ getUsersWithChosenRestaurant: us.size(Bi) " + us.size());
             for (Iterator<User> itr = us.iterator(); itr.hasNext(); ) {
                 User user = itr.next();
                 if (email != null && email.equals(user.getEmail())) itr.remove();
             }
-            Log.i(TAG, "RVM__ getUsersWithChosenRestaurant: us.size(Af) " + us.size());
             usersGoingToChosenResto.setValue(us);
         });
     }

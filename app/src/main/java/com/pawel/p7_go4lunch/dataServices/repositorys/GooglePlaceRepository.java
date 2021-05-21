@@ -48,8 +48,7 @@ public class GooglePlaceRepository {
     }
 
     public void setRestaurantLiveData(List<Restaurant> restaurantList) {
-        Log.i(TAG, "GR__setRestaurantLiveData: ");
-        Log.i(TAG, "GR__setRestaurantLiveData: from CACHE");
+        Log.i(TAG, "GR__setRestaurantLiveData: from CACHE ::: " + mRestaurantLiveData.getValue().size());
         mRestaurantLiveData.setValue(restaurantList);
     }
 

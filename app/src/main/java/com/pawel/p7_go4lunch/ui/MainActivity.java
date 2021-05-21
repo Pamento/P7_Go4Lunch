@@ -139,20 +139,23 @@ public class MainActivity extends AppCompatActivity
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         // Remove filters from Menu if Map Fragment is displayed.
+
+        Log.i(TAG, "onPrepareOptionsMenu: isMapFragment ::: " + isMapFragment);
+        Log.i(TAG, "MainA__ onPrepareOptionsMenu: MMMMMMMMMM__ MAKE __MMMMMMMMMMM");
         if (isMapFragment) {
-            Log.i(TAG, "MainA__ onPrepareOptionsMenu: MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
-            Log.i(TAG, "onPrepareOptionsMenu: isMapFragment ::: " + isMapFragment);
+            Log.i(TAG, "MainA__ onPrepareOptionsMenu: MMMMMMMMM__ ReMake __MMMMMMMMM");
             menu.removeItem(R.id.filter_AZ);
             menu.removeItem(R.id.filter_rating);
+            menu.removeItem(R.id.filter_reset);
         }
         return true;
     }
 
     // Fun: updateMenuItems is run from fragments to remove filters from Map Fragment and add it to ListRestaurants.
-    public void updateMenuItems(boolean isMapF) {
+    public void updateMenuItems(boolean isMap) {
         Log.i(TAG, "MainA__ onPrepareOptionsMenu: MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
-        Log.i(TAG, "updateMenuItems: " + isMapF);
-        isMapFragment = isMapF;
+        Log.i(TAG, "updateMenuItems: " + isMap);
+        isMapFragment = isMap;
         // invalidateOptionsMenu: internal function of OS Android to rerun onPrepareOptionsMenu
         this.invalidateOptionsMenu();
     }
@@ -168,12 +171,23 @@ public class MainActivity extends AppCompatActivity
     // ____________ Toolbar search on result _____________________
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.toolbar_search_icon) {
-            //TODO add action filter for list (?)
-            Log.i(TAG, "onOptionsItemSelected: ");
-            ViewWidgets.showSnackBar(0, view, "Search");
+        Log.i(TAG, "MainA__ onOptionsItemSelected: MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
+        Log.i(TAG, "onOptionsItemSelected: item.id::: " + item.getItemId());
+        int itemId = item.getItemId();
+        int filterType = 0;
+        if (itemId != R.id.toolbar_search_icon && itemId != R.id.filter_rating) {
+            if (itemId == R.id.filter_AZ) filterType = 1;
+            else if (itemId == R.id.filter_rating_2stars) filterType = 2;
+            else if (itemId == R.id.filter_rating_3stars) filterType = 3;
+            applyFilter(filterType);
             return true;
         } else return super.onOptionsItemSelected(item);
+    }
+
+    private void applyFilter(int filterType) {
+        Log.i(TAG, "MainA__ onOptionsItemSelected: MMMMM____ FILTER TYPE ____MMMMM");
+        Log.i(TAG, "applyFilter: filterType::: " + filterType);
+        mMainActivityViewModel.filterRestaurantBy(filterType);
     }
 
     private void getLocalAppSettings() {
@@ -431,9 +445,10 @@ public class MainActivity extends AppCompatActivity
 //        Log.i(TAG, "MAIN_ACTIVITY onStop is ");
 //    }
 //
-//    @Override
-//    protected void onDestroy() {
-//        super.onDestroy();
-//        Log.i(TAG, "MAIN_ACTIVITY onDestroy is");
-//    }
+    @Override
+    protected void onDestroy() {
+        mMainActivityViewModel.disposeDisposable();
+        super.onDestroy();
+        Log.i(TAG, "MAIN_ACTIVITY onDestroy is");
+    }
 }

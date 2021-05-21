@@ -99,16 +99,16 @@ public class MapViewFragment extends Fragment
         //mainActivity = (MainActivity) getParentFragment().getActivity();
         if ((mActivity != null) && (mAppSettings == null)) getLocalAppSettings(mActivity);
         initMap();
+        Log.i(TAG, "MVF__ onCreateView: MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
+        Log.i(TAG, "onCreateView: updateMenuItems(true);");
+        mMainActivity = (MainActivity) getActivity();
+        mMainActivity.updateMenuItems(true);
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.i(TAG, "MVF__ onPrepareOptionsMenu: MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
-        Log.i(TAG, "onViewCreated: updateMenuItems(true);");
-        mMainActivity = (MainActivity) getActivity();
-        mMainActivity.updateMenuItems(true);
     }
 
     private void initViewModel() {
@@ -187,19 +187,19 @@ public class MapViewFragment extends Fragment
         @Override
         public void onChanged(Location location) {
             if (location != null) {
-//                Log.i(TAG, "MVF__ m_initMapRestaurant.getLocation: " + location);
-//                LatLng ll = new LatLng(location.getLatitude(), location.getLongitude());
-//                mRestaurantsVM.setUpCurrentLocation(location, ll, mAppSettings.getRadius());
-//                Log.i(TAG, "onChanged: AutoSearchEvent::: " + autoEvent);
-//                if (autoEvent.equals(AutoSearchEvents.AUTO_NULL)) {
-//                    getRestaurantFromSource();
-//                } else {
-//                    removeGetLocationObserver();
-//                }
-//                moveCamera(location, mAppSettings.getPerimeter());
-//                setRestaurantMarksOnMap();
-//                // FAB of functionality: "Back of camera upon user position"
-//                onViewModelReadySetObservers();
+                Log.i(TAG, "MVF__ m_initMapRestaurant.getLocation: " + location);
+                LatLng ll = new LatLng(location.getLatitude(), location.getLongitude());
+                mRestaurantsVM.setUpCurrentLocation(location, ll, mAppSettings.getRadius());
+                Log.i(TAG, "onChanged: AutoSearchEvent::: " + autoEvent);
+                if (autoEvent.equals(AutoSearchEvents.AUTO_NULL)) {
+                    getRestaurantFromSource();
+                } else {
+                    removeGetLocationObserver();
+                }
+                moveCamera(location, mAppSettings.getPerimeter());
+                setRestaurantMarksOnMap();
+                // FAB of functionality: "Back of camera upon user position"
+                onViewModelReadySetObservers();
             }
         }
     };
