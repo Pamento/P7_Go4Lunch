@@ -1,5 +1,6 @@
 package com.pawel.p7_go4lunch.utils.adapters;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +19,8 @@ import com.pawel.p7_go4lunch.utils.GlideApp;
 import java.util.List;
 
 public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder> {
-
-    private List<Restaurant> mRestaurants;
+    private static final String TAG = "AUTO_COM";
+    private final List<Restaurant> mRestaurants;
     private final OnItemRestaurantListClickListener mListClickListener;
 
     public RestaurantAdapter(List<Restaurant> restaurants, OnItemRestaurantListClickListener listClickListener) {
@@ -36,7 +37,6 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
 
     @Override
     public void onBindViewHolder(@NonNull RestaurantViewHolder holder, int position) {
-
         Restaurant restaurant = mRestaurants.get(position);
         String d = holder.itemView.getResources().getString(R.string.distance_to_restaurant, restaurant.getDistance());
         int n = 0;
@@ -74,8 +74,13 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
     }
 
     public void updateList(List<Restaurant> restos) {
-        this.mRestaurants = restos;
-        notifyDataSetChanged();
+        Log.i(TAG, "R_adapter__ updateList: restos.size() " + restos.size());
+        Log.i(TAG, "R_adapter__ updateList: mRestaurants.size(Be) " + mRestaurants.size());
+        this.mRestaurants.clear();
+        Log.i(TAG, "R_adapter__ updateList: mRestaurants.size(--) " + mRestaurants.size());
+        this.mRestaurants.addAll(restos);
+        Log.i(TAG, "R_adapter__ updateList: mRestaurants.size(Af) " + mRestaurants.size());
+        this.notifyDataSetChanged();
     }
 
     // ....................................................ViewHolder

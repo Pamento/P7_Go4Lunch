@@ -1,9 +1,12 @@
 package com.pawel.p7_go4lunch.viewModels;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.Query;
@@ -27,13 +30,14 @@ public class AboutRestaurantViewModel extends ViewModel {
 
     public void init() {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        Log.i("AUTO_COM", "AboutVM__ init: ");
         if (firebaseUser != null) getUserFromFirestore(firebaseUser.getUid());
     }
 
     // .......................................................... GETTERS
     public void getUserFromFirestore(String uid) {
         mFirebaseUserRepository.getUser(uid)
-                .addOnSuccessListener(documentSnapshot -> mUser.setValue(documentSnapshot.toObject(User.class)));
+                .addOnSuccessListener(documentSnapshot -> mUser.setValue(documentSnapshot.toObject(User.class))).addOnFailureListener(this.onFailureListener());
     }
 
     public Query getUsersWithTheSameRestaurant(String restoId) {
@@ -56,4 +60,9 @@ public class AboutRestaurantViewModel extends ViewModel {
     public void updateUserFavoriteRestaurantsList(String uid, List<String> favoriteRestaurants) {
         mFirebaseUserRepository.updateUserFavoritesRestaurant(uid, favoriteRestaurants);
     }
+
+    protected OnFailureListener onFailureListener() {
+        return e -> Log.e("GET_USER", "onFailure: ", e);
+    }
+
 }

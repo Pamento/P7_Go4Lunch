@@ -327,6 +327,7 @@ public class MainActivity extends AppCompatActivity
                 .setGoogleButtonId(R.id.google_btn)
                 .setFacebookButtonId(R.id.facebook_btn)
                 .setEmailButtonId(R.id.email_btn)
+                .setTwitterButtonId(R.id.twitter_btn)
                 .build();
 
         startActivityForResult(

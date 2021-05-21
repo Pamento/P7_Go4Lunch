@@ -9,11 +9,6 @@
     tools:context=".ui.AboutRestaurantActivity"
     tools:showIn="@layout/activity_about_restaurant">
 
-    <!--    <TextView-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_margin="@dimen/text_margin"-->
-    <!--        android:text="@string/large_text" />-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -44,8 +39,7 @@
                 android:layout_toEndOf="@+id/about_the_rest_name"
                 android:contentDescription="@string/star1"
                 android:paddingTop="@dimen/size_s"
-                android:src="@drawable/ic_baseline_star_24"
-                android:visibility="invisible" />
+                tools:src="@drawable/ic_baseline_star_24" />
 
             <ImageView
                 android:id="@+id/about_the_rest_star_2"
@@ -54,8 +48,7 @@
                 android:layout_toEndOf="@+id/about_the_rest_star_1"
                 android:contentDescription="@string/star2"
                 android:paddingTop="@dimen/size_s"
-                android:src="@drawable/ic_baseline_star_24"
-                android:visibility="invisible" />
+                tools:src="@drawable/ic_baseline_star_24" />
 
             <ImageView
                 android:id="@+id/about_the_rest_star_3"
@@ -64,8 +57,7 @@
                 android:layout_toEndOf="@+id/about_the_rest_star_2"
                 android:contentDescription="@string/star3"
                 android:paddingTop="@dimen/size_s"
-                android:src="@drawable/ic_baseline_star_24"
-                android:visibility="invisible" />
+                tools:src="@drawable/ic_baseline_star_24" />
 
             <TextView
                 android:id="@+id/about_the_rest_address"

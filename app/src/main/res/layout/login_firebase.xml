@@ -51,6 +51,7 @@
         android:layout_height="50dp"
         android:layout_marginBottom="@dimen/size_n"
         android:paddingHorizontal="@dimen/size_m"
+        android:drawableStart="@drawable/ic_twitter"
         android:textAppearance="@style/com_facebook_button"
         android:background="@drawable/background_twitter_btn"
         android:text="@string/btn_text_twitter"

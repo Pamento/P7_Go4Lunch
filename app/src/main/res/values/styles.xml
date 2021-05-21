@@ -80,4 +80,9 @@
         <item name="android:background">?android:actionBarItemBackground</item>
         <item name="android:contentDescription">"Menu icon"</item>
     </style>
+
+    <style name="RatingBar" parent="Base.Widget.AppCompat.RatingBar">
+        <item name="colorControlActivated">@color/colorPrimary</item>
+    </style>
+
 </resources>

@@ -123,6 +123,7 @@
             android:secondaryProgressTint="@color/colorPrimary"
             android:stepSize="0.1"
             android:textAlignment="center"
+            android:theme="@style/RatingBar"
             app:layout_constraintBottom_toBottomOf="@id/list_restaurant_image"
             app:layout_constraintRight_toLeftOf="@id/list_restaurant_image" />
 

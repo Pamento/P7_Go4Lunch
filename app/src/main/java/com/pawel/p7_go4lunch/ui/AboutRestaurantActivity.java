@@ -15,6 +15,7 @@ import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 import com.pawel.p7_go4lunch.R;
 import com.pawel.p7_go4lunch.databinding.ActivityAboutRestaurantBinding;
+import com.pawel.p7_go4lunch.databinding.ContentScrollingBinding;
 import com.pawel.p7_go4lunch.model.Restaurant;
 import com.pawel.p7_go4lunch.model.User;
 import com.pawel.p7_go4lunch.service.AlarmService;
@@ -52,6 +53,7 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
     private AboutRestaurantViewModel mAboutRestaurantVM;
     private View view;
     private ActivityAboutRestaurantBinding mBinding;
+    private ContentScrollingBinding mScrolBinding;
     private com.pawel.p7_go4lunch.databinding.WifiOffBinding mWifiOffBinding;
     // data
     private User mUser;
@@ -68,8 +70,6 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
     private Drawable ic_empty_star;
     private LocalAppSettings mAppSettings;
 
-
-    //@RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +78,7 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
                 .inflate(getLayoutInflater());
         mWifiOffBinding = mBinding.abInclude.aboutWifiOff;
         view = mBinding.getRoot();
+        bindIncludesLayouts();
         setContentView(view);
         setSupportActionBar(mBinding.aboutTheRestaurantToolbar);
         mBinding.toolbarLayout.setTitle(getTitle());
@@ -91,7 +92,13 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
         getUser();
     }
 
+    private void bindIncludesLayouts() {
+        View scrollContent = mBinding.abInclude.getRoot();
+        mScrolBinding = ContentScrollingBinding.bind(scrollContent);
+    }
+
     private void initAboutRestaurantViewModel() {
+        Log.i(TAG, "ABOUT__ initAboutRestaurantViewModel: init()");
         ViewModelFactory vmf = Injection.sViewModelFactory();
         mAboutRestaurantVM = new ViewModelProvider(this, vmf).get(AboutRestaurantViewModel.class);
         mAboutRestaurantVM.init();
@@ -107,13 +114,19 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
     }
 
     private void getUser() {
+        Log.i(TAG, "About__ getUser: RUN_RUN_RUN_____________________RUN");
         mAboutRestaurantVM.getUser().observe(this, user -> {
-            mUser = user;
-            if (user != null) Log.i(TAG, "getUser: user: " + user.toString());
-            if (user != null && user.getFavoritesRestaurants() != null)
-                favoritesResto = user.getFavoritesRestaurants();
-            if (isCalledFromGoogleMap()) getRestaurantFromGoogleMap();
-            else getRestaurantFromUser();
+            if (user != null) {
+                Log.i(TAG, "About__ getUser: in __ ::: " + user.getEmail());
+                mUser = user;
+                if (user != null) Log.i(TAG, "getUser: user: " + user.toString());
+                if (user != null && user.getFavoritesRestaurants() != null)
+                    favoritesResto = user.getFavoritesRestaurants();
+                if (isCalledFromGoogleMap()) getRestaurantFromGoogleMap();
+                else getRestaurantFromUser();
+            } else {
+                Log.i(TAG, "getUser: User is not there");
+            }
         });
     }
 
@@ -127,11 +140,11 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
     }
 
     private void getRestaurantFromGoogleMap() {
-            mThisRestaurant = mAboutRestaurantVM.getRestoSelected(restaurantId);
-            isChosen = mUser.getUserRestaurant() != null
-                    && mUser.getUserRestaurant().getPlaceId().equals(mThisRestaurant.getPlaceId())
-                    && isSetAlarmRemainder();
-            updateUI();
+        mThisRestaurant = mAboutRestaurantVM.getRestoSelected(restaurantId);
+        isChosen = mUser.getUserRestaurant() != null
+                && mUser.getUserRestaurant().getPlaceId().equals(mThisRestaurant.getPlaceId())
+                && isSetAlarmRemainder();
+        updateUI();
     }
 
     private void getRestaurantFromUser() {
@@ -142,24 +155,19 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
                 isChosen = isChosen();
                 updateUI();
             } else {
-                mBinding.abInclude.aboutTheRestName.setText(R.string.no_restaurant_data);
-                mBinding.abInclude.aboutTheRestTxCall.setAlpha(0.3f);
-                mBinding.abInclude.aboutTheRestTxLike.setAlpha(0.3f);
-                mBinding.abInclude.aboutTheRestTxWebsite.setAlpha(0.3f);
+                mScrolBinding.aboutTheRestName.setText(R.string.no_restaurant_data);
+                mScrolBinding.aboutTheRestName.setText(R.string.no_restaurant_data);
+                mScrolBinding.aboutTheRestTxCall.setAlpha(0.3f);
+                mScrolBinding.aboutTheRestTxLike.setAlpha(0.3f);
+                mScrolBinding.aboutTheRestTxWebsite.setAlpha(0.3f);
                 mBinding.aboutRestaurantFab.setVisibility(View.GONE);
             }
         }
     }
 
     private boolean isSetAlarmRemainder() {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
         PendingIntent alarmUp = AlarmService.isAlarmSet();
         return alarmUp != null;
-//        } else {
-//            int[] time = TimeUtils.timeToInt(mAppSettings.getHour());
-//            int[] cTime = TimeUtils.currentHour();
-//            return TimeUtils.isGreaterThan(cTime,time);
-//        }
     }
 
     private boolean isChosen() {
@@ -192,40 +200,47 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
     }
 
     private void setUiAboutRestaurant() {
+        Log.i(TAG, "ABOUT__ setUiAboutRestaurant: RUN");
         if (mThisRestaurant != null) {
             // name
             if (mThisRestaurant.getName().isEmpty()) {
-                mBinding.abInclude.aboutTheRestName.setText(getString(R.string.name_restaurant_absent));
+                mScrolBinding.aboutTheRestName.setText(getString(R.string.name_restaurant_absent));
             } else {
-                mBinding.abInclude.aboutTheRestName.setText(mThisRestaurant.getName());
+                mScrolBinding.aboutTheRestName.setText(mThisRestaurant.getName());
             }
             // address
             if (mThisRestaurant.getAddress().isEmpty()) {
-                mBinding.abInclude.aboutTheRestAddress.setText(getString(R.string.address_restaurant_absent));
+                mScrolBinding.aboutTheRestAddress.setText(getString(R.string.address_restaurant_absent));
             } else {
-                mBinding.abInclude.aboutTheRestAddress.setText(mThisRestaurant.getAddress());
+                mScrolBinding.aboutTheRestAddress.setText(mThisRestaurant.getAddress());
             }
+            // rating
             double starsRange = Math.round(mThisRestaurant.getRating() * 3 / 5);
+            Log.i(TAG, "ABOUT__ setUiAboutRestaurant: starsRange::: " + starsRange);
             switch ((int) starsRange) {
                 case 1:
-                    mBinding.abInclude.aboutTheRestStar1.setImageDrawable(ic_full_star);
-                    mBinding.abInclude.aboutTheRestStar2.setImageDrawable(ic_empty_star);
-                    mBinding.abInclude.aboutTheRestStar3.setImageDrawable(ic_empty_star);
+                    Log.i(TAG, "ABOUT__ setUiAboutRestaurant: case 1");
+                    mScrolBinding.aboutTheRestStar1.setImageDrawable(ic_full_star);
+                    mScrolBinding.aboutTheRestStar2.setImageDrawable(ic_empty_star);
+                    mScrolBinding.aboutTheRestStar3.setImageDrawable(ic_empty_star);
                     break;
                 case 2:
-                    mBinding.abInclude.aboutTheRestStar1.setImageDrawable(ic_full_star);
-                    mBinding.abInclude.aboutTheRestStar2.setImageDrawable(ic_full_star);
-                    mBinding.abInclude.aboutTheRestStar3.setImageDrawable(ic_empty_star);
+                    Log.i(TAG, "ABOUT__ setUiAboutRestaurant: case 2");
+                    mScrolBinding.aboutTheRestStar1.setImageDrawable(ic_full_star);
+                    mScrolBinding.aboutTheRestStar2.setImageDrawable(ic_full_star);
+                    mScrolBinding.aboutTheRestStar3.setImageDrawable(ic_empty_star);
                     break;
                 case 3:
-                    mBinding.abInclude.aboutTheRestStar1.setImageDrawable(ic_full_star);
-                    mBinding.abInclude.aboutTheRestStar2.setImageDrawable(ic_full_star);
-                    mBinding.abInclude.aboutTheRestStar3.setImageDrawable(ic_full_star);
+                    Log.i(TAG, "ABOUT__ setUiAboutRestaurant: case 3");
+                    mScrolBinding.aboutTheRestStar1.setImageDrawable(ic_full_star);
+                    mScrolBinding.aboutTheRestStar2.setImageDrawable(ic_full_star);
+                    mScrolBinding.aboutTheRestStar3.setImageDrawable(ic_full_star);
                     break;
                 default:
-                    mBinding.abInclude.aboutTheRestStar1.setImageDrawable(ic_empty_star);
-                    mBinding.abInclude.aboutTheRestStar2.setImageDrawable(ic_empty_star);
-                    mBinding.abInclude.aboutTheRestStar3.setImageDrawable(ic_empty_star);
+                    Log.i(TAG, "ABOUT__ setUiAboutRestaurant: default");
+                    mScrolBinding.aboutTheRestStar1.setImageDrawable(ic_empty_star);
+                    mScrolBinding.aboutTheRestStar2.setImageDrawable(ic_empty_star);
+                    mScrolBinding.aboutTheRestStar3.setImageDrawable(ic_empty_star);
                     break;
             }
         }
@@ -236,7 +251,7 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
         else {
             mAboutRestaurantVM.getUsersWithTheSameRestaurant(restaurantId).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful() && task.getResult().isEmpty()) {
-                    mBinding.abInclude.aboutTheRestWorkmatesListEmpty.setVisibility(View.VISIBLE);
+                    mScrolBinding.aboutTheRestWorkmatesListEmpty.setVisibility(View.VISIBLE);
                 }
             });
             FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
@@ -244,8 +259,8 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
                     .setLifecycleOwner(this)
                     .build();
             WorkmateAdapter workmateAdapter = new WorkmateAdapter(options, this, 2);
-            mBinding.abInclude.aboutTheRestRecyclerView.setAdapter(workmateAdapter);
-            mBinding.abInclude.aboutTheRestRecyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
+            mScrolBinding.aboutTheRestRecyclerView.setAdapter(workmateAdapter);
+            mScrolBinding.aboutTheRestRecyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
         }
     }
 
@@ -276,14 +291,14 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
         if (mThisRestaurant != null) {
             // Call Restaurant
             if (mThisRestaurant.getPhoneNumber() != null)
-                mBinding.abInclude.aboutTheRestTxCall.setOnClickListener(v -> makePhoneCall());
-            else mBinding.abInclude.aboutTheRestTxCall.setAlpha(0.3f);
+                mScrolBinding.aboutTheRestTxCall.setOnClickListener(v -> makePhoneCall());
+            else mScrolBinding.aboutTheRestTxCall.setAlpha(0.3f);
             // Like Restaurant
-            mBinding.abInclude.aboutTheRestTxLike.setOnClickListener(v -> isLiked());
+            mScrolBinding.aboutTheRestTxLike.setOnClickListener(v -> isLiked());
             // Go to Website of Restaurant
             if (mThisRestaurant.getWebsite() != null)
-                mBinding.abInclude.aboutTheRestTxWebsite.setOnClickListener(v -> visitWebsite());
-            else mBinding.abInclude.aboutTheRestTxWebsite.setAlpha(0.3f);
+                mScrolBinding.aboutTheRestTxWebsite.setOnClickListener(v -> visitWebsite());
+            else mScrolBinding.aboutTheRestTxWebsite.setAlpha(0.3f);
             // manage choice of restaurant for lunch
             mBinding.aboutRestaurantFab.setOnClickListener(view -> choseThisRestaurant());
         }
@@ -303,7 +318,7 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
 
     private void updateIconLike() {
         Log.i(TAG, "updateIconLike: isLiked ? " + isLiked);
-        mBinding.abInclude.aboutTheRestTxLike
+        mScrolBinding.aboutTheRestTxLike
                 .setCompoundDrawablesRelativeWithIntrinsicBounds(null, isLiked ? ic_Like : ic_notLike, null, null);
     }
 

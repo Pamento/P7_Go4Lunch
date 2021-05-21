@@ -150,6 +150,7 @@ public class RestaurantsViewModel extends ViewModel {
 
             @Override
             public void onChanged(List<User> users) {
+                Log.i(TAG, "RVM__ mergeRestoWithUsers__ (MEDIATOR-LiveData)__ addSource::2: usersGoingToChosenResto;");
                 if (tempL.size() > 0) tempL.clear();
                 if (users != null && users.size() > 0) {
                     if (tempRestos.size() > 0) {
@@ -162,6 +163,7 @@ public class RestaurantsViewModel extends ViewModel {
                             }
                             tempL.add(r);
                         }
+                        Log.i(TAG, "RVM__ mergeRestoWithUsers__ (MEDIATOR-LiveData)__ onChanged: + tempL.size() " + tempL.size());
                         mRestaurantWithUsers.setValue(tempL);
                     }
                 } else {

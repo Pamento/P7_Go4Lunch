@@ -9,11 +9,6 @@
     tools:context=".ui.AboutRestaurantActivity"
     tools:showIn="@layout/activity_about_restaurant">
 
-    <!--    <TextView-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_margin="@dimen/text_margin"-->
-    <!--        android:text="@string/large_text" />-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,14 +22,14 @@
 
             <TextView
                 android:id="@+id/about_the_rest_name"
-                android:textSize="@dimen/size_text_m"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxWidth="@dimen/max_width_restaurant_name"
                 android:layout_marginEnd="@dimen/size_m"
                 android:ellipsize="end"
+                android:maxWidth="@dimen/max_width_restaurant_name"
                 android:maxLines="2"
                 android:textColor="@android:color/white"
+                android:textSize="@dimen/size_text_m"
                 tools:text="@string/app_name" />
 
             <ImageView

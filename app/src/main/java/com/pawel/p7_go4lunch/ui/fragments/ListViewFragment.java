@@ -175,7 +175,6 @@ public class ListViewFragment extends Fragment implements RestaurantAdapter.OnIt
             Log.i(TAG, "LVM__ m_ displayRestoInRecycler: mRestaurants.size() " + mRestaurants.size());
             Log.i(TAG, "LVM__ m_ displayRestoInRecycler: AutoSearchEvent " + autoEvent);
             adapter.updateList(mRestaurants);
-
         }
     }
 
