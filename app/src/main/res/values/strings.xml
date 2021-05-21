@@ -48,6 +48,7 @@
     <string name="btn_text_google">Connection avec Google</string>
     <string name="btn_text_facebook">Connection avec Facebook</string>
     <string name="btn_text_email">Connection avec email</string>
+    <string name="btn_text_twitter">Connection avec Twitter</string>
 
     <!-- Log out -->
     <string name="logout_successful">Déconnexion réussie.</string>

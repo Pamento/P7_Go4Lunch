@@ -44,6 +44,7 @@
     <string name="btn_text_google">Sign in with Google</string>
     <string name="btn_text_facebook">Sign in with Facebook</string>
     <string name="btn_text_email">Sign in with email</string>
+    <string name="btn_text_twitter">Sign in with Twitter</string>
 
     <!-- Log out -->
     <string name="logout_successful">Vous êtes maintenant déconnecté.</string>
