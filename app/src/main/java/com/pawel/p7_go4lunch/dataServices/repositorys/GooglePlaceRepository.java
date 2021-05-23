@@ -45,9 +45,9 @@ public class GooglePlaceRepository {
         mGooglePlaceAPIService = getGooglePlaceApiService();
     }
 
-    public void setRestaurantLiveData(List<Restaurant> restaurantList) {
-        Log.i(TAG, "GR__setRestaurantLiveData: from CACHE ::: " + restaurantList.size());
-        mRestaurantLiveData.setValue(restaurantList);
+    public void setRestaurantLiveData(List<Restaurant> restaurants) {
+        Log.i(TAG, "GR__setRestaurantLiveData: from CACHE ::: " + restaurants.size());
+        mRestaurantLiveData.setValue(restaurants);
         Log.i(TAG, "GR__setRestaurantLiveData: mRestaurantLiveData ::: " + mRestaurantLiveData.getValue().size());
     }
 
@@ -111,7 +111,7 @@ public class GooglePlaceRepository {
     }
 
     // .........................................................................STREAMS
-    public Observable<RestaurantResult> streamFetchRestaurantsPlaces(String location, int radius) {
+    public Observable<RestaurantResult> streamGetRestaurantsNearby(String location, int radius) {
         return mGooglePlaceAPIService.getNearbyRestaurants(location, radius, BuildConfig.API_KEY)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -127,7 +127,7 @@ public class GooglePlaceRepository {
 
     public Observable<Result> getRestaurantNearby(String location, int radius) {
         Log.i(TAG, "GPR__ getRestaurantNearby: ");
-        return streamFetchRestaurantsPlaces(location, radius)
+        return streamGetRestaurantsNearby(location, radius)
                 .map(RestaurantResult::getResults)
                 .concatMap(results -> {
                     setRestaurantsNearby(results);
@@ -216,7 +216,6 @@ public class GooglePlaceRepository {
 
     private void updateRestoWithDetails(Result result, Restaurant rcp) {
         Log.i(TAG, "GooglePlaceRepository.updateRestoWithDetails: ");
-//        Location l = new Location("");
         if (result != null) {
             Log.i(TAG, "GooglePlaceRepository.updateRestoWithDetails: result " + result.getName());
             rcp.setDateCreated(new Date());
@@ -225,10 +224,6 @@ public class GooglePlaceRepository {
             if (result.getGeometry() != null) {
                 Log.d(TAG, "GooglePlaceRepository.updateRestoWithDetails.getLocation: Location " + result.getGeometry().getLocation());
                 rcp.setLocation(result.getGeometry().getLocation());
-//                l.setLatitude(result.getGeometry().getLocation().getLat());
-//                l.setLongitude(result.getGeometry().getLocation().getLng());
-//                float dt = mCntLocation.distanceTo(l);
-//                rcp.setDistance(Math.round(dt));
             }
             if (result.getOpeningHours() != null)
                 rcp.setOpeningHours(result.getOpeningHours());

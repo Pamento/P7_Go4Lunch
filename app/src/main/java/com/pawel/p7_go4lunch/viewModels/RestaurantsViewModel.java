@@ -62,7 +62,7 @@ public class RestaurantsViewModel extends ViewModel {
     }
 
     // ................................................................. GETTERS
-    public void streamCombinedNearbyAndDetailPlace(String location, int radius) {
+    public void streamGetRestaurantNearbyAndDetail(String location, int radius) {
         mGooglePlaceRepository.getRestaurantNearby(location, radius)
                 .subscribeOn(Schedulers.io())
                 .concatMap((Function<Result, ObservableSource<Result>>) result -> mGooglePlaceRepository.getRestaurantContact(result.getPlaceId()))
@@ -121,7 +121,7 @@ public class RestaurantsViewModel extends ViewModel {
                     Log.i(TAG, "RVM__ onComplete: ");
                     Log.i(TAG, "RVM__ onComplete: mCurrentLocS::: " + mCurrentLocS);
                     Log.i(TAG, "RVM__ onComplete: mRadius::: " + mRadius);
-                    streamCombinedNearbyAndDetailPlace(mCurrentLocS, mRadius);
+                    streamGetRestaurantNearbyAndDetail(mCurrentLocS, mRadius);
                 } else {
                     Log.i(TAG, "RVM__ onComplete: mGooglePlaceRepository.setRestaurantLiveData(mRestaurants)::: " + mRestaurants.size());
                     mGooglePlaceRepository.setRestaurantLiveData(mRestaurants);
@@ -196,8 +196,41 @@ public class RestaurantsViewModel extends ViewModel {
         });
     }
 
-    public LiveData<Location> getCurrentLocation() {
-        return mCurrentLocation;
+    public void getRestosFromCache(int radius) {
+        mCache.getRestos(radius).subscribe(new Observer<List<Restaurant>>() {
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+                mDisposable.add(d);
+            }
+
+            @Override
+            public void onNext(@NonNull List<Restaurant> restaurants) {
+                Log.i(TAG, "RVM__ onNext: RRRRRRRRRRRRRRRRRRRRRRRRRRRRadius:::: " + restaurants.size());
+                mRestaurants = restaurants;
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                Log.e("ERROR", "onError: get restaurants from cache: ", e);
+            }
+
+            @Override
+            public void onComplete() {
+                mGooglePlaceRepository.setRestaurantLiveData(mRestaurants);
+            }
+        });
+    }
+
+//    public LiveData<Location> getCurrentLocation() {
+//        return mCurrentLocation;
+//    }
+
+    public int getRadius() {
+        return mRadius;
+    }
+
+    public String getCurrentLocStr() {
+        return mCurrentLocS;
     }
 
     public GoogleMap getGoogleMap() {
@@ -236,6 +269,10 @@ public class RestaurantsViewModel extends ViewModel {
             }
         }
         return ids;
+    }
+
+    public void setRadius(int radius) {
+        mRadius = radius;
     }
 
     public void disposeDisposable() {

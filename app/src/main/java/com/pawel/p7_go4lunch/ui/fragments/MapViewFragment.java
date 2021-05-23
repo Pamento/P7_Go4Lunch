@@ -45,6 +45,7 @@ import com.google.android.gms.tasks.Task;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 import com.pawel.p7_go4lunch.R;
+import com.pawel.p7_go4lunch.dataServices.cache.InMemoryRestosCache;
 import com.pawel.p7_go4lunch.databinding.FragmentMapViewBinding;
 import com.pawel.p7_go4lunch.model.Restaurant;
 import com.pawel.p7_go4lunch.ui.AboutRestaurantActivity;
@@ -74,6 +75,7 @@ public class MapViewFragment extends Fragment
     private View view;
     private GoogleMap mGoogleMaps;
     private FragmentActivity mFragmentActivity;
+    private InMemoryRestosCache mCache;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
@@ -93,6 +95,7 @@ public class MapViewFragment extends Fragment
         mActivity = getActivity();
         if ((mActivity != null) && (mAppSettings == null)) getLocalAppSettings(mActivity);
         initMap();
+        mCache = InMemoryRestosCache.getInstance();
         Log.i(TAG, "MVF__ onCreateView: updateMenuItems(true);");
         MainActivity mainActivity = (MainActivity) getActivity();
         mainActivity.updateMenuItems(true);
@@ -182,14 +185,13 @@ public class MapViewFragment extends Fragment
         public void onChanged(Location location) {
             if (location != null) {
                 Log.i(TAG, "MVF__ m_initMapRestaurant.getLocation: " + location);
-                mRestaurantsVM.setUpCurrentLocation(location, mAppSettings.getRadius());
                 Log.i(TAG, "onChanged: AutoSearchEvent::: " + autoEvent);
                 if (autoEvent.equals(AutoSearchEvents.AUTO_NULL)) {
                     getRestaurantFromSource();
                 } else {
                     removeGetLocationObserver();
                 }
-                moveCamera(location, mAppSettings.getPerimeter());
+                updateLocationAndPosition(location, mAppSettings.getRadius());
                 setRestaurantMarksOnMap();
                 // FAB of functionality: "Back of camera upon user position"
                 onViewModelReadySetObservers();
@@ -218,9 +220,8 @@ public class MapViewFragment extends Fragment
                 LocationUtils.LocationDisabledDialog.newInstance().show(mFragmentActivity.getSupportFragmentManager(), "dialog");
             } else {
                 Log.i(TAG, "MVF__ m_onViewModelReadySetObservers.observeLocation " + location);
-                mRestaurantsVM.setUpCurrentLocation(location, mAppSettings.getRadius());
                 // moveCamera to go back on User current position, without any other action
-                moveCamera(location, mAppSettings.getPerimeter());
+                updateLocationAndPosition(location, mAppSettings.getRadius());
             }
         }
     };
@@ -351,6 +352,26 @@ public class MapViewFragment extends Fragment
         mFragmentActivity = getActivity();
         mAppSettings = new LocalAppSettings(mActivity);
         Log.i(TAG, "MVF__ onStart: mPrefs ? " + mAppSettings);
+
+        // On back to MapFragment check if radius of search has changed
+        if (mCache.getRadius() != 0 && (mCache.getRadius() != mAppSettings.getRadius())) {
+            Log.i(TAG, "MVF__ onStart: RUN __if USER HAS CHANGED RADIUS IN settings LOCAL.");
+            Log.i(TAG, "MVF__ onStart: old radius:::: " + mCache.getRadius());
+            Log.i(TAG, "MVF__ onStart: new radius:::: " + mAppSettings.getRadius());
+            updateRestaurantQueryToRadius(mCache.getRadius(), mAppSettings.getRadius());
+            mCache.setRadius(mAppSettings.getRadius());
+        }
+    }
+
+    private void updateRestaurantQueryToRadius(int previousRadius, int currentRadius) {
+        // old 500 - new 1000
+        if ((previousRadius - currentRadius) < 0) {
+            Log.i(TAG, "MVF__ if __updateRestaurantQueryToRadius: previousRadius::: " + previousRadius + ", currentRadius::-:: " + currentRadius);
+            mRestaurantsVM.streamGetRestaurantNearbyAndDetail(mRestaurantsVM.getCurrentLocStr(), mAppSettings.getRadius());
+        } else {
+            Log.i(TAG, "MVF__ else __updateRestaurantQueryToRadius: previousRadius::: " + previousRadius + ", currentRadius::+:: " + currentRadius);
+            mRestaurantsVM.getRestosFromCache(currentRadius);
+        }
     }
 
     protected void createLocationRequest() {
@@ -431,15 +452,20 @@ public class MapViewFragment extends Fragment
                     return;
                 }
                 for (Location location : locationResult.getLocations()) {
-                    mRestaurantsVM.setUpCurrentLocation(location, mAppSettings.getRadius());
+                    updateLocationAndPosition(location, mAppSettings.getRadius());
                     Log.i(TAG, "onChanged: AutoSearchEvent::: " + autoEvent);
                     if (autoEvent.equals(AutoSearchEvents.AUTO_NULL)) {
                         getRestaurantFromSource();
                     }
-                    moveCamera(location, mAppSettings.getPerimeter());
                 }
             }
         };
+    }
+
+    private void updateLocationAndPosition(Location location, int radius) {
+        mRestaurantsVM.setUpCurrentLocation(location, radius);
+        moveCamera(location, mAppSettings.getPerimeter());
+        mCache.setRadius(radius);
     }
 
 /*    @Override
