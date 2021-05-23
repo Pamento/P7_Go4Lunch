@@ -9,7 +9,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.pawel.p7_go4lunch.dataServices.cache.InMemoryRestosCache;
@@ -19,7 +18,6 @@ import com.pawel.p7_go4lunch.model.Restaurant;
 import com.pawel.p7_go4lunch.model.User;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.Result;
 import com.pawel.p7_go4lunch.utils.AutoSearchEvents;
-import com.pawel.p7_go4lunch.utils.WasCalled;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -202,10 +200,6 @@ public class RestaurantsViewModel extends ViewModel {
         return mCurrentLocation;
     }
 
-    public LatLng getInitialLatLng() {
-        return mGooglePlaceRepository.getInitialLatLng();
-    }
-
     public GoogleMap getGoogleMap() {
         return mGoogleMap;
     }
@@ -219,17 +213,10 @@ public class RestaurantsViewModel extends ViewModel {
     }
 
     // ................................................................. SETTERS
-    public void setUpCurrentLatLng(LatLng latLng) {
-        if (!WasCalled.isLocationWasCalled()) {
-            mGooglePlaceRepository.setInitialLatLng(latLng);
-        }
-    }
-
-    public void setUpCurrentLocation(Location currentLocation, LatLng ll, int radius) {
+    public void setUpCurrentLocation(Location currentLocation, int radius) {
         mGooglePlaceRepository.setCurrentLocation(currentLocation);
         mCurrentLocation.setValue(currentLocation);
         mCurrentLocS = currentLocation.getLatitude() + "," + currentLocation.getLongitude();
-        if (ll != null) setUpCurrentLatLng(ll);
         mRadius = radius;
     }
 

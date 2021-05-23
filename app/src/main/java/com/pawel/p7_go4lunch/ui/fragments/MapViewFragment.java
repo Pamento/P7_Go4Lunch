@@ -12,7 +12,6 @@ import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -55,7 +54,6 @@ import com.pawel.p7_go4lunch.utils.Const;
 import com.pawel.p7_go4lunch.utils.LocalAppSettings;
 import com.pawel.p7_go4lunch.utils.LocationUtils;
 import com.pawel.p7_go4lunch.utils.ViewWidgets;
-import com.pawel.p7_go4lunch.utils.WasCalled;
 import com.pawel.p7_go4lunch.utils.di.Injection;
 import com.pawel.p7_go4lunch.viewModels.RestaurantsViewModel;
 import com.pawel.p7_go4lunch.viewModels.ViewModelFactory;
@@ -68,7 +66,6 @@ import java.util.Objects;
 
 public class MapViewFragment extends Fragment
         implements OnMapReadyCallback,
-        com.google.android.gms.location.LocationListener,
         GoogleMap.OnMarkerClickListener {
 
     private RestaurantsViewModel mRestaurantsVM;
@@ -82,8 +79,6 @@ public class MapViewFragment extends Fragment
     private LocationCallback locationCallback;
     private LocalAppSettings mAppSettings;
     private Activity mActivity;
-    private MainActivity mMainActivity;
-    private String currentLocation;
     private List<Restaurant> mRestaurants = new ArrayList<>();
     private AutoSearchEvents autoEvent = AutoSearchEvents.AUTO_NULL;
     private static final String TAG = "AUTO_COM";
@@ -96,13 +91,11 @@ public class MapViewFragment extends Fragment
         mWifiOffBinding = mBinding.msWifiOff;
         view = mBinding.getRoot();
         mActivity = getActivity();
-        //mainActivity = (MainActivity) getParentFragment().getActivity();
         if ((mActivity != null) && (mAppSettings == null)) getLocalAppSettings(mActivity);
         initMap();
-        Log.i(TAG, "MVF__ onCreateView: MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
-        Log.i(TAG, "onCreateView: updateMenuItems(true);");
-        mMainActivity = (MainActivity) getActivity();
-        mMainActivity.updateMenuItems(true);
+        Log.i(TAG, "MVF__ onCreateView: updateMenuItems(true);");
+        MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity.updateMenuItems(true);
         return view;
     }
 
@@ -183,13 +176,13 @@ public class MapViewFragment extends Fragment
         showToast(restoFound);
     }
 
+    // getLocation is called only once at opening moment of App Go4Lunch
     final Observer<Location> getLocation = new Observer<Location>() {
         @Override
         public void onChanged(Location location) {
             if (location != null) {
                 Log.i(TAG, "MVF__ m_initMapRestaurant.getLocation: " + location);
-                LatLng ll = new LatLng(location.getLatitude(), location.getLongitude());
-                mRestaurantsVM.setUpCurrentLocation(location, ll, mAppSettings.getRadius());
+                mRestaurantsVM.setUpCurrentLocation(location, mAppSettings.getRadius());
                 Log.i(TAG, "onChanged: AutoSearchEvent::: " + autoEvent);
                 if (autoEvent.equals(AutoSearchEvents.AUTO_NULL)) {
                     getRestaurantFromSource();
@@ -200,6 +193,9 @@ public class MapViewFragment extends Fragment
                 setRestaurantMarksOnMap();
                 // FAB of functionality: "Back of camera upon user position"
                 onViewModelReadySetObservers();
+            } else {
+                if (LocationUtils.isDeviceLocationEnabled()) createLocationRequest();
+                else ViewWidgets.showSnackBar(1, view, getString(R.string.fail_ask_gps_signal));
             }
         }
     };
@@ -218,27 +214,18 @@ public class MapViewFragment extends Fragment
         @Override
         public void onChanged(Location location) {
             if (location == null) {
-                ViewWidgets.showSnackBar(0, view, getResources().getString(R.string.current_location_not_found));
+                //ViewWidgets.showSnackBar(0, view, getResources().getString(R.string.current_location_not_found));
                 LocationUtils.LocationDisabledDialog.newInstance().show(mFragmentActivity.getSupportFragmentManager(), "dialog");
             } else {
                 Log.i(TAG, "MVF__ m_onViewModelReadySetObservers.observeLocation " + location);
-                LatLng ll = new LatLng(location.getLatitude(), location.getLongitude());
-                mRestaurantsVM.setUpCurrentLocation(location, ll, mAppSettings.getRadius());
+                mRestaurantsVM.setUpCurrentLocation(location, mAppSettings.getRadius());
                 // moveCamera to go back on User current position, without any other action
                 moveCamera(location, mAppSettings.getPerimeter());
             }
         }
     };
 
-    /**
-     * This is where we can add markers or lines, add listeners or move the camera.
-     * Override
-     * public void onMapReady(GoogleMap map) {
-     * map.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
-     * }
-     */
     private void initMapRestaurant() {
-        //if (mGoogleMaps == null) mGoogleMaps = mRestaurantsVM.getGoogleMap();
         if (mAppSettings.isLocalisation()) {
             Log.i(TAG, "MVF__ START initMapRestaurant: :if ");
             Objects.requireNonNull(LocationUtils.getCurrentDeviceLocation()).observe(getViewLifecycleOwner(), getLocation);
@@ -249,32 +236,13 @@ public class MapViewFragment extends Fragment
         // Set blue point (mark) of user position. "true" is visible; "false" is hidden.
         //mMap.setMyLocationEnabled(true);
         // Disable icon of the center location
-        /*
-        // TODO on move map on screen of the device we start new request
-        mMap.getUiSettings().setMyLocationButtonEnabled(false);
-        mMap.setOnCameraMoveListener(() -> {
-            Log.i(TAG, "initMapRestaurant: CAMERA MOVED");
-            // TODO run the function which get new restaurants in new area.
-            mMap.setOnCameraMoveCanceledListener(() -> {
-                Log.i(TAG, "initMapRestaurant: CAMERA _STOPPED");
-                //TODO calculate difference in location like in onLocationChanged listener
-                // and do the actions;
-                });
-            });
-         */
-        //            Log.i(TAG, "onMapReady: mMap " + mMap);
-//            LatLng testPosition = new LatLng(37, -121);
-//            LatLng sydney = new LatLng(34, -118);
-//            mMap.addMarker(new MarkerOptions()
-//                    .position(sydney)
-//                    .title("Marker in Sydney"));
-//            mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-//
-//            mMap.setOnMarkerClickListener(marker -> {
-//                Log.i(TAG, "onMarkerClick: " + marker.toString());
-//                return true;
+        //mMap.getUiSettings().setMyLocationButtonEnabled(false);
+//        mGoogleMaps.setOnCameraMoveListener(() -> {
+//            Log.i(TAG, "initMapRestaurant: CAMERA MOVED");
+//            mGoogleMaps.setOnCameraMoveCanceledListener(() -> {
+//                Log.i(TAG, "initMapRestaurant: CAMERA _STOPPED");
 //            });
-
+//        });
     }
 
     private void onViewModelReadySetObservers() {
@@ -286,10 +254,10 @@ public class MapViewFragment extends Fragment
     }
 
     Observer<List<Restaurant>> mObserverRestos = (Observer<List<Restaurant>>) restaurants -> {
-        Log.i(TAG, "MVF__ .OOOOOOOOOOOOOOOOOO.observeRestaurantAPIResponse");
+        Log.i(TAG, "MVF__ .OBSERVER.observeRestaurantAPIResponse");
         if (restaurants != null) {
-            Log.i(TAG, "MVF__ .OOOOOOOOOOOOOOOOOO.observeRestaurantAPIResponse: resto.size() " + restaurants.size());
-            Log.i(TAG, "MVF__ .OOOOOOOOOOOOOOOOOO.observeRestaurantAPIResponse: autoEvent::: " + autoEvent);
+            Log.i(TAG, "MVF__ .OBSERVER.observeRestaurantAPIResponse: resto.size() " + restaurants.size());
+            Log.i(TAG, "MVF__ .OBSERVER.observeRestaurantAPIResponse: autoEvent::: " + autoEvent);
             mRestaurants = restaurants;
             if (autoEvent.equals(AutoSearchEvents.AUTO_OK)) showToastRestosNr();
             setRestaurantMarksOnMap();
@@ -298,13 +266,25 @@ public class MapViewFragment extends Fragment
 
     // Observe restos in RestaurantViewModel
     private void observeGetRestaurants() {
-        Log.i(TAG, "MVF__ observeGetRestaurants: OOOBBBBBBBBB START");
+        Log.i(TAG, "MVF__ observeGetRestaurants: set__ OBSERVER: START");
         mRestaurantsVM.getRestaurantWithUsers().observe(getViewLifecycleOwner(), mObserverRestos);
     }
 
 
     private void unsubscribeRestaurants() {
         mRestaurantsVM.getRestaurantWithUsers().removeObserver(mObserverRestos);
+    }
+
+    private void unsubscribeLocation() {
+        if (Objects.requireNonNull(LocationUtils.getCurrentDeviceLocation()).hasActiveObservers()) {
+            Log.i(TAG, "unsubscribeLocation: OOOOOOOOOOOOOOOOOOOOOOOOOO__ has Active_ observer OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+            Log.i(TAG, "unsubscribeLocation: has ACTIVE observer");
+            Objects.requireNonNull(LocationUtils.getCurrentDeviceLocation()).removeObserver(observeLocation);
+        }
+        if (Objects.requireNonNull(LocationUtils.getCurrentDeviceLocation()).hasObservers()) {
+            Log.i(TAG, "unsubscribeLocation: OOOOOOOOOOOOOOOOOOOOOOOOOOOO__ hasObserver __OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+            Log.i(TAG, "unsubscribeLocation: has Observer");
+        }
     }
 
     private void setRestaurantMarksOnMap() {
@@ -357,6 +337,7 @@ public class MapViewFragment extends Fragment
     private void moveCamera(Location loc, float zoom) {
         LatLng latLng = new LatLng(loc.getLatitude(), loc.getLongitude());
         mGoogleMaps.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+        unsubscribeLocation();
     }
 
     private void getLocalAppSettings(Activity activity) {
@@ -401,7 +382,7 @@ public class MapViewFragment extends Fragment
                             Const.REQUEST_CHECK_SETTINGS);
                 } catch (IntentSender.SendIntentException sendEx) {
                     // Ignore the error.
-                    Log.e(TAG, "MapViewModel.createLocationRequest.ERROR: ", sendEx);
+                    Log.e("ERROR", "MapViewModel.createLocationRequest.ERROR: ", sendEx);
                 }
             }
         });
@@ -441,39 +422,38 @@ public class MapViewFragment extends Fragment
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i(TAG, "onCreate: Start LOCATION____CALLBACK");
         // if need more check if/else see https://developer.android.com/training/location/request-updates#save-state
         locationCallback = new LocationCallback() {
             @Override
-            public void onLocationResult(LocationResult locationResult) {
+            public void onLocationResult(@NotNull LocationResult locationResult) {
                 if (locationResult == null) {
                     return;
                 }
                 for (Location location : locationResult.getLocations()) {
-                    currentLocation = location.getLatitude() + "," + location.getLongitude();
-                    // Update UI with location data
-                    // ...
+                    mRestaurantsVM.setUpCurrentLocation(location, mAppSettings.getRadius());
+                    Log.i(TAG, "onChanged: AutoSearchEvent::: " + autoEvent);
+                    if (autoEvent.equals(AutoSearchEvents.AUTO_NULL)) {
+                        getRestaurantFromSource();
+                    }
+                    moveCamera(location, mAppSettings.getPerimeter());
                 }
             }
         };
     }
 
-    @Override
+/*    @Override
     public void onLocationChanged(@NotNull Location location) {
-        Log.i(TAG, "MVF__ onLocationChanged: USER HAS MOVED !____!_____!_____!_____ _________________!!");
-        // TODO if currentLocation is set by RequestLocation then the if/else below is never true.
-        // TODO : need to set type initialLocation.
+    // need implement         com.google.android.gms.location.LocationListener,
+        Log.i(TAG, "MVF__ onLocationChanged: USER HAS MOVED !____!_____!_____!_____!!");
         LatLng initialLatLng = mRestaurantsVM.getInitialLatLng();
         Location oldLocation = new Location("");
         oldLocation.setLatitude(initialLatLng.latitude);
         oldLocation.setLongitude(initialLatLng.longitude);
         if (oldLocation.distanceTo(location) >= 300) {
             // We reset the limit guard of initial location
-            if (WasCalled.resetLocationWasCalled()) {
-                // TODO something if necessary
-            }
-            // TODO run new restaurantRequest
         }
-    }
+    }*/
 
     @Override
     public void onPause() {
@@ -492,6 +472,7 @@ public class MapViewFragment extends Fragment
 
     @Override
     public void onDestroyView() {
+        mWifiOffBinding = null;
         mBinding = null;
         super.onDestroyView();
     }

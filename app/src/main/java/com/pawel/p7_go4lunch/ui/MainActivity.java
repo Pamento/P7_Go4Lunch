@@ -163,7 +163,6 @@ public class MainActivity extends AppCompatActivity
     // ____________ Toolbar search _____________________
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // TODO filter for listFragment
         getMenuInflater().inflate(R.menu.toolbar_search_menu, menu);
         setSearch(menu);
         return super.onCreateOptionsMenu(menu);
@@ -268,10 +267,9 @@ public class MainActivity extends AppCompatActivity
         binding.drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         // set information on the user into the drawer header
-        // TODO cache:: I have comment this. If something go wrong with Drawer Menu, uncomment this.
-//        if (getCurrentUser() != null) {
-//            updateUiNavigationDrawerMenu(getCurrentUser());
-//        }
+        if (getCurrentUser() != null) {
+            updateUiNavigationDrawerMenu(getCurrentUser());
+        }
     }
 
     private void updateUiNavigationDrawerMenu(FirebaseUser user) {
@@ -286,6 +284,8 @@ public class MainActivity extends AppCompatActivity
                 .fitCenter()
                 .circleCrop()
                 .into(headerBinding.navDrawerUserImage);
+        Log.i(TAG, "updateUiNavigationDrawerMenu: USER.email::: " + user.getEmail());
+        Log.i(TAG, "updateUiNavigationDrawerMenu: USER.name:::  " + name);
         headerBinding.navDrawerUserEmail.setText(user.getEmail());
         headerBinding.navDrawerUserFullName.setText(name);
     }
@@ -305,7 +305,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initOtherActivity(Class<?> activityClass) {
-        // TODO pass extra to retrieve data for AboutRestaurantActivity
         Intent intent = new Intent(MainActivity.this, activityClass);
         startActivity(intent);
     }
@@ -379,7 +378,6 @@ public class MainActivity extends AppCompatActivity
         String uid = firebaseUser.getUid();
         String name = TextUtils.isEmpty(firebaseUser.getDisplayName()) ? "" : firebaseUser.getDisplayName();
         String email = TextUtils.isEmpty(firebaseUser.getEmail()) ? "" : firebaseUser.getEmail();
-        // TODO Pixel API 19 don't recognise the Uri ?!
         String urlImage = Uri.EMPTY.equals(firebaseUser.getPhotoUrl()) ? "" : Objects.requireNonNull(firebaseUser.getPhotoUrl()).toString();
         mMainActivityViewModel.createUser(uid, name, email, urlImage);
     }
@@ -407,10 +405,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onLocationChanged(Location location) {
-        /*
-         * TODO if not used, delete this function
-         *  think how this override fun works and how to used
-         */
         mCurrentLocation = location;
         mLatitude = location.getLatitude();
         mLongitude = location.getLongitude();
@@ -422,31 +416,13 @@ public class MainActivity extends AppCompatActivity
         super.onResumeFragments();
     }
 
-    //    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        Log.i(TAG, "MAIN_ACTIVITY onStart is");
-//    }
-//
     @Override
     protected void onResume() {
         super.onResume();
         getLocalAppSettings();
         Log.i(TAG, "MAIN_ACTIVITY onResume is");
     }
-//
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//        Log.i(TAG, "MAIN_ACTIVITY onPause is");
-//    }
-//
-//    @Override
-//    protected void onStop() {
-//        super.onStop();
-//        Log.i(TAG, "MAIN_ACTIVITY onStop is ");
-//    }
-//
+
     @Override
     protected void onDestroy() {
         mMainActivityViewModel.disposeDisposable();

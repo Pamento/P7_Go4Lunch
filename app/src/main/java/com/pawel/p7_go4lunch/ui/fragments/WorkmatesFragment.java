@@ -115,15 +115,14 @@ public class WorkmatesFragment extends Fragment implements WorkmateAdapter.OnIte
 
     @Override
     public void onItemClick(DocumentSnapshot documentSnapshot) {
-        String itemId = documentSnapshot.getId();
-        //String itemId = documentSnapshot.get("email");
-        if (itemId.isEmpty()) {
-            Log.i(TAG, "onItemClick: WorkmateID: null");
-        } else {
-            Log.i(TAG, "onItemClick: WorkmateID: " + itemId);
-            // TODO go to Chat by calling action (Start Intent)
-            // itemID give the id of user in firebaseCollection("users");
-        }
+//        String itemId = documentSnapshot.getId();
+//        //String itemId = documentSnapshot.get("email");
+//        if (itemId.isEmpty()) {
+//            Log.i(TAG, "onItemClick: WorkmateID: null");
+//        } else {
+//            Log.i(TAG, "onItemClick: WorkmateID: " + itemId);
+//            // itemID give the id of user in firebaseCollection("users");
+//        }
     }
 
     @Override

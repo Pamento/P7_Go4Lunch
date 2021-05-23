@@ -40,13 +40,12 @@ public abstract class LocationUtils {
                 Permissions.check(Go4Lunch.getContext(), Const.PERMISSIONS, null, null, new PermissionHandler() {
                     @Override
                     public void onGranted() {
-                        // TODO check if device has location & network enabled (Kitkat & above)
-                        // solution
-                        // https://stackoverflow.com/questions/17591147/how-to-get-current-location-in-android
                         Task<android.location.Location> getLocation = fusedLocationProviderClient.getLastLocation();
                         getLocation.addOnCompleteListener(task -> {
                             if (task.isSuccessful() && (task.getResult() != null)) {
                                 data.setValue(task.getResult());
+                            } else {
+                                data.setValue(null);
                             }
                         });
                     }

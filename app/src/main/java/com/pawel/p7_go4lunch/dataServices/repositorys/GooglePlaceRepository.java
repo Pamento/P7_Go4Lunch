@@ -6,7 +6,6 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.pawel.p7_go4lunch.BuildConfig;
 import com.pawel.p7_go4lunch.dataServices.GooglePlaceAPI;
 import com.pawel.p7_go4lunch.dataServices.RetrofitClient;
@@ -33,7 +32,6 @@ public class GooglePlaceRepository {
     private static final String TAG = "AUTO_COM";
     private static volatile GooglePlaceRepository instance;
     private static String mCurrentLocation;
-    private static LatLng initialLatLng;
     private final GooglePlaceAPI mGooglePlaceAPIService;
     private final List<Restaurant> mRestaurants = new ArrayList<>();
     private List<Restaurant> mRestaurantsAutoCom = new ArrayList<>();
@@ -83,10 +81,6 @@ public class GooglePlaceRepository {
         return mRestaurantLiveData;
     }
 
-    public LatLng getInitialLatLng() {
-        return initialLatLng;
-    }
-
     public LiveData<AutoSearchEvents> getAutoSearchEvents() {
         return mAutoSearchEvents;
     }
@@ -114,10 +108,6 @@ public class GooglePlaceRepository {
         GooglePlaceRepository.mCurrentLocation = cLoc.getLatitude() + "," + cLoc.getLongitude();
         mCrntLocation.setLatitude(cLoc.getLatitude());
         mCrntLocation.setLongitude(cLoc.getLongitude());
-    }
-
-    public void setInitialLatLng(LatLng latLng) {
-        GooglePlaceRepository.initialLatLng = latLng;
     }
 
     // .........................................................................STREAMS

@@ -119,8 +119,8 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
             if (user != null) {
                 Log.i(TAG, "About__ getUser: in __ ::: " + user.getEmail());
                 mUser = user;
-                if (user != null) Log.i(TAG, "getUser: user: " + user.toString());
-                if (user != null && user.getFavoritesRestaurants() != null)
+                Log.i(TAG, "getUser: user: " + user.toString());
+                if (user.getFavoritesRestaurants() != null)
                     favoritesResto = user.getFavoritesRestaurants();
                 if (isCalledFromGoogleMap()) getRestaurantFromGoogleMap();
                 else getRestaurantFromUser();
