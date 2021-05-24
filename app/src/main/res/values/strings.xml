@@ -75,6 +75,7 @@
     <string name="no_restaurant_data">Aucune restaurant choisi.</string>
     <string name="name_restaurant_absent">Nom manquant</string>
     <string name="address_restaurant_absent">Adresse manquant</string>
+    <string name="notification_disabled_warning">Pour profiter de la notification, ils doivent être activés dans les paramètres de cette application.</string>
 
     <!-- Settings Activity -->
     <string name="title_activity_settings">Paramètres</string>

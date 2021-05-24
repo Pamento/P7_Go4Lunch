@@ -215,7 +215,8 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
                 mScrolBinding.aboutTheRestAddress.setText(mThisRestaurant.getAddress());
             }
             // rating
-            double starsRange = Math.round(mThisRestaurant.getRating() * 3 / 5);
+//            double starsRange = Math.round(mThisRestaurant.getRating() * 3 / 5);
+            double starsRange = mThisRestaurant.getRating();
             Log.i(TAG, "ABOUT__ setUiAboutRestaurant: starsRange::: " + starsRange);
             switch ((int) starsRange) {
                 case 1:
@@ -330,10 +331,8 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
         isChosen = !isChosen;
         if (isChosen) {
             mUser.setUserRestaurant(mThisRestaurant);
-            //mBinding.aboutRestaurantFab.setImageDrawable(ic_rest_chosen);
         } else {
             mUser.setUserRestaurant(null);
-            //mBinding.aboutRestaurantFab.setImageDrawable(ic_rest_not_chosen);
         }
         updateIconChoiceFAB();
         showMessageBookingRestaurant(isChosen);
@@ -393,6 +392,9 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
 
     private void setRemainderOnce(String h) {
         Log.i(TAG, "setRemainderOnce: isNotification _:_" + mAppSettings.isNotification());
+        if (!mAppSettings.isNotification()) {
+            ViewWidgets.showSnackBar(1,view,getString(R.string.notification_disabled_warning));
+        }
         AlarmService.startAlarm(h);
     }
 

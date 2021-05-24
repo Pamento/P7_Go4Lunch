@@ -16,7 +16,6 @@ import static com.pawel.p7_go4lunch.utils.Const.ALARM_ID;
 import static com.pawel.p7_go4lunch.utils.Const.ALARM_MULTIPLE;
 import static com.pawel.p7_go4lunch.utils.Const.ALARM_SINGLE;
 import static com.pawel.p7_go4lunch.utils.Const.NOTIF_PENDING_ID;
-import static com.pawel.p7_go4lunch.utils.Const.ONE_DAY_IN_MILLIS;
 
 public abstract class AlarmService {
 
@@ -36,8 +35,8 @@ public abstract class AlarmService {
         Log.i(TAG, "setCalendar: before " + Calendar.getInstance().before(mCalendar) + " time[0]::: " + time[0] );
         Log.i(TAG, "setCalendar: after  " + Calendar.getInstance().after(mCalendar) + " time[1]::: " + time[1] );
         if (Calendar.getInstance().after(mCalendar)) {
-            Log.i(TAG, "AlarmService.setCalendar: ___if (Calendar.getInstance().after(mCalendar))___add(Calendar.MILLISECOND, ONE_DAY_IN_MILLIS)");
-            mCalendar.add(Calendar.MILLISECOND, ONE_DAY_IN_MILLIS);
+            Log.i(TAG, "AlarmService.setCalendar: ___if (Calendar.getInstance().after(mCalendar))___add(Calendar.MILLISECOND, 1000 * 60 * 60 *24)");
+            mCalendar.add(Calendar.MILLISECOND, 1000 * 60 * 60 *24);
             //mCalendar.add(Calendar.DAY_OF_MONTH, 1);
         }
         if (Calendar.getInstance().after(mCalendar)) {

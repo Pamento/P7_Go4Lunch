@@ -155,8 +155,7 @@ public class MainActivity extends AppCompatActivity
 
     // Fun: updateMenuItems is run from fragments to remove filters from Map Fragment and add it to ListRestaurants.
     public void updateMenuItems(boolean isMap) {
-        Log.i(TAG, "MainA__ onPrepareOptionsMenu: MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
-        Log.i(TAG, "updateMenuItems: " + isMap);
+        Log.i(TAG, "MainA__ onPrepareOptionsMenu");
         isMapFragment = isMap;
         // invalidateOptionsMenu: internal function of OS Android to rerun onPrepareOptionsMenu
         this.invalidateOptionsMenu();
@@ -167,9 +166,6 @@ public class MainActivity extends AppCompatActivity
         getMenuInflater().inflate(R.menu.toolbar_search_menu, menu);
         if (LocationUtils.isNetworkAvailable()) {
             setSearch(menu);
-            Log.i(TAG, "MainA__ onCreateOptionsMenu: NETWORK RUN " + LocationUtils.isNetworkAvailable());
-        } else {
-            Log.i(TAG, "MainA__ onCreateOptionsMenu: NETWORK ANAVAILABLE " + LocationUtils.isNetworkAvailable());
         }
         return super.onCreateOptionsMenu(menu);
     }
@@ -177,8 +173,6 @@ public class MainActivity extends AppCompatActivity
     // ____________ Toolbar search on result _____________________
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        Log.i(TAG, "MainA__ onOptionsItemSelected: MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
-        Log.i(TAG, "onOptionsItemSelected: item.id::: " + item.getItemId());
         int itemId = item.getItemId();
         int filterType = 0;
         if (itemId != R.id.toolbar_search_icon && itemId != R.id.filter_rating) {
@@ -191,8 +185,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void applyFilter(int filterType) {
-        Log.i(TAG, "MainA__ onOptionsItemSelected: MMMMM____ FILTER TYPE ____MMMMM");
-        Log.i(TAG, "applyFilter: filterType::: " + filterType);
         mMainActivityViewModel.filterRestaurantBy(filterType);
     }
 

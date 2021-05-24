@@ -1,7 +1,5 @@
 package com.pawel.p7_go4lunch.model;
 
-import androidx.annotation.NonNull;
-
 import com.google.firebase.firestore.ServerTimestamp;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.Location;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.OpeningHours;
@@ -23,7 +21,7 @@ public class Restaurant {
     private OpeningHours openingHours;
     @Nullable
     private String image;
-    private double rating;
+    private int rating;
     @Nullable
     private String phoneNumber;
     @Nullable
@@ -35,7 +33,7 @@ public class Restaurant {
 
     public Restaurant(String placeId, Location location, String name, String address,
                       @Nullable OpeningHours openingHours,
-                      @Nullable String image, double rating, @Nullable String phoneNumber, @Nullable String website,
+                      @Nullable String image, int rating, @Nullable String phoneNumber, @Nullable String website,
                       @Nullable List<String> userList) {
         this.placeId = placeId;
         this.location = location;
@@ -84,7 +82,7 @@ public class Restaurant {
         return image;
     }
 
-    public double getRating() {
+    public int getRating() {
         return rating;
     }
 
@@ -134,7 +132,7 @@ public class Restaurant {
         this.image = image;
     }
 
-    public void setRating(double rating) {
+    public void setRating(int rating) {
         this.rating = rating;
     }
 
@@ -148,12 +146,6 @@ public class Restaurant {
 
     public void setUserList(@Nullable List<String> userList) {
         this.userList = userList;
-    }
-
-    @NonNull
-    @Override
-    public Restaurant clone() throws CloneNotSupportedException {
-        return new Restaurant();
     }
 
     @Override

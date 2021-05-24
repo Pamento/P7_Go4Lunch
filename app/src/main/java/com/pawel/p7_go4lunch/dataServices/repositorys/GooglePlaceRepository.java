@@ -17,6 +17,7 @@ import com.pawel.p7_go4lunch.model.googleApiPlaces.RestaurantResult;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.Result;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.SingleRestaurant;
 import com.pawel.p7_go4lunch.utils.AutoSearchEvents;
+import com.pawel.p7_go4lunch.utils.Tools;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -229,7 +230,7 @@ public class GooglePlaceRepository {
                 rcp.setOpeningHours(result.getOpeningHours());
             if (result.getPhotos() != null)
                 rcp.setImage(getPhoto(result.getPhotos().get(0).getPhotoReference()));
-            if (result.getRating() != null) rcp.setRating(result.getRating());
+            if (result.getRating() != null) rcp.setRating(Tools.intRating(result.getRating()));
             rcp.setUserList(new ArrayList<>());
             mRestaurantsAutoCom.set(mRestaurantsAutoCom.indexOf(rcp), rcp);
         }
@@ -262,7 +263,7 @@ public class GooglePlaceRepository {
                 r.setOpeningHours(result.getOpeningHours());
             if (result.getPhotos() != null)
                 r.setImage(getPhoto(result.getPhotos().get(0).getPhotoReference()));
-            if (result.getRating() != null) r.setRating(result.getRating());
+            if (result.getRating() != null) r.setRating(Tools.intRating(result.getRating()));
             if (result.getInternationalPhoneNumber() != null)
                 r.setPhoneNumber(result.getInternationalPhoneNumber());
             if (result.getWebsite() != null) r.setWebsite(result.getWebsite());

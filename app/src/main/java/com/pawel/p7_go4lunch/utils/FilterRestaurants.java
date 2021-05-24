@@ -22,7 +22,7 @@ public abstract class FilterRestaurants {
             List<Restaurant> temp = new ArrayList<>();
             int i, ii = restos.size();
             for (i = 0; i < ii; i++) {
-                long rating = Math.round(restos.get(i).getRating() * 3 / 5);
+                int rating = restos.get(i).getRating();
                 Log.i(TAG, "byRating: name: :: : " + restos.get(i).getName());
                 Log.i(TAG, "byRating: rating::::: " + rating + " == " + value);
                 if (rating == value) temp.add(restos.get(i));
