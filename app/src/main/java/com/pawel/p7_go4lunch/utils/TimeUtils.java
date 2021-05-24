@@ -1,8 +1,5 @@
 package com.pawel.p7_go4lunch.utils;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 
 public abstract class TimeUtils {
 
@@ -10,6 +7,7 @@ public abstract class TimeUtils {
         int[] t = new int[2];
         if (hour.length() == 2) {
             t[0] = sToInt(hour);
+            t[1] = 0;
         } else {
             String[] sps = hour.split("_");
             t[0] = sToInt(sps[0]);
@@ -28,16 +26,16 @@ public abstract class TimeUtils {
         return r;
     }
 
-    public static int[] currentHour() {
-        int[] t = new int[2];
-        Calendar calendar = GregorianCalendar.getInstance();
-        calendar.setTime(new Date());
-        t[0] = calendar.get(Calendar.HOUR_OF_DAY);
-        t[1] = calendar.get(Calendar.MINUTE);
-        return t;
-    }
-
-    public static boolean isGreaterThan(int[] cTime, int[] timeSet) {
-        return cTime[0] > timeSet[0] || (cTime[0] == timeSet[0] && cTime[1] > timeSet[1]);
-    }
+//    public static int[] currentHour() {
+//        int[] t = new int[2];
+//        Calendar calendar = GregorianCalendar.getInstance();
+//        calendar.setTime(new Date());
+//        t[0] = calendar.get(Calendar.HOUR_OF_DAY);
+//        t[1] = calendar.get(Calendar.MINUTE);
+//        return t;
+//    }
+//
+//    public static boolean isGreaterThan(int[] cTime, int[] timeSet) {
+//        return cTime[0] > timeSet[0] || (cTime[0] == timeSet[0] && cTime[1] > timeSet[1]);
+//    }
 }

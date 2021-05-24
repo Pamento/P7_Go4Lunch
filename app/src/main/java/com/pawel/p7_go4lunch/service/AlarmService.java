@@ -24,21 +24,24 @@ public abstract class AlarmService {
     private static Calendar mCalendar;
 
     private static void setCalendar(String hour) {
-        int[] time = TimeUtils.timeToInt(hour);
+        //int[] time = TimeUtils.timeToInt(hour);
         // For test purpose
-//        mCalendar.set(Calendar.HOUR_OF_DAY, 8);
-//        mCalendar.set(Calendar.MINUTE, 15);
+        int[] time = TimeUtils.timeToInt("12");
+
 
         mCalendar = Calendar.getInstance();
         mCalendar.setTimeInMillis(System.currentTimeMillis());
         mCalendar.set(Calendar.HOUR_OF_DAY, time[0]);
         mCalendar.set(Calendar.MINUTE, time[1]);
-        Log.i(TAG, "setCalendar: before " + Calendar.getInstance().before(mCalendar));
-        Log.i(TAG, "setCalendar: after  " + Calendar.getInstance().after(mCalendar));
+        Log.i(TAG, "setCalendar: before " + Calendar.getInstance().before(mCalendar) + " time[0]::: " + time[0] );
+        Log.i(TAG, "setCalendar: after  " + Calendar.getInstance().after(mCalendar) + " time[1]::: " + time[1] );
         if (Calendar.getInstance().after(mCalendar)) {
-            Log.i(TAG, "AlarmService.setCalendar: ");
+            Log.i(TAG, "AlarmService.setCalendar: ___if (Calendar.getInstance().after(mCalendar))___add(Calendar.MILLISECOND, ONE_DAY_IN_MILLIS)");
             mCalendar.add(Calendar.MILLISECOND, ONE_DAY_IN_MILLIS);
             //mCalendar.add(Calendar.DAY_OF_MONTH, 1);
+        }
+        if (Calendar.getInstance().after(mCalendar)) {
+            Log.i(TAG, "setCalendar: AFTER SETTING IT TO _1_DAY LATER. Still is mCalendar is in the PAST §§§§§§§:!!!!!!!!!!!!");
         }
     }
 
@@ -68,8 +71,9 @@ public abstract class AlarmService {
             Intent intent = new Intent(Go4Lunch.getContext(), AlarmReceiver.class);
             intent.putExtra(ALARM_ID, ALARM_MULTIPLE);
             PendingIntent alarmIntent = PendingIntent.getBroadcast(Go4Lunch.getContext(), NOTIF_PENDING_ID, intent, 0);
-            assert aMgr != null;
-            aMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, mCalendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, alarmIntent);
+            if (aMgr != null){
+                aMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, mCalendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, alarmIntent);
+            }
         }
     }
 

@@ -71,28 +71,21 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     private void checkForNextNotif() {
         Log.i(TAG, "checkForNextNotif: Settings.isNotif_recurrence ? _" + mAppSettings.isNotif_recurrence());
-        // explained in second answer, how to set next alarm
-        //https://stackoverflow.com/questions/35964676/alarm-manager-interval-day-not-working
-//        if (!mAppSettings.isNotif_recurrence()) {
-//            AlarmService.cancelAlarm();
-//            mAppSettings.setNotification(false);
-//        }
         int alarmId = mIntent.getIntExtra(Const.ALARM_ID, -1);
         Log.i(TAG, "checkForNextNotif: alarmId from PendingIntent :__:: " + alarmId);
+        // If in Setting of this app the alarm repeating is set to false, do: cancelAlarm()
+        // because the ALARM_SINGLE it run only once.
         if (!(mAppSettings.isNotif_recurrence() && alarmId == ALARM_MULTIPLE)) {
             AlarmService.cancelAlarm();
         }
-// If test pass mal, revien sur condition;
-//        if (mAppSettings.isNotif_recurrence() && alarmId == ALARM_MULTIPLE) {
-//            // if so, everything is fine, continue
-//            Log.i(TAG, "checkForNextNotif: ALARM_MULTIPLE _OK. alarmID:: _" + alarmId);
-//        } else AlarmService.cancelAlarm();
-
         // Recurrence of notification was changed between set of alarm and display of notification
         if (mAppSettings.isNotif_recurrence() && alarmId == ALARM_SINGLE) {
             Log.i(TAG, "checkForNextNotif: _*_*_*_*_*___mAppSettings.isNotif_recurrence() && alarmId == ALARM_SINGLE ");
             AlarmService.startRepeatedAlarm(mAppSettings.getHour());
-        } else mAppSettings.setNotification(false);
+        }
+        if (!mAppSettings.isNotif_recurrence()) {
+            mAppSettings.setNotification(false);
+        }
     }
 
     private void getLocalAppSettings(Context ctx) {
