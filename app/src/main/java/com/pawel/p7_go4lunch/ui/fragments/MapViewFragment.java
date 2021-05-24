@@ -114,7 +114,7 @@ public class MapViewFragment extends Fragment
     }
 
     private void initMap() {
-        if (LocationUtils.isWifiOn()) mWifiOffBinding.mapWifiOff.setVisibility(View.VISIBLE);
+        if (!LocationUtils.isNetworkAvailable()) mWifiOffBinding.mapWifiOff.setVisibility(View.VISIBLE);
         else {
             SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
             if (supportMapFragment != null) {

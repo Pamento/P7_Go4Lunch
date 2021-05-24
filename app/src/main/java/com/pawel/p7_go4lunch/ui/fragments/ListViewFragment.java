@@ -65,7 +65,7 @@ public class ListViewFragment extends Fragment implements RestaurantAdapter.OnIt
         mainActivity.updateMenuItems(false);
         setAutocompleteEventObserver();
         com.pawel.p7_go4lunch.databinding.WifiOffBinding wifiOffBinding = mBinding.listWifiOff;
-        if (LocationUtils.isWifiOn()) wifiOffBinding.mapWifiOff.setVisibility(View.VISIBLE);
+        if (!LocationUtils.isNetworkAvailable()) wifiOffBinding.mapWifiOff.setVisibility(View.VISIBLE);
         else {
             Log.i(TAG, "LVF__ onViewCreated: observeRestaurantAPIResponse()");
             setProgressBar();

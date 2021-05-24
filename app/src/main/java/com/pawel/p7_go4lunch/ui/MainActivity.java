@@ -33,6 +33,7 @@ import com.pawel.p7_go4lunch.utils.AutoSearchEvents;
 import com.pawel.p7_go4lunch.utils.Const;
 import com.pawel.p7_go4lunch.utils.GlideApp;
 import com.pawel.p7_go4lunch.utils.LocalAppSettings;
+import com.pawel.p7_go4lunch.utils.LocationUtils;
 import com.pawel.p7_go4lunch.utils.ViewWidgets;
 import com.pawel.p7_go4lunch.utils.di.Injection;
 import com.pawel.p7_go4lunch.viewModels.MainActivityViewModel;
@@ -164,7 +165,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar_search_menu, menu);
-        setSearch(menu);
+        if (LocationUtils.isNetworkAvailable()) {
+            setSearch(menu);
+            Log.i(TAG, "MainA__ onCreateOptionsMenu: NETWORK RUN " + LocationUtils.isNetworkAvailable());
+        } else {
+            Log.i(TAG, "MainA__ onCreateOptionsMenu: NETWORK ANAVAILABLE " + LocationUtils.isNetworkAvailable());
+        }
         return super.onCreateOptionsMenu(menu);
     }
 

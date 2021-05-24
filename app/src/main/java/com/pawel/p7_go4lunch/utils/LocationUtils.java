@@ -5,9 +5,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
-import android.net.wifi.SupplicantState;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -93,12 +92,19 @@ public abstract class LocationUtils {
     /**
      * A function to check if Wi-fi is connected, return boolean.
      */
-    public static boolean isWifiOn() {
-        // ConnectivityManager
-        SupplicantState supState;
-        WifiManager wifiManager = (WifiManager) Go4Lunch.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-        supState = wifiInfo.getSupplicantState();
-        return supState == SupplicantState.DISCONNECTED;
+//    public static boolean isWifiOn() {
+//        // ConnectivityManager
+//        SupplicantState supState;
+//        WifiManager wifiManager = (WifiManager) Go4Lunch.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+//        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+//        supState = wifiInfo.getSupplicantState();
+//        return supState == SupplicantState.DISCONNECTED;
+//    }
+
+    public static boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) Go4Lunch.getContext().getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

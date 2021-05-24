@@ -24,9 +24,9 @@ public abstract class AlarmService {
     private static Calendar mCalendar;
 
     private static void setCalendar(String hour) {
-        //int[] time = TimeUtils.timeToInt(hour);
+        int[] time = TimeUtils.timeToInt(hour);
         // For test purpose
-        int[] time = TimeUtils.timeToInt("12");
+        //int[] time = TimeUtils.timeToInt("12");
 
 
         mCalendar = Calendar.getInstance();

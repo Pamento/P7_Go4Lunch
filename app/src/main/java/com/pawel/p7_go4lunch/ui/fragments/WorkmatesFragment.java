@@ -95,7 +95,7 @@ public class WorkmatesFragment extends Fragment implements WorkmateAdapter.OnIte
                         mErrorMessageBinding.errorNoData.setVisibility(View.VISIBLE);
                         Log.e(TAG, "Error getting documents: ", task.getException());
                     } else {
-                        if (LocationUtils.isWifiOn()) {
+                        if (!LocationUtils.isNetworkAvailable()) {
                             mBarBinding.progressBar.setVisibility(View.GONE);
                             mWifiOffBinding.mapWifiOff.setVisibility(View.VISIBLE);
                         }

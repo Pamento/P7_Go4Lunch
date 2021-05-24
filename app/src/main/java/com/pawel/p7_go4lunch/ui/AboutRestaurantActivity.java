@@ -247,7 +247,7 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
     }
 
     private void setRecyclerViewWorkmates() {
-        if (LocationUtils.isWifiOn()) mWifiOffBinding.mapWifiOff.setVisibility(View.VISIBLE);
+        if (!LocationUtils.isNetworkAvailable()) mWifiOffBinding.mapWifiOff.setVisibility(View.VISIBLE);
         else {
             mAboutRestaurantVM.getUsersWithTheSameRestaurant(restaurantId).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful() && task.getResult().isEmpty()) {
