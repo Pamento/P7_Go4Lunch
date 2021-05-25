@@ -11,7 +11,7 @@ import com.pawel.p7_go4lunch.dataServices.repositorys.GooglePlaceRepository;
 import com.pawel.p7_go4lunch.model.Restaurant;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.Result;
 import com.pawel.p7_go4lunch.utils.AutoSearchEvents;
-import com.pawel.p7_go4lunch.utils.FilterRestaurants;
+import com.pawel.p7_go4lunch.utils.helpers.FilterRestaurants;
 
 import java.util.ArrayList;
 import java.util.List;

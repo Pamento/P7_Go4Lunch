@@ -1,4 +1,4 @@
-package com.pawel.p7_go4lunch.utils;
+package com.pawel.p7_go4lunch.utils.helpers;
 
 import android.os.Build;
 import android.util.Log;

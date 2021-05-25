@@ -18,6 +18,7 @@ import com.pawel.p7_go4lunch.model.googleApiPlaces.Result;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.SingleRestaurant;
 import com.pawel.p7_go4lunch.utils.AutoSearchEvents;
 import com.pawel.p7_go4lunch.utils.Tools;
+import com.pawel.p7_go4lunch.utils.helpers.RestaurantsHelper;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,6 +35,7 @@ public class GooglePlaceRepository {
     private static volatile GooglePlaceRepository instance;
     private static String mCurrentLocation;
     private final GooglePlaceAPI mGooglePlaceAPIService;
+    private final RestaurantsHelper mRestaurantsHelper;
     private final List<Restaurant> mRestaurants = new ArrayList<>();
     private List<Restaurant> mRestaurantsAutoCom = new ArrayList<>();
     private final MutableLiveData<List<Restaurant>> mRestaurantLiveData = new MutableLiveData<>();
@@ -43,6 +45,7 @@ public class GooglePlaceRepository {
     private final InMemoryRestosCache mCache = InMemoryRestosCache.getInstance();
 
     public GooglePlaceRepository() {
+        mRestaurantsHelper = new RestaurantsHelper();
         mGooglePlaceAPIService = getGooglePlaceApiService();
     }
 
@@ -172,10 +175,6 @@ public class GooglePlaceRepository {
                 .map(SingleRestaurant::getResult);
     }
 
-    public String getPhoto(String photoReference) {
-        return "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + photoReference + "&key=" + BuildConfig.API_KEY;
-    }
-
     public void disposeDisposable() {
         if (mDisposable.isDisposed()) {
             mDisposable.dispose();
@@ -187,11 +186,13 @@ public class GooglePlaceRepository {
         Log.i("SEARCH", "setRestaurantsNearby: " + results.size());
         for (Result r : results) {
             Restaurant res = createRestaurant(r);
-            if (mRestaurants.contains(res)) {
-                Log.i(TAG, "setRestaurantsNearby: the same. Id::: " + res.getPlaceId());
-                mRestaurants.set(mRestaurants.indexOf(res), res);
-            } else {
-                mRestaurants.add(res);
+            if (res != null) {
+                if (mRestaurants.contains(res)) {
+                    Log.i(TAG, "setRestaurantsNearby: the same. Id::: " + res.getPlaceId());
+                    mRestaurants.set(mRestaurants.indexOf(res), res);
+                } else {
+                    mRestaurants.add(res);
+                }
             }
         }
     }
@@ -218,74 +219,31 @@ public class GooglePlaceRepository {
     private void updateRestoWithDetails(Result result, Restaurant rcp) {
         Log.i(TAG, "GooglePlaceRepository.updateRestoWithDetails: ");
         if (result != null) {
-            Log.i(TAG, "GooglePlaceRepository.updateRestoWithDetails: result " + result.getName());
-            rcp.setDateCreated(new Date());
-            if (result.getName() != null) rcp.setName(result.getName());
-            if (result.getVicinity() != null) rcp.setAddress(result.getVicinity());
-            if (result.getGeometry() != null) {
-                Log.d(TAG, "GooglePlaceRepository.updateRestoWithDetails.getLocation: Location " + result.getGeometry().getLocation());
-                rcp.setLocation(result.getGeometry().getLocation());
-            }
-            if (result.getOpeningHours() != null)
-                rcp.setOpeningHours(result.getOpeningHours());
-            if (result.getPhotos() != null)
-                rcp.setImage(getPhoto(result.getPhotos().get(0).getPhotoReference()));
-            if (result.getRating() != null) rcp.setRating(Tools.intRating(result.getRating()));
-            rcp.setUserList(new ArrayList<>());
-            mRestaurantsAutoCom.set(mRestaurantsAutoCom.indexOf(rcp), rcp);
+            Restaurant updated = mRestaurantsHelper.updateWithDetail(result, rcp);
+            mRestaurantsAutoCom.set(mRestaurantsAutoCom.indexOf(rcp), updated);
         }
     }
 
     private void updateRestoWithContact(Result result, Restaurant rcp) {
         if (rcp != null) {
-            rcp.setPhoneNumber(result.getInternationalPhoneNumber());
-            rcp.setWebsite(result.getWebsite());
-            mRestaurants.set(mRestaurants.indexOf(rcp), rcp);
+            Restaurant updated = mRestaurantsHelper.updateRestoWithContact(result, rcp);
+            mRestaurants.set(mRestaurants.indexOf(rcp), updated);
         }
     }
 
     public Restaurant createRestaurant(Result result) {
-        Restaurant r = new Restaurant();
-        Location l = new Location("");
         if (result != null) {
-            if (result.getPlaceId() != null) r.setPlaceId(result.getPlaceId());
-            r.setDateCreated(new Date());
-            if (result.getName() != null) r.setName(result.getName());
-            if (result.getVicinity() != null) r.setAddress(result.getVicinity());
-            if (result.getGeometry() != null) {
-                r.setLocation(result.getGeometry().getLocation());
-                l.setLatitude(result.getGeometry().getLocation().getLat());
-                l.setLongitude(result.getGeometry().getLocation().getLng());
-                float dt = mCrntLocation.distanceTo(l);
-                r.setDistance(Math.round(dt));
-            }
-            if (result.getOpeningHours() != null)
-                r.setOpeningHours(result.getOpeningHours());
-            if (result.getPhotos() != null)
-                r.setImage(getPhoto(result.getPhotos().get(0).getPhotoReference()));
-            if (result.getRating() != null) r.setRating(Tools.intRating(result.getRating()));
-            if (result.getInternationalPhoneNumber() != null)
-                r.setPhoneNumber(result.getInternationalPhoneNumber());
-            if (result.getWebsite() != null) r.setWebsite(result.getWebsite());
-            r.setUserList(new ArrayList<>());
-            return r;
+            return mRestaurantsHelper.createRestaurant(result, mCrntLocation);
         }
         return null;
     }
 
     private void setRestoFromPredictions(List<Predictions> predictions) {
-        Log.i(TAG, "setRestoFromPredictions: ");
+        // First, reset previous value of mRestaurantsAutoCom.
         mRestaurantsAutoCom = new ArrayList<>();
         if (predictions != null) {
-            Log.i(TAG, "setRestoFromPredictions:size N° " + predictions.size());
-            for (Predictions prd : predictions) {
-                if (prd.getTypes().contains("restaurant")) {
-                    Restaurant rst = new Restaurant();
-                    rst.setPlaceId(prd.getPlaceId());
-                    rst.setDistance(prd.getDistanceMeters());
-                    mRestaurantsAutoCom.add(rst);
-                }
-            }
+            Log.i(TAG, "GR__ setRestoFromPredictions:size N° " + predictions.size());
+            mRestaurantsAutoCom.addAll(mRestaurantsHelper.setRestoFromPredictions(predictions));
         }
     }
 }

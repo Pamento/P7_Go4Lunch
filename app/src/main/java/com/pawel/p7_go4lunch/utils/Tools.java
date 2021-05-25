@@ -6,4 +6,8 @@ public abstract class Tools {
         long r = Math.round(rating * 3 / 5);
         return (int) r;
     }
+
+    public static boolean isTimeGreaterThan(long time) {
+        return (System.currentTimeMillis() - time) > (1000 * 60 * 60 * 24 * 7);
+    }
 }

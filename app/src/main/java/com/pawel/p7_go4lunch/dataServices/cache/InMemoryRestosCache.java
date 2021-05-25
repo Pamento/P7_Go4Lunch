@@ -3,6 +3,7 @@ package com.pawel.p7_go4lunch.dataServices.cache;
 import android.util.Log;
 
 import com.pawel.p7_go4lunch.model.Restaurant;
+import com.pawel.p7_go4lunch.utils.Tools;
 
 import android.location.Location;
 
@@ -63,7 +64,7 @@ public class InMemoryRestosCache implements Cloneable {
         Log.i(TAG, "CACHE/sendRestaurantsIfNotToOld");
         // In case the user live app active in background for days,
         // the cache keep the data in memory max 7 days
-        if ((System.currentTimeMillis() - mCachedAt) > (1000 * 60 * 60 * 24 * 7)){
+        if (Tools.isTimeGreaterThan(mCachedAt)){
             mRestaurants.clear();
             return new ArrayList<>();
         }
