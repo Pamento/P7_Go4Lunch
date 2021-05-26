@@ -86,8 +86,10 @@ public class MainActivity extends AppCompatActivity
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         view = binding.getRoot();
         setContentView(view);
-        setSupportActionBar(binding.toolbar);
-        binding.toolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.ic_filter_list_24));
+        if (binding.toolbar != null) {
+            setSupportActionBar(binding.toolbar);
+            binding.toolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.ic_filter_list_24));
+        }
         setNavigationDrawer();
         if (isCurrentUserLogged()) {
             if (isMapsServiceOk()) {
@@ -103,8 +105,24 @@ public class MainActivity extends AppCompatActivity
         }
         getLocalAppSettings();
         //PlacesClient placesClient = Places.createClient(this);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        if (Build.VERSION.SDK_INT <= 21) {
+            Log.i(TAG, "21");
+            Log.i(TAG, "21");
+            Log.i(TAG, "21");
+            Log.i(TAG, "21");
+            //getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+            View deco = getWindow().getDecorView();
+            deco.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+                @Override
+                public void onViewAttachedToWindow(View v) {
+                    v.setAlpha(0.6f);
+                }
+
+                @Override
+                public void onViewDetachedFromWindow(View v) {
+
+                }
+            });
         }
     }
 

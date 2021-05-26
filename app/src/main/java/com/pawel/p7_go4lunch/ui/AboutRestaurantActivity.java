@@ -83,7 +83,7 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
         setSupportActionBar(mBinding.aboutTheRestaurantToolbar);
         mBinding.toolbarLayout.setTitle(getTitle());
         // windowTranslucentStatus for KITKAT android version
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= 21) {
             Window w = getWindow();
             w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         }

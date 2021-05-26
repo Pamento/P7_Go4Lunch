@@ -18,7 +18,6 @@ public class DialogWidget extends AppCompatDialogFragment {
     private DialogWidgetListener listener;
     private AlertDialog.Builder ADBuilder;
     private final boolean modeDialog;
-    private final Context mContext;
     private final String mTitle;
     private final String mMessage;
     private final String mNegativeBtnTx;
@@ -26,7 +25,6 @@ public class DialogWidget extends AppCompatDialogFragment {
 
     public DialogWidget(boolean modeDialog, Context context, String title, String message, String negativeBtnTx, String positiveBtnTx) {
         this.modeDialog = modeDialog;
-        mContext = context;
         mTitle = title;
         mMessage = message;
         mNegativeBtnTx = negativeBtnTx;
@@ -57,7 +55,7 @@ public class DialogWidget extends AppCompatDialogFragment {
     @Override
     public void onAttach(@NonNull Context context) {
         try {
-            listener = (DialogWidgetListener) mContext;
+            listener = (DialogWidgetListener) context;
         } catch (ClassCastException cce) {
             throw new ClassCastException(cce.toString()
                     + " must implement DialogWidgetListener");
