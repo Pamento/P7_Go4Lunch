@@ -25,7 +25,7 @@ public abstract class AlarmService {
     private static void setCalendar(String hour) {
         int[] time = TimeUtils.timeToInt(hour);
         // For test purpose
-        //int[] time = TimeUtils.timeToInt("12");
+        //int[] time = TimeUtils.timeToInt("16_05");
 
 
         mCalendar = Calendar.getInstance();
@@ -35,11 +35,12 @@ public abstract class AlarmService {
         Log.i(TAG, "setCalendar: before " + Calendar.getInstance().before(mCalendar) + " time[0]::: " + time[0] );
         Log.i(TAG, "setCalendar: after  " + Calendar.getInstance().after(mCalendar) + " time[1]::: " + time[1] );
         if (Calendar.getInstance().after(mCalendar)) {
-            Log.i(TAG, "AlarmService.setCalendar: ___if (Calendar.getInstance().after(mCalendar))___add(Calendar.MILLISECOND, 1000 * 60 * 60 *24)");
-            mCalendar.add(Calendar.MILLISECOND, 1000 * 60 * 60 *24);
+            Log.i(TAG, "AlarmService.setCalendar: ___if (Calendar.getInstance().after(mCalendar))___add(Calendar.DAY_OF_MONTH, 1)");
+            mCalendar.add(Calendar.DAY_OF_MONTH, 1);
             //mCalendar.add(Calendar.DAY_OF_MONTH, 1);
         }
         if (Calendar.getInstance().after(mCalendar)) {
+            // Should't run this condition, if the above check for .after(mCalendar) is add correctly.
             Log.i(TAG, "setCalendar: AFTER SETTING IT TO _1_DAY LATER. Still is mCalendar is in the PAST §§§§§§§:!!!!!!!!!!!!");
         }
     }
