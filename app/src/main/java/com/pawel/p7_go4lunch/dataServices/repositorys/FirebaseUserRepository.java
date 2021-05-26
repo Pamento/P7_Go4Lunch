@@ -72,7 +72,7 @@ public class FirebaseUserRepository {
 //    }
 
     // ................................................................................... DELETE
-    public Task<Void> deleteUser(String uid) {
-        return userRepository.document(uid).delete();
-    }
+//    public Task<Void> deleteUser(String uid) {
+//        return userRepository.document(uid).delete();
+//    }
 }

@@ -1,7 +1,6 @@
 package com.pawel.p7_go4lunch.utils.helpers;
 
 import android.location.Location;
-import android.util.Log;
 
 import com.pawel.p7_go4lunch.BuildConfig;
 import com.pawel.p7_go4lunch.model.Restaurant;

@@ -39,17 +39,15 @@ public class WorkmatesFragment extends Fragment implements WorkmateAdapter.OnIte
     private WifiOffBinding mWifiOffBinding;
     private ErrorNoDataFullscreenMessageBinding mErrorMessageBinding;
     private WorkmateAdapter mWorkmateAdapter;
-    private FirebaseUser mUser;
 
-    // To disable SearchView Widget 1 step
+    // To disable SearchView Widget step 1/2
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mUser = FirebaseAuth.getInstance().getCurrentUser();
         setHasOptionsMenu(true);
     }
 
-    // To disable SearchView Widget 2 step
+    // To disable SearchView Widget step 2/2
     @Override
     public void onPrepareOptionsMenu(@NonNull Menu menu) {
         MenuItem item = menu.findItem(R.id.toolbar_search_icon);
@@ -67,20 +65,12 @@ public class WorkmatesFragment extends Fragment implements WorkmateAdapter.OnIte
         View view = mBinding.getRoot();
         setProgressBar();
         setWorkmatesRecyclerView();
-//        final TextView textView = root.findViewById(R.id.text_notifications);
-//        mWorkmatesViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-//            @Override
-//            public void onChanged(@Nullable String s) {
-//                textView.setText(s);
-//            }
-//        });
         return view;
     }
 
     private void initWorkmatesViewModel() {
         ViewModelFactory vmf = Injection.sViewModelFactory();
         mWorkmatesVM = new ViewModelProvider(requireActivity(), vmf).get(WorkmatesViewModel.class);
-        mWorkmatesVM.init();
     }
 
     public void setProgressBar() {

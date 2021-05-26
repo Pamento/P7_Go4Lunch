@@ -3,7 +3,6 @@ package com.pawel.p7_go4lunch.utils;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.Button;
@@ -13,15 +12,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
-import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
-import com.pawel.p7_go4lunch.R;
-
 import java.util.Objects;
 
 public class DialogWidget extends AppCompatDialogFragment {
     private DialogWidgetListener listener;
     private AlertDialog.Builder ADBuilder;
-    private boolean modeDialog = false;
+    private final boolean modeDialog;
     private final Context mContext;
     private final String mTitle;
     private final String mMessage;
@@ -45,12 +41,8 @@ public class DialogWidget extends AppCompatDialogFragment {
             ADBuilder = new AlertDialog.Builder(activity);
             ADBuilder.setTitle(mTitle)
                     .setMessage(mMessage)
-                    .setNegativeButton(mNegativeBtnTx, (dialog, which) -> {
-                        listener.OnNegativeBtnAlertDialogClick();
-                    })
-                    .setPositiveButton(mPositiveBtnTx, (dialog, which) -> {
-                        listener.OnPositiveBtnAlertDialogClick();
-                    });
+                    .setNegativeButton(mNegativeBtnTx, (dialog, which) -> listener.OnNegativeBtnAlertDialogClick())
+                    .setPositiveButton(mPositiveBtnTx, (dialog, which) -> listener.OnPositiveBtnAlertDialogClick());
         }
 
         return ADBuilder.create();
@@ -64,13 +56,13 @@ public class DialogWidget extends AppCompatDialogFragment {
 
     @Override
     public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
         try {
             listener = (DialogWidgetListener) mContext;
         } catch (ClassCastException cce) {
             throw new ClassCastException(cce.toString()
                     + " must implement DialogWidgetListener");
         }
+        super.onAttach(context);
     }
 
     /**

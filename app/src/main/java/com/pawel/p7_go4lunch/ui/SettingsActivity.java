@@ -7,9 +7,12 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
+import com.firebase.ui.auth.AuthUI;
 import com.pawel.p7_go4lunch.R;
 import com.pawel.p7_go4lunch.databinding.SettingsActivityBinding;
 import com.pawel.p7_go4lunch.utils.Const;
@@ -42,7 +45,7 @@ public class SettingsActivity extends AppCompatActivity implements DialogWidget.
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         // This value is about "home" id: https://developer.android.com/reference/android/R.id#home
-        // Command if (item.getItemId() == R.id.home) don't give expected result.
+        // Command: <if (item.getItemId() == R.id.home)> don't give expected result.
         if (item.getItemId() == 16908332) {
             onBackPressed();
             return true;
@@ -59,19 +62,18 @@ public class SettingsActivity extends AppCompatActivity implements DialogWidget.
         String message = getString(R.string.delete_account_message);
         String positiveBtn = getString(R.string.btn_ok);
         String negativeBtn = getString(R.string.btn_cancel);
-        DialogWidget dialog = new DialogWidget(true, getBaseContext(), title,message,negativeBtn,positiveBtn);
+        DialogWidget dialog = new DialogWidget(true, getBaseContext(), title, message, negativeBtn, positiveBtn);
         dialog.show(getSupportFragmentManager(), Const.DELETE_ALERT_DIALOG);
     }
 
     @Override
     public void OnPositiveBtnAlertDialogClick() {
-        ViewWidgets.showSnackBar(1,mView,"deletion WORKS");
-        // TODO uncomment for release version
-//        AuthUI.getInstance().delete(this)
-//                .addOnCompleteListener(task -> {
-//                    NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-//                    navController.navigate(R.id.navigation_map_view);
-//                });
+        ViewWidgets.showSnackBar(1, mView, "deletion WORKS");
+        AuthUI.getInstance().delete(this)
+                .addOnCompleteListener(task -> {
+                    NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+                    navController.navigate(R.id.navigation_map_view);
+                });
     }
 
     @Override

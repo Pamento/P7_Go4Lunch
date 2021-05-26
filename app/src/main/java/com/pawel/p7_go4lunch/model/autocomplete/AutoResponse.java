@@ -1,7 +1,5 @@
 package com.pawel.p7_go4lunch.model.autocomplete;
 
-import android.gesture.Prediction;
-
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

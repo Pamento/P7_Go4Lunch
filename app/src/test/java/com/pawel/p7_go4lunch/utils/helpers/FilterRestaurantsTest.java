@@ -43,16 +43,13 @@ public class FilterRestaurantsTest {
 
     @Test
     public void by_rating_3_test() {
-        List<Restaurant> mRestos = new ArrayList<>();
-        mRestos = FilterRestaurants.byRating(mRestaurants,3);
-
+        List<Restaurant> mRestos = FilterRestaurants.byRating(mRestaurants,3);
         assertThat(mRestos.size()).isEqualTo(5);
     }
 
     @Test
     public void by_AZ_test() {
-        List<Restaurant> mRestos = new ArrayList<>();
-        mRestos = FilterRestaurants.byAZ(mRestaurants);
+        List<Restaurant> mRestos = FilterRestaurants.byAZ(mRestaurants);
 
         String firstPosition = mRestos.get(0).getName();
         String lastPosition = mRestos.get(9).getName();

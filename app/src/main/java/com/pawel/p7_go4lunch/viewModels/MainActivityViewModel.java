@@ -31,9 +31,6 @@ public class MainActivityViewModel extends ViewModel {
     private List<Restaurant> mRestaurants = new ArrayList<>();
     private final InMemoryRestosCache mCache;
 
-    public void init() {
-    }
-
     public MainActivityViewModel(FirebaseUserRepository firebaseUserRepository, GooglePlaceRepository googlePlaceRepository) {
         mFirebaseUserRepo = firebaseUserRepository;
         mGooglePlaceRepository = googlePlaceRepository;

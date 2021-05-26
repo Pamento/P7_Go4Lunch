@@ -2,13 +2,10 @@ package com.pawel.p7_go4lunch.utils.helpers;
 
 import com.pawel.p7_go4lunch.model.Restaurant;
 import com.pawel.p7_go4lunch.model.autocomplete.Predictions;
-import com.pawel.p7_go4lunch.model.googleApiPlaces.Geometry;
-import com.pawel.p7_go4lunch.model.googleApiPlaces.OpeningHours;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.Photo;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.Result;
 import com.pawel.p7_go4lunch.utils.Tools;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -21,9 +18,8 @@ import static org.junit.Assert.*;
 
 public class RestaurantsHelperTest {
 
-    private static final String placeId = "ChIJkeO_AzquEmsRUpGQn1ZK7T";
+    private static final String placeId = "ChIJkeO_AquEmsRUpGQn1ZK7Ta";
     private static final List<String> types = new ArrayList<>();
-    private static final Geometry geometry = new Geometry();
     private static final String internationalPhoneNumber = "+61 2 9280 2029";
     private static final String name = "Harbour Bar & Kitchen";
     private static final Photo sPhoto = new Photo();
@@ -66,13 +62,9 @@ public class RestaurantsHelperTest {
     }
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         mRestaurantHelper = new RestaurantsHelper();
         mRestaurant = new Restaurant();
-    }
-
-    @After
-    public void tearDown() throws Exception {
     }
 
     @Test

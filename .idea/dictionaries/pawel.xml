@@ -3,11 +3,15 @@
     <words>
       <w>adress</w>
       <w>appel</w>
+      <w>aramis</w>
+      <w>carne</w>
       <w>crnt</w>
       <w>descript</w>
       <w>firestore</w>
+      <w>harbourside</w>
       <w>heur</w>
       <w>illimité</w>
+      <w>mussaca</w>
       <w>nearbysearch</w>
       <w>notif</w>
       <w>paramètres</w>
@@ -15,7 +19,9 @@
       <w>resto</w>
       <w>restos</w>
       <w>scrol</w>
+      <w>steck</w>
       <w>strictbounds</w>
+      <w>zuchotto</w>
     </words>
   </dictionary>
 </component>
