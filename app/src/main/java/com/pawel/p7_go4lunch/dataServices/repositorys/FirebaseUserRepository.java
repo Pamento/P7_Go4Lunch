@@ -44,16 +44,13 @@ public class FirebaseUserRepository {
         return userRepository.document(uid).get();
     }
 
-    public Query getAllUsersFromCollection(String userId) {
+    public Query getAllUsersFromCollection() {
         return userRepository.orderBy("userRestaurant", Query.Direction.DESCENDING);
-//        return userRepository.orderBy(Const.FIREBASE_ADAPTER_QUERY_EMAIL, Query.Direction.DESCENDING);
     }
 
     public Query getUsersWithTheSameRestaurant(String restoId) {
         return userRepository.whereNotEqualTo("userRestaurant", null)
                 .whereEqualTo("placeId", restoId);
-                //.whereArrayContains("name", restaurantName);
-                //.orderBy(Const.FIREBASE_ADAPTER_QUERY_RATING, Query.Direction.DESCENDING);
     }
 
     public Query getUsersWithChosenRestaurant() {

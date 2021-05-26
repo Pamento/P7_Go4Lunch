@@ -88,7 +88,7 @@ public class WorkmatesFragment extends Fragment implements WorkmateAdapter.OnIte
     }
 
     private void setWorkmatesRecyclerView() {
-        mWorkmatesVM.getAllUsersFromCollection(mUser.getUid()).get()
+        mWorkmatesVM.getAllUsersFromCollection().get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult().isEmpty()) {
                         mBarBinding.progressBar.setVisibility(View.GONE);
@@ -104,7 +104,7 @@ public class WorkmatesFragment extends Fragment implements WorkmateAdapter.OnIte
                     }
                 });
         FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
-                .setQuery(mWorkmatesVM.getAllUsersFromCollection(mUser.getUid()), User.class)
+                .setQuery(mWorkmatesVM.getAllUsersFromCollection(), User.class)
                 .setLifecycleOwner(this)
                 .build();
         mWorkmateAdapter = new WorkmateAdapter(options, this, 1);
