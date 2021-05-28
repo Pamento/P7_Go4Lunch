@@ -23,42 +23,48 @@
 
             <TextView
                 android:id="@+id/about_the_rest_name"
-                android:textSize="@dimen/size_text_m"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxWidth="@dimen/max_width_restaurant_name"
                 android:layout_marginEnd="@dimen/size_m"
                 android:ellipsize="end"
+                android:maxWidth="@dimen/max_width_restaurant_name"
                 android:maxLines="2"
                 android:textColor="@android:color/white"
+                android:textSize="@dimen/size_text_m"
                 tools:text="@string/app_name" />
 
-            <ImageView
-                android:id="@+id/about_the_rest_star_1"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/about_the_rest_name"
                 android:layout_toEndOf="@+id/about_the_rest_name"
-                android:contentDescription="@string/star1"
-                android:paddingTop="@dimen/size_s"
-                tools:src="@drawable/ic_baseline_star_24" />
+                android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/about_the_rest_star_2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@+id/about_the_rest_star_1"
-                android:contentDescription="@string/star2"
-                android:paddingTop="@dimen/size_s"
-                tools:src="@drawable/ic_baseline_star_24" />
+                <ImageView
+                    android:id="@+id/about_the_rest_star_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/star1"
+                    android:paddingTop="@dimen/size_s"
+                    tools:src="@drawable/ic_baseline_star_24" />
 
-            <ImageView
-                android:id="@+id/about_the_rest_star_3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@+id/about_the_rest_star_2"
-                android:contentDescription="@string/star3"
-                android:paddingTop="@dimen/size_s"
-                tools:src="@drawable/ic_baseline_star_24" />
+                <ImageView
+                    android:id="@+id/about_the_rest_star_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/star2"
+                    android:paddingTop="@dimen/size_s"
+                    tools:src="@drawable/ic_baseline_star_24" />
+
+                <ImageView
+                    android:id="@+id/about_the_rest_star_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/star3"
+                    android:paddingTop="@dimen/size_s"
+                    tools:src="@drawable/ic_baseline_star_24" />
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/about_the_rest_address"

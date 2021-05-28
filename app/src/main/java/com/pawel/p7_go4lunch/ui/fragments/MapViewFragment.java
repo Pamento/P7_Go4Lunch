@@ -99,12 +99,9 @@ public class MapViewFragment extends Fragment
         Log.i(TAG, "MVF__ onCreateView: updateMenuItems(true);");
         MainActivity mainActivity = (MainActivity) getActivity();
         mainActivity.updateMenuItems(true);
+        setAutocompleteEventObserver();
+        observeGetRestaurants();
         return view;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
     }
 
     private void initViewModel() {
@@ -125,12 +122,10 @@ public class MapViewFragment extends Fragment
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        Log.i(TAG, "MVF__ onMapReady");
         this.mGoogleMaps = googleMap;
         mGoogleMaps.setOnMarkerClickListener(this);
         mRestaurantsVM.setGoogleMap(googleMap);
-        Log.i(TAG, "MVF__ onMapReady: start listeners for AUTO_COM && getRestaurants() !!!!!!!!!!!!!!!!");
-        setAutocompleteEventObserver();
-        observeGetRestaurants();
         Permissions.check(requireContext(), Const.PERMISSIONS, null, null, new PermissionHandler() {
             @Override
             public void onGranted() {
@@ -144,6 +139,12 @@ public class MapViewFragment extends Fragment
         Toast toast = Toast.makeText(getActivity(), Html.fromHtml("<font color='#FF5721' ><b>" + msg + "</b></font>"), Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
         toast.show();
+    }
+
+    private void showToastRestosNr() {
+        Log.i(TAG, "MVF__ showToastRestosNr.setAutocompleteEventObserver: " + mRestaurants.size());
+        String restoFound = view.getResources().getString(R.string.number_resto_found, mRestaurants.size());
+        showToast(restoFound);
     }
 
     private void setAutocompleteEventObserver() {
@@ -171,12 +172,6 @@ public class MapViewFragment extends Fragment
                     break;
             }
         });
-    }
-
-    private void showToastRestosNr() {
-        Log.i(TAG, "MVF__ showToastRestosNr.setAutocompleteEventObserver: " + mRestaurants.size());
-        String restoFound = view.getResources().getString(R.string.number_resto_found, mRestaurants.size());
-        showToast(restoFound);
     }
 
     // getLocation is called only once at opening moment of App Go4Lunch
@@ -254,7 +249,7 @@ public class MapViewFragment extends Fragment
         });
     }
 
-    Observer<List<Restaurant>> mObserverRestos = (Observer<List<Restaurant>>) restaurants -> {
+    Observer<List<Restaurant>> mObserverRestos = restaurants -> {
         Log.i(TAG, "MVF__ .OBSERVER.observeRestaurantAPIResponse");
         if (restaurants != null) {
             Log.i(TAG, "MVF__ .OBSERVER.observeRestaurantAPIResponse: resto.size() " + restaurants.size());
@@ -292,7 +287,7 @@ public class MapViewFragment extends Fragment
         if (mGoogleMaps == null) mGoogleMaps = mRestaurantsVM.getGoogleMap();
         if (mRestaurants.isEmpty()) {
             Log.i(TAG, "MVF__ setRestaurantMarksOnMap:  isEmpty:::::::: ");
-            mGoogleMaps.clear();
+            if (mGoogleMaps != null) mGoogleMaps.clear();
         } else {
             Log.i(TAG, "MVF__ setRestaurantMarksOnMap: MARKERS ___google mRestaurants[].size() " + mRestaurants.size());
             mGoogleMaps.clear();
@@ -305,12 +300,12 @@ public class MapViewFragment extends Fragment
                         marker = mGoogleMaps.addMarker(new MarkerOptions()
                                 .position(latLng)
                                 .title(rst.getName())
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_orange)));
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_green)));
                     } else {
                         marker = mGoogleMaps.addMarker(new MarkerOptions()
                                 .position(latLng)
                                 .title(rst.getName())
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_green)));
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_orange)));
                     }
                     marker.setTag(rst.getPlaceId());
                 }

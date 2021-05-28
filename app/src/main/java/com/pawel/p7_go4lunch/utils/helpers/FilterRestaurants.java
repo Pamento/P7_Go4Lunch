@@ -7,7 +7,6 @@ import com.pawel.p7_go4lunch.model.Restaurant;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 

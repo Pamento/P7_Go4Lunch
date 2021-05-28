@@ -42,7 +42,7 @@ public class MainActivityViewModel extends ViewModel {
     }
 
     public void streamCombinedAutocompleteDetailsPlace(String input, String lang, int radius, String location, String origin) {
-        mGooglePlaceRepository.getRestoAutocompleteBy(input,lang,radius,location, origin)
+        mGooglePlaceRepository.getRestoAutocompleteBy(input, lang, radius, location, origin)
                 .subscribeOn(Schedulers.io())
                 .concatMap(predictions -> mGooglePlaceRepository.getRestaurantDetails(predictions.getPlaceId()))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -55,7 +55,7 @@ public class MainActivityViewModel extends ViewModel {
                     @Override
                     public void onNext(@io.reactivex.annotations.NonNull Result result) {
                         Log.i(TAG, "MainActivityVM.onNext: result.getName()::: " + result.getName());
-                        mGooglePlaceRepository.findRestoForUpdates(result,false);
+                        mGooglePlaceRepository.findRestoForUpdates(result, false);
                     }
 
                     @Override
@@ -77,6 +77,7 @@ public class MainActivityViewModel extends ViewModel {
     public void setAutoSearchEventStatus(AutoSearchEvents eventStatus) {
         mGooglePlaceRepository.setAutoSearchEvents(eventStatus);
     }
+
     protected OnFailureListener onFailureListener() {
         return e -> Log.e("CREATE_USER", "onFailure: ", e);
     }
@@ -90,18 +91,23 @@ public class MainActivityViewModel extends ViewModel {
 
             @Override
             public void onNext(@NonNull List<Restaurant> restaurants) {
-                Log.i(TAG, "MainA__ onNext: restos::: "  + restaurants.size());
-                if (filterType == 0) mRestaurants = restaurants;
-                else if (filterType == 1) {
-                    Log.i(TAG, "MainA__ onNext: FilterRestaurants.byAZ(restaurants) mRestaurants::Bi:: "  + mRestaurants.size());
-                    mRestaurants = FilterRestaurants.byAZ(restaurants);
-                    Log.i(TAG, "MainA__ onNext: FilterRestaurants.byAZ(restaurants) mRestaurants::Af:: "  + mRestaurants.size());
-                } else if (filterType == 4) {
-
-                } else {
-                    Log.i(TAG, "MainA__ onNext: FilterRestaurants.byRating(restaurants, filterType) mRestaurants::Bi:: "  + mRestaurants.size());
-                    mRestaurants = FilterRestaurants.byRating(restaurants, filterType);
-                    Log.i(TAG, "MainA__ onNext: FilterRestaurants.byRating(restaurants, filterType) mRestaurants::Af:: "  + mRestaurants.size());
+                Log.i(TAG, "MainA__ onNext: restos::: " + restaurants.size());
+                switch (filterType) {
+                    case 1:
+                        Log.i(TAG, "MainA__ onNext: FilterRestaurants.byAZ(restaurants) mRestaurants::Bi:: " + mRestaurants.size());
+                        mRestaurants = FilterRestaurants.byAZ(restaurants);
+                        Log.i(TAG, "MainA__ onNext: FilterRestaurants.byAZ(restaurants) mRestaurants::Af:: " + mRestaurants.size());
+                    case 2:
+                    case 3:
+                        Log.i(TAG, "MainA__ onNext: FilterRestaurants.byRating(restaurants, filterType) mRestaurants::Bi:: " + mRestaurants.size());
+                        mRestaurants = FilterRestaurants.byRating(restaurants, filterType);
+                        Log.i(TAG, "MainA__ onNext: FilterRestaurants.byRating(restaurants, filterType) mRestaurants::Af:: " + mRestaurants.size());
+                        break;
+                    case 4:
+                        mRestaurants = FilterRestaurants.byDistance(restaurants);
+                        break;
+                    default:
+                        mRestaurants = restaurants;
                 }
             }
 
