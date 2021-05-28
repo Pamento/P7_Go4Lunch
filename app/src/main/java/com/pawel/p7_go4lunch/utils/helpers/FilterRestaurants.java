@@ -7,6 +7,7 @@ import com.pawel.p7_go4lunch.model.Restaurant;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,6 +41,17 @@ public abstract class FilterRestaurants {
             Log.i(TAG, "byAZ: 19 - 24  __restos.size() " + restos.size());
             Collections.sort(restos, (o1, o2) -> o1.getName().compareTo(o2.getName()));
             Log.i(TAG, "byAZ: before return; restos.size() " + restos.size());
+            return restos;
+        }
+    }
+
+    public static List<Restaurant> byDistance(List<Restaurant> restos) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Log.i(TAG, "byDistance: 24+  __restos.size() " + restos.size());
+            return restos.stream().sorted((o1, o2) -> o1.getDistance() - o2.getDistance()).collect(Collectors.toList());
+        } else {
+            Log.i(TAG, "byDistance: 19 - 24  __restos.size() " + restos.size());
+            Collections.sort(restos, (o1, o2) -> o1.getDistance() - o2.getDistance());
             return restos;
         }
     }

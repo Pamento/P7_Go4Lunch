@@ -4,8 +4,6 @@
     <string name="app_language">fr</string>
 
     <!-- Facebook application ID and custom URL scheme (app ID prefixed by 'fb'). -->
-    <!-- <string name="facebook_app_id">429297778093935</string>
-    <string name="fb_login_protocol_scheme">fb429297778093935</string> -->
     <string name="facebook_application_id" translatable="false">429297778093935</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fb429297778093935</string>
 
@@ -41,6 +39,7 @@
     <string name="filter_by_rating_3stars">3 étoiles</string>
     <string name="filter_by_rating_2stars">2 étoiles</string>
     <string name="filter_AZ" translatable="false">A - Z</string>
+    <string name="filter_distance">Proximité</string>
     <string name="filter_reset">Tout</string>
 
     <!-- Login Firebase -->
@@ -61,11 +60,11 @@
     <!-- About the restaurant activity -->
     <string name="action_settings">Paramètres</string>
     <string name="call">APPEL</string>
-    <string name="like">LIKE</string>
-    <string name="website">WEBSITE</string>
-    <string name="star1">Star one</string>
-    <string name="star2">Star two</string>
-    <string name="star3">Star tree</string>
+    <string name="like" translatable="false">LIKE</string>
+    <string name="website" translatable="false">WEBSITE</string>
+    <string name="star1">Des avis d\'une étoile</string>
+    <string name="star2">Des avis de deux étoile</string>
+    <string name="star3">Des avis de trois étoile</string>
     <string name="title_activity_about_restaurant"> </string>
     <string name="invalid_phone_number">Numéro de téléphone invalide</string>
     <string name="invalid_http_address">Désolé. L\'adresse Web n\'est pas valide.</string>
@@ -79,10 +78,6 @@
 
     <!-- Settings Activity -->
     <string name="title_activity_settings">Paramètres</string>
-
-    <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
 
     <!-- Messages Preferences -->
     <string name="notification_category">Notifications</string>
@@ -136,8 +131,8 @@
     <string name="about_restaurant_workmates_empty_list">Personne n\'a encore rejoint cet endroit.</string>
 
     <!-- Restaurant list (item of RecyclerView) -->
-    <string name="workmate_number">(%d)</string>
-    <string name="distance_to_restaurant">%dm</string>
+    <string name="workmate_number" translatable="false">(%d)</string>
+    <string name="distance_to_restaurant" translatable="false">%dm</string>
     <string name="open_now">Ouvert à cette heure</string>
     <string name="close_now">Fermé à cette heure</string>
     <string name="open_at">Ouvre à %d</string>

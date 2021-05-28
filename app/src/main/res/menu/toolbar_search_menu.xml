@@ -13,6 +13,10 @@
         android:focusable="false"
         android:title="@string/filter_AZ" />
     <item
+        android:id="@+id/filter_distance"
+        android:focusable="false"
+        android:title="@string/filter_distance"/>
+    <item
         android:id="@+id/filter_rating"
         android:focusable="false"
         android:title="@string/filter_by_rating">

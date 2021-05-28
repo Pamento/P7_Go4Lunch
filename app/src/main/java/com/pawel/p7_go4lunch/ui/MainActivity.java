@@ -200,6 +200,7 @@ public class MainActivity extends AppCompatActivity
             if (itemId == R.id.filter_AZ) filterType = 1;
             else if (itemId == R.id.filter_rating_2stars) filterType = 2;
             else if (itemId == R.id.filter_rating_3stars) filterType = 3;
+            else if (itemId == R.id.filter_distance) filterType = 4;
             applyFilter(filterType);
             return true;
         } else return super.onOptionsItemSelected(item);

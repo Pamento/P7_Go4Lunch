@@ -23,12 +23,14 @@ public class FilterRestaurantsTest {
             Restaurant r = new Restaurant();
             r.setName(namesMIX[i]);
             r.setRating(3);
+            r.setDistance((int)(Math.random() * (500 - 50)) + 50);
             mRestaurants.add(r);
         }
         for (i = 5; i<ij; i++) {
             Restaurant r = new Restaurant();
             r.setName(namesMIX[i]);
             r.setRating(2);
+            r.setDistance((int)(Math.random() * (500 - 50)) + 50);
             mRestaurants.add(r);
         }
     }
@@ -61,5 +63,16 @@ public class FilterRestaurantsTest {
         assertThat(firstPosition).isEqualTo("Aramis");
         assertThat(lastPosition).isEqualTo("Zuchotto");
         assertThat(namesAZ).isEqualTo(namesAfterFilterAZ);
+    }
+
+    @Test
+    public void by_distance_test() {
+        List<Restaurant> mRestos = FilterRestaurants.byDistance(mRestaurants);
+        int r1, r2, i, ii = mRestos.size();
+        for (i = 1; i < ii; i++) {
+            r1 = mRestos.get(i - 1).getDistance();
+            r2 = mRestos.get(i).getDistance();
+            assertThat(r2).isGreaterThan(r1);
+        }
     }
 }
