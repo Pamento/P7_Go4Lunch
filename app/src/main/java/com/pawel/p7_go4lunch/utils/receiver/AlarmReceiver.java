@@ -23,7 +23,7 @@ import static com.pawel.p7_go4lunch.utils.Const.ALARM_SINGLE;
 
 public class AlarmReceiver extends BroadcastReceiver {
 
-    private static final String TAG = "NOTIF";
+    private static final String TAG = "AUTO_COM";
 
     private Context context;
     private final NotificationData notifData = NotificationData.getInstance();
@@ -70,7 +70,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     }
 
     private void checkForNextNotif() {
-        Log.i(TAG, "checkForNextNotif: Settings.isNotif_recurrence ? _" + mAppSettings.isNotif_recurrence());
+        Log.i(TAG, "NOTIF_NEXT_ALARM_CHECK__ checkForNextNotif: Settings.isNotif_recurrence ? _" + mAppSettings.isNotif_recurrence());
         int alarmId = mIntent.getIntExtra(Const.ALARM_ID, -1);
         Log.i(TAG, "checkForNextNotif: alarmId from PendingIntent :__:: " + alarmId);
         // If in Setting of this app the alarm repeating is set to false, do: cancelAlarm()

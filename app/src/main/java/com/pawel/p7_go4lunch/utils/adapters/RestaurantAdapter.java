@@ -78,6 +78,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
         Log.i(TAG, "R_adapter__ updateList: mRestaurants.size(Be) " + mRestaurants.size());
         this.mRestaurants.clear();
         Log.i(TAG, "R_adapter__ updateList: mRestaurants.size(--) " + mRestaurants.size());
+        Log.i(TAG, "R_adapter__ updateList: restos.size(Af) " + restos.size());
         this.mRestaurants.addAll(restos);
         Log.i(TAG, "R_adapter__ updateList: mRestaurants.size(Af) " + mRestaurants.size());
         this.notifyDataSetChanged();

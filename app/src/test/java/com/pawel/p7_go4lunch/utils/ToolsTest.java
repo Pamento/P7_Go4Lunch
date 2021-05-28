@@ -26,7 +26,12 @@ public class ToolsTest {
         int restoRating6 = Tools.intRating(googleRating6);
 
         assertThat(restoRating1).isLessThan(4);
+        assertThat(restoRating1).isEqualTo(3);
         assertThat(restoRating2).isLessThan(4);
+        assertThat(restoRating2).isEqualTo(2);
+        assertThat(restoRating3).isEqualTo(2);
+        assertThat(restoRating4).isEqualTo(1);
+        assertThat(restoRating5).isEqualTo(0);
         assertThat(restoRating1).isIn(Arrays.asList(1, 2, 3));
         assertThat(restoRating2).isIn(Arrays.asList(1, 2, 3));
         assertThat(restoRating3).isIn(Arrays.asList(1, 2, 3));

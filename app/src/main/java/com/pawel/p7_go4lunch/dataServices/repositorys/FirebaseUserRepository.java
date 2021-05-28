@@ -49,8 +49,10 @@ public class FirebaseUserRepository {
     }
 
     public Query getUsersWithTheSameRestaurant(String restoId) {
-        return userRepository.whereNotEqualTo("userRestaurant", null)
-                .whereEqualTo("placeId", restoId);
+        Log.i("AUTO_COM", "getUsersWithTheSameRestaurant: restoId::: " + restoId);
+        return userRepository.whereNotEqualTo("userRestaurant", null).whereEqualTo("userRestaurant.placeId", restoId);
+                //.whereArrayContains("placeId", restoId);
+//                .whereEqualTo("placeId", restoId);
     }
 
     public Query getUsersWithChosenRestaurant() {

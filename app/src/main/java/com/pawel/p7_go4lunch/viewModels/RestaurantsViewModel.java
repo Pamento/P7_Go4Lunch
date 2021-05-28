@@ -153,9 +153,12 @@ public class RestaurantsViewModel extends ViewModel {
                 if (users != null && users.size() > 0) {
                     if (tempRestos.size() > 0) {
                         int itr = tempRestos.size();
+                        Log.i(TAG, "RVM__ (MEDIATOR-LiveData)__ onChanged: + tempRestos.size() " + itr);
+                        Log.i(TAG, "RVM__ (MEDIATOR-LiveData)__ onChanged: + users.size() " + users.size());
                         for (int i = 0; i < itr; i++) {
                             Restaurant r = tempRestos.get(i);
                             List<String> ids = getRestoIdsFromUsers(r.getPlaceId(), users);
+                            Log.i(TAG, "RVM__ (MEDIATOR-LiveData)__ onChanged: ids::: " + ids);
                             if (ids.size() > 0) {
                                 r.setUserList(ids);
                             }
@@ -205,7 +208,6 @@ public class RestaurantsViewModel extends ViewModel {
 
             @Override
             public void onNext(@NonNull List<Restaurant> restaurants) {
-                Log.i(TAG, "RVM__ onNext: RRRRRRRRRRRRRRRRRRRRRRRRRRRRadius:::: " + restaurants.size());
                 mRestaurants = restaurants;
             }
 
@@ -220,10 +222,6 @@ public class RestaurantsViewModel extends ViewModel {
             }
         });
     }
-
-//    public LiveData<Location> getCurrentLocation() {
-//        return mCurrentLocation;
-//    }
 
     public int getRadius() {
         return mRadius;
@@ -258,12 +256,14 @@ public class RestaurantsViewModel extends ViewModel {
     }
 
     private List<String> getRestoIdsFromUsers(String placeId, List<User> users) {
+        Log.i(TAG, "RVM__ getRestoIdsFromUsers: RUN");
         int sizeL = users.size();
         List<String> ids = new ArrayList<>();
         if (sizeL > 0) {
             for (int i = 0; i < sizeL; i++) {
                 User us = users.get(i);
                 if (us.getUserRestaurant() != null && us.getUserRestaurant().getPlaceId().equals(placeId)) {
+                    Log.i(TAG, "RVM__ getRestoIdsFromUsers: user.resto.Id::: " + us.getUserRestaurant().getPlaceId() + " placeId::: " + placeId);
                     ids.add(us.getUserRestaurant().getPlaceId());
                 }
             }

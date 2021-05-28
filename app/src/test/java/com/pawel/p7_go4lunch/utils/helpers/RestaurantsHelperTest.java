@@ -71,7 +71,7 @@ public class RestaurantsHelperTest {
     public void create_restaurant() {
         Restaurant resto = mRestaurantHelper.createRestaurant(mResult,null);
         int ratingI = Tools.intRating(rating);
-        assertThat(resto.getPlaceId()).isEqualTo("ChIJkeO_AzquEmsRUpGQn1ZK7T");
+        assertThat(resto.getPlaceId()).isEqualTo("ChIJkeO_AquEmsRUpGQn1ZK7Ta");
         assertThat(resto.getName()).isEqualTo("Harbour Bar & Kitchen");
         assertThat(resto.getAddress()).isEqualTo("447 Harbourside shopping centre, Level 2, 2-10 Darling Drive, Darling Harbour");
         assertNull(resto.getLocation());

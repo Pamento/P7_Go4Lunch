@@ -19,13 +19,13 @@ import static com.pawel.p7_go4lunch.utils.Const.NOTIF_PENDING_ID;
 
 public abstract class AlarmService {
 
-    private static final String TAG = "NOTIF";
+    private static final String TAG = "AUTO_COM";
     private static Calendar mCalendar;
 
     private static void setCalendar(String hour) {
         int[] time = TimeUtils.timeToInt(hour);
         // For test purpose
-        //int[] time = TimeUtils.timeToInt("16_05");
+        //int[] time = TimeUtils.timeToInt("2_05");
 
 
         mCalendar = Calendar.getInstance();
@@ -37,7 +37,6 @@ public abstract class AlarmService {
         if (Calendar.getInstance().after(mCalendar)) {
             Log.i(TAG, "AlarmService.setCalendar: ___if (Calendar.getInstance().after(mCalendar))___add(Calendar.DAY_OF_MONTH, 1)");
             mCalendar.add(Calendar.DAY_OF_MONTH, 1);
-            //mCalendar.add(Calendar.DAY_OF_MONTH, 1);
         }
         if (Calendar.getInstance().after(mCalendar)) {
             // Should't run this condition, if the above check for .after(mCalendar) is add correctly.
@@ -64,9 +63,10 @@ public abstract class AlarmService {
     }
 
     public static void startRepeatedAlarm(String hour) {
-        Log.i(TAG, "startRepeatedAlarm ___at:" + hour);
+        Log.i(TAG, "ALARM__>>>    startRepeatedAlarm ___at:" + hour);
         setCalendar(hour);
         if (mCalendar != null) {
+            Log.i(TAG, "ALARM__>>>    startRepeatedAlarm: + mCalendar.toString()::::: \n" + mCalendar.toString());
             AlarmManager aMgr = (AlarmManager) Go4Lunch.getContext().getSystemService(Context.ALARM_SERVICE);
             Intent intent = new Intent(Go4Lunch.getContext(), AlarmReceiver.class);
             intent.putExtra(ALARM_ID, ALARM_MULTIPLE);
@@ -87,6 +87,11 @@ public abstract class AlarmService {
     public static void cancelAlarm() {
         Log.i(TAG, "AlarmService:::/cancelAlarm: ");
         PendingIntent pI = isAlarmSet();
+        if (pI != null) {
+            Log.i(TAG, "cancelAlarm: pendingIntent ::: " + pI.toString());
+        } else {
+            Log.i(TAG, "cancelAlarm: pendingIntent ::: is NULL");
+        }
         AlarmManager aMgr = (AlarmManager) Go4Lunch.getContext().getSystemService(Context.ALARM_SERVICE);
         if (pI != null && aMgr != null) {
             aMgr.cancel(pI);

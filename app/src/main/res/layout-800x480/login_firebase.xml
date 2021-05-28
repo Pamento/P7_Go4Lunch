@@ -7,9 +7,9 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="260dp"
-        android:layout_height="230dp"
-        android:layout_marginTop="@dimen/size_h"
+        android:layout_width="150dp"
+        android:layout_height="140dp"
+        android:layout_marginTop="@dimen/size_m"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -19,7 +19,7 @@
     <Button
         android:id="@+id/email_btn"
         android:layout_width="260dp"
-        android:layout_height="50dp"
+        android:layout_height="45dp"
         android:layout_marginBottom="@dimen/size_b"
         android:paddingHorizontal="@dimen/size_m"
         android:drawableStart="@drawable/ic_baseline_mail_outline_red_24"
@@ -34,7 +34,7 @@
     <Button
         android:id="@+id/facebook_btn"
         android:layout_width="260dp"
-        android:layout_height="50dp"
+        android:layout_height="45dp"
         android:layout_marginBottom="@dimen/size_n"
         android:paddingHorizontal="@dimen/size_m"
         android:drawableStart="@drawable/ic_facebook"
@@ -49,7 +49,7 @@
     <Button
         android:id="@+id/twitter_btn"
         android:layout_width="260dp"
-        android:layout_height="50dp"
+        android:layout_height="45dp"
         android:layout_marginBottom="@dimen/size_n"
         android:paddingHorizontal="@dimen/size_m"
         android:drawableStart="@drawable/ic_twitter"
@@ -64,7 +64,7 @@
     <Button
         android:id="@+id/google_btn"
         android:layout_width="260dp"
-        android:layout_height="50dp"
+        android:layout_height="45dp"
         android:layout_marginBottom="16dp"
         android:paddingHorizontal="@dimen/size_m"
         android:textAppearance="@style/com_facebook_button"

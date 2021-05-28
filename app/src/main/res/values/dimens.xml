@@ -1,4 +1,4 @@
-<resources>
+ <resources>
     <!-- Navigation drawer -->
     <dimen name="nav_drawer_header_height">176dp</dimen>
 
@@ -6,12 +6,17 @@
     <dimen name="size_t">4dp</dimen>
     <dimen name="size_s">8dp</dimen>
     <dimen name="size_n">16dp</dimen>
+    <dimen name="size_nn">20dp</dimen>
     <dimen name="size_m">24dp</dimen>
     <dimen name="size_b">32dp</dimen>
     <dimen name="size_x">40dp</dimen>
     <dimen name="size_h">64dp</dimen>
 
     <!-- Dimensions in sp -->
+    <dimen name="size_text_s">8sp</dimen>
+    <dimen name="size_text_ss">10sp</dimen>
+    <dimen name="size_text_sss">14sp</dimen>
+    <dimen name="size_text_n">16sp</dimen>
     <dimen name="size_text_nn">18sp</dimen>
     <dimen name="size_text_m">24sp</dimen>
     <dimen name="size_text_logo">32sp</dimen>
@@ -21,5 +26,7 @@
     <dimen name="image_size">60dp</dimen>
     <dimen name="item_image_size">68dp</dimen>
     <dimen name="max_width_restaurant_name">230dp</dimen>
+    <dimen name="max_width_restaurant_name_hdpi">180dp</dimen>
     <dimen name="max_width_restaurant_address">250dp</dimen>
+    <dimen name="max_width_restaurant_address_hdpi">180dp</dimen>
 </resources>

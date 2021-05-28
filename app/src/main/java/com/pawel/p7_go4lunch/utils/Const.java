@@ -38,9 +38,9 @@ public class Const {
 
     // Notification
     public static final int NOTIF_PENDING_ID = 9006;
-    public static final CharSequence VERBOSE_NOTIF_CHANNEL_NAME = "resto place remainder";
-    public static final String VERBOSE_NOTIF_CHANNEL_DESCRIPT = "Shows notifications remainder for 12 pm";
-    public static final String CHANNEL_ID = "REMAINDER_NOTIFICATION";
+    public static final CharSequence VERBOSE_NOTIF_CHANNEL_NAME = "resto_place_remainder";
+    public static final String VERBOSE_NOTIF_CHANNEL_DESCRIPT = "Shows_notifications_remainder_for_time_set";
+    public static final String CHANNEL_ID = "NOTIF_CHANNEL_01";
     public static final int NOTIF_ID = 9005;
     public static final String ALARM_ID = "alarm_id";
     public static final int ALARM_MULTIPLE = 1009;

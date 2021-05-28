@@ -74,6 +74,12 @@
         <item name="android:textColor">@android:color/black</item>
         <item name="android:textSize">@dimen/size_text_nn</item>
     </style>
+
+    <style name="RestaurantNameHdpi" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">@dimen/size_text_n</item>
+        <item name="android:maxWidth">@dimen/max_width_restaurant_name_hdpi</item>
+    </style>
     
     <style name="MyActionButtonOverflow" parent="Widget.AppCompat.ActionButton.Overflow">
         <item name="android:src">@drawable/ic_filter_list_24</item>

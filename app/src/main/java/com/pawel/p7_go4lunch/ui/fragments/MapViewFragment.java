@@ -184,6 +184,7 @@ public class MapViewFragment extends Fragment
         @Override
         public void onChanged(Location location) {
             if (location != null) {
+                updateLocationAndPosition(location, mAppSettings.getRadius());
                 Log.i(TAG, "MVF__ m_initMapRestaurant.getLocation: " + location);
                 Log.i(TAG, "onChanged: AutoSearchEvent::: " + autoEvent);
                 if (autoEvent.equals(AutoSearchEvents.AUTO_NULL)) {
@@ -191,7 +192,6 @@ public class MapViewFragment extends Fragment
                 } else {
                     removeGetLocationObserver();
                 }
-                updateLocationAndPosition(location, mAppSettings.getRadius());
                 setRestaurantMarksOnMap();
                 // FAB of functionality: "Back of camera upon user position"
                 onViewModelReadySetObservers();
@@ -298,9 +298,10 @@ public class MapViewFragment extends Fragment
             mGoogleMaps.clear();
             for (Restaurant rst : mRestaurants) {
                 if (rst != null) {
+                    Log.i(TAG, "setRestaurantMarksOnMap: in FOR::>> rst(!null)::: rst.getUserlist().size()::: " + rst.getUserList().size());
                     LatLng latLng = new LatLng(rst.getLocation().getLat(), rst.getLocation().getLng());
                     Marker marker;
-                    if (rst.getUserList() != null) {
+                    if (rst.getUserList().size() > 0) {
                         marker = mGoogleMaps.addMarker(new MarkerOptions()
                                 .position(latLng)
                                 .title(rst.getName())

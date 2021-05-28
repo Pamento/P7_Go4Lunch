@@ -17,7 +17,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
-            android:padding="@dimen/size_n">
+            android:paddingHorizontal="@dimen/size_n"
+            android:paddingTop="@dimen/size_m"
+            android:paddingBottom="@dimen/size_n">
 
             <TextView
                 android:id="@+id/about_the_rest_name"

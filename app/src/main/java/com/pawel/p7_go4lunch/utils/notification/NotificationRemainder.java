@@ -4,7 +4,9 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.media.RingtoneManager;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -19,7 +21,7 @@ import java.util.List;
 import static com.pawel.p7_go4lunch.utils.Const.CHANNEL_ID;
 
 public class NotificationRemainder extends ContextWrapper {
-
+    private static final String TAG = "AUTO_COM";
     private final Context mContext;
     //private final CharSequence nTitle;
     private final CharSequence nTicker;
@@ -66,16 +68,18 @@ public class NotificationRemainder extends ContextWrapper {
 //        .append("Cadaphie").append("\n")
 //        .append("Paul");
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= 26) {
             CharSequence name = Const.VERBOSE_NOTIF_CHANNEL_NAME;
             String description = Const.VERBOSE_NOTIF_CHANNEL_DESCRIPT;
+            Log.i(TAG, "NOTIF__ showNotification: name::::" + name + " & description::: " + description);
             int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel channel =
                     new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
 
-            NotificationManager nMgr =
-                    (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationManager nMgr = mContext.getSystemService(NotificationManager.class);
+//            NotificationManager nMgr =
+//                    (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
             if (nMgr != null) {
                 nMgr.createNotificationChannel(channel);
             }
@@ -87,6 +91,7 @@ public class NotificationRemainder extends ContextWrapper {
                 .setContentText(restoAdress)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(workmates))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                 .setVibrate(new long[0]);
 
         NotificationManagerCompat.from(mContext).notify(Const.NOTIF_ID, builder.build());
