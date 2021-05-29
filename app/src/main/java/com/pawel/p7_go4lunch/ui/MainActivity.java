@@ -416,9 +416,8 @@ public class MainActivity extends AppCompatActivity
         {
             if (getCurrentUser() == null) {
                 ViewWidgets.showSnackBar(0, view, getString(R.string.logout_successful));
-                // TODO manage action
-//                Intent intent = new Intent(MainActivity.this);
-//                startActivity(intent);
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
             }
         });
     }
