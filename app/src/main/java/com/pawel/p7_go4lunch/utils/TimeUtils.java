@@ -1,6 +1,8 @@
 package com.pawel.p7_go4lunch.utils;
 
 
+import androidx.annotation.VisibleForTesting;
+
 public abstract class TimeUtils {
 
     public static int[] timeToInt(String hour) {
@@ -16,7 +18,8 @@ public abstract class TimeUtils {
         return t;
     }
 
-    private static int sToInt(String sh) {
+    @VisibleForTesting
+    public static int sToInt(String sh) {
         int r = 0;
         try {
             r = Integer.parseInt(sh);

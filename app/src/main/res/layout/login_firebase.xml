@@ -13,8 +13,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/login_view_logo"
-        android:contentDescription="@string/app_name" />
+        app:srcCompat="@drawable/login_view_logo" />
 
     <Button
         android:id="@+id/email_btn"
@@ -41,7 +40,6 @@
         android:textAppearance="@style/com_facebook_button"
         android:background="@drawable/background_facebook_btn"
         android:text="@string/btn_text_facebook"
-        android:textColor="@android:color/white"
         app:layout_constraintBottom_toTopOf="@+id/twitter_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -56,7 +54,6 @@
         android:textAppearance="@style/com_facebook_button"
         android:background="@drawable/background_twitter_btn"
         android:text="@string/btn_text_twitter"
-        android:textColor="@android:color/white"
         app:layout_constraintBottom_toTopOf="@+id/email_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>

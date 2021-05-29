@@ -168,6 +168,7 @@ public class MainActivity extends AppCompatActivity
         if (isMapFragment) {
             Log.i(TAG, "MainA__ onPrepareOptionsMenu: MMMMMMMMM__ ReMake __MMMMMMMMM");
             menu.removeItem(R.id.filter_AZ);
+            menu.removeItem(R.id.filter_distance);
             menu.removeItem(R.id.filter_rating);
             menu.removeItem(R.id.filter_reset);
         }
@@ -181,6 +182,7 @@ public class MainActivity extends AppCompatActivity
         // invalidateOptionsMenu: internal function of OS Android to rerun onPrepareOptionsMenu
         this.invalidateOptionsMenu();
     }
+
     // ____________ Toolbar search _____________________
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -395,10 +397,17 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void saveNewUser(FirebaseUser firebaseUser) {
-        String uid = firebaseUser.getUid();
-        String name = TextUtils.isEmpty(firebaseUser.getDisplayName()) ? "" : firebaseUser.getDisplayName();
-        String email = TextUtils.isEmpty(firebaseUser.getEmail()) ? "" : firebaseUser.getEmail();
-        String urlImage = Uri.EMPTY.equals(firebaseUser.getPhotoUrl()) ? "" : Objects.requireNonNull(firebaseUser.getPhotoUrl()).toString();
+        String uid = "";
+        String name = "";
+        String email = "";
+        String urlImage = "";
+        if (firebaseUser != null) {
+            uid = firebaseUser.getUid();
+            name = TextUtils.isEmpty(firebaseUser.getDisplayName()) ? "" : firebaseUser.getDisplayName();
+            email = TextUtils.isEmpty(firebaseUser.getEmail()) ? "" : firebaseUser.getEmail();
+            if (firebaseUser.getPhotoUrl() != null)
+                urlImage = Uri.EMPTY.equals(firebaseUser.getPhotoUrl()) ? "" : Objects.requireNonNull(firebaseUser.getPhotoUrl()).toString();
+        }
         mMainActivityViewModel.createUser(uid, name, email, urlImage);
     }
 

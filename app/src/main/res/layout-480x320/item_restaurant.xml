@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/list_restaurant_CV"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/size_s">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/list_restaurant_name"
+            style="@style/RestaurantName"
+            android:layout_width="wrap_content"
+            android:maxWidth="@dimen/max_width_restaurant_name"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Name restaurant Name restaurant " />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/list_restaurant_address"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:maxWidth="@dimen/max_width_restaurant_address"
+            android:layout_marginEnd="@dimen/size_n"
+            app:layout_constraintEnd_toStartOf="@+id/list_restaurant_ratingBar"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/list_restaurant_name"
+            app:layout_constraintTop_toBottomOf="@+id/list_restaurant_name"
+            tools:text="54 rue Faubourgue poissonier 54 rue Faubourgue poissonier" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/list_restaurant_open_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/list_restaurant_address"
+            tools:text="Open until 7pm" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/list_restaurant_image"
+            android:layout_width="@dimen/item_image_size"
+            android:layout_height="@dimen/item_image_size"
+            android:contentDescription="@string/app_name"
+            android:scaleType="centerCrop"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/restaurant_default" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/list_restaurant_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/size_n"
+            app:layout_constraintRight_toLeftOf="@+id/list_restaurant_image"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="120m" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/list_restaurant_number_workmates"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/size_s"
+            android:textColor="@android:color/black"
+            app:layout_constraintBottom_toBottomOf="@+id/list_restaurant_ic_persona"
+            app:layout_constraintRight_toLeftOf="@+id/list_restaurant_image"
+            tools:text="(2)" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/list_restaurant_ic_persona"
+            android:layout_width="@dimen/size_m"
+            android:layout_height="@dimen/size_m"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/ic_person_outline_24"
+            app:layout_constraintRight_toLeftOf="@+id/list_restaurant_number_workmates"
+            app:layout_constraintTop_toBottomOf="@id/list_restaurant_distance"
+            app:layout_constraintBottom_toTopOf="@+id/list_restaurant_ratingBar"/>
+
+<!--        <LinearLayout-->
+<!--            android:id="@+id/list_restaurant_rating"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="@dimen/size_n"-->
+<!--            android:layout_marginEnd="@dimen/size_s"-->
+<!--            android:orientation="horizontal"-->
+<!--            app:layout_constraintBottom_toBottomOf="@id/list_restaurant_image"-->
+<!--            app:layout_constraintRight_toLeftOf="@id/list_restaurant_image">-->
+        <!--            <ImageView-->
+        <!--                android:id="@+id/list_restaurant_star1"-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="match_parent"-->
+        <!--                tools:src="@drawable/ic_baseline_star_24"-->
+        <!--                android:contentDescription="@string/star1" />-->
+        <!--            <ImageView-->
+        <!--                android:id="@+id/list_restaurant_star2"-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="match_parent"-->
+        <!--                tools:src="@drawable/ic_star_black_yellow_36"-->
+        <!--                android:contentDescription="@string/star2" />-->
+        <!--            <ImageView-->
+        <!--                android:id="@+id/list_restaurant_star3"-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="match_parent"-->
+        <!--                tools:src="@drawable/ic_star_black_yellow_36"-->
+        <!--                android:contentDescription="@string/star3" />-->
+
+        <!--        </LinearLayout>-->
+
+        <androidx.appcompat.widget.AppCompatRatingBar
+            android:id="@+id/list_restaurant_ratingBar"
+            style="@style/Widget.AppCompat.RatingBar.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/size_s"
+            android:isIndicator="true"
+            android:numStars="3"
+            android:progressTint="@color/colorPrimary"
+            android:secondaryProgressTint="@color/colorPrimary"
+            android:stepSize="0.1"
+            android:textAlignment="center"
+            android:theme="@style/RatingBar"
+            app:layout_constraintBottom_toBottomOf="@id/list_restaurant_image"
+            app:layout_constraintRight_toLeftOf="@id/list_restaurant_image" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
