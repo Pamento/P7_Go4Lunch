@@ -251,7 +251,17 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
         if (!LocationUtils.isNetworkAvailable()) mWifiOffBinding.mapWifiOff.setVisibility(View.VISIBLE);
         else {
             mAboutRestaurantVM.getUsersWithTheSameRestaurant(restaurantId).get().addOnCompleteListener(task -> {
+                Log.i(TAG, "ABOUT__ setRecyclerViewWorkmates: inside OnCompleteListener + task");
+                Log.i(TAG, "ABOUT__ setRecyclerViewWorkmates: inside OnCompleteListener. NON__conditions:");
+                Log.i(TAG, "ABOUT__ setRecyclerViewWorkmates: inside OnCompleteListener::: task.successful()::: " + task.isSuccessful());
+                Log.i(TAG, "ABOUT__ setRecyclerViewWorkmates: inside OnCompleteListener::: task.getResult().isEmpty()::: " + task.getResult().isEmpty());
+                Log.i(TAG, "ABOUT__ setRecyclerViewWorkmates: inside OnCompleteListener::: task.getResult().size()::: " + task.getResult().size());
                 if (task.isSuccessful() && task.getResult().isEmpty()) {
+                    Log.i(TAG, "ABOUT__ setRecyclerViewWorkmates: inside OnCompleteListener.if__conditions:");
+                    Log.i(TAG, "ABOUT__ setRecyclerViewWorkmates: inside OnCompleteListener::: task.successful()::: " + task.isSuccessful());
+                    Log.i(TAG, "ABOUT__ setRecyclerViewWorkmates: inside OnCompleteListener::: task.getResult().isEmpty()::: " + task.getResult().isEmpty());
+                    Log.i(TAG, "ABOUT__ setRecyclerViewWorkmates: inside OnCompleteListener::: task.getResult().size()::: " + task.getResult().size());
+
                     mScrolBinding.aboutTheRestWorkmatesListEmpty.setVisibility(View.VISIBLE);
                 }
             });

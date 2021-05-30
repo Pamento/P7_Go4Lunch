@@ -296,7 +296,7 @@ public class MainActivity extends AppCompatActivity
 
     private void updateUiNavigationDrawerMenu(FirebaseUser user) {
         String name = getResources().getString(R.string.drawer_head_name);
-        if (user.getDisplayName() != null) name = user.getDisplayName();
+        if (user.getDisplayName() != null && !user.getDisplayName().equals("")) name = user.getDisplayName();
         View drawerHeader = binding.navDrawerView.getHeaderView(0);
         NavigationDrawerHeaderBinding headerBinding = NavigationDrawerHeaderBinding.bind(drawerHeader);
         GlideApp.with(this)
