@@ -44,7 +44,12 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
         String w = "";
         if (restaurant.getUserList() != null) {
             n = restaurant.getUserList().size();
-            w = holder.itemView.getResources().getString(R.string.workmate_number, restaurant.getUserList().size());
+            w = holder.itemView.getResources().getString(R.string.workmate_number, n);
+        }
+        holder.restaurantWorkmatesNumber.setText(w);
+        if (n > 0) {
+            holder.restaurantWorkmatesNumber.setVisibility(View.VISIBLE);
+            holder.workmatesIcon.setVisibility(View.VISIBLE);
         }
         String h = holder.itemView.getResources().getString(R.string.close_now);
         if (restaurant.getOpeningHours() != null && restaurant.getOpeningHours().getOpenNow()) {
@@ -57,14 +62,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
         holder.restaurantName.setText(restaurant.getName());
         holder.restaurantAddress.setText(restaurant.getAddress());
         holder.restaurantDistanceFromUser.setText(d);
-        if (n > 0)
-            holder.restaurantWorkmatesNumber.setText(w);
-        else {
-            holder.restaurantWorkmatesNumber.setVisibility(View.GONE);
-            holder.workmatesIcon.setVisibility(View.GONE);
-        }
-
-        holder.restaurantRatingBar.setRating((float)restaurant.getRating());
+        holder.restaurantRatingBar.setRating((float) restaurant.getRating());
         // Restaurant image
         GlideApp.with(holder.restaurantImage.getContext())
                 .load(restaurant.getImage())
