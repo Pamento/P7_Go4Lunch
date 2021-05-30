@@ -9,11 +9,11 @@
     <Button
         android:id="@+id/delete_account_btn"
         android:layout_width="0dp"
-        android:layout_weight="1"
         android:layout_height="@dimen/size_b"
-        android:text="@string/delete_account"
-        android:textColor="@android:color/white"
-        android:background="@drawable/background_google_btn"
         android:layout_margin="@dimen/size_s"
-        android:onClick="deleteUserAccount"/>
+        android:layout_weight="1"
+        android:background="@drawable/background_google_btn"
+        android:onClick="deleteUserAccount"
+        android:text="@string/delete_account"
+        android:textColor="@android:color/white" />
 </LinearLayout>

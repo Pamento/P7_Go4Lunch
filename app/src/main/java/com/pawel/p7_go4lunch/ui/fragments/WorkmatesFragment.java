@@ -1,7 +1,6 @@
 package com.pawel.p7_go4lunch.ui.fragments;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,7 +28,6 @@ import com.pawel.p7_go4lunch.viewModels.ViewModelFactory;
 import com.pawel.p7_go4lunch.viewModels.WorkmatesViewModel;
 
 public class WorkmatesFragment extends Fragment implements WorkmateAdapter.OnItemClickListener {
-    private static final String TAG = "workmate";
 
     private WorkmatesViewModel mWorkmatesVM;
     private FragmentWorkmatesBinding mBinding;
@@ -81,14 +79,11 @@ public class WorkmatesFragment extends Fragment implements WorkmateAdapter.OnIte
                     if (task.isSuccessful() && task.getResult().isEmpty()) {
                         mBarBinding.progressBar.setVisibility(View.GONE);
                         mErrorMessageBinding.errorNoData.setVisibility(View.VISIBLE);
-                        Log.e(TAG, "Error getting documents: ", task.getException());
                     } else {
                         if (!LocationUtils.isNetworkAvailable()) {
                             mBarBinding.progressBar.setVisibility(View.GONE);
                             mWifiOffBinding.mapWifiOff.setVisibility(View.VISIBLE);
                         }
-                        boolean isEmpty = task.getResult().isEmpty();
-                        Log.i(TAG, "setWorkmatesRecyclerView: query isEmpty? false when run: " + isEmpty);
                     }
                 });
         FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
@@ -103,14 +98,6 @@ public class WorkmatesFragment extends Fragment implements WorkmateAdapter.OnIte
 
     @Override
     public void onItemClick(DocumentSnapshot documentSnapshot) {
-//        String itemId = documentSnapshot.getId();
-//        //String itemId = documentSnapshot.get("email");
-//        if (itemId.isEmpty()) {
-//            Log.i(TAG, "onItemClick: WorkmateID: null");
-//        } else {
-//            Log.i(TAG, "onItemClick: WorkmateID: " + itemId);
-//            // itemID give the id of user in firebaseCollection("users");
-//        }
     }
 
     @Override

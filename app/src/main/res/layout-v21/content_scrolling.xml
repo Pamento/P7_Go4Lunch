@@ -140,5 +140,4 @@
             tools:listitem="@layout/item_workmate" />
     </LinearLayout>
 
-
 </androidx.core.widget.NestedScrollView>

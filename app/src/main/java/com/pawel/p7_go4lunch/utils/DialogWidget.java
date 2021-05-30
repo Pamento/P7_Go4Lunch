@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatDialogFragment;
 import java.util.Objects;
 
 public class DialogWidget extends AppCompatDialogFragment {
+
     private DialogWidgetListener listener;
     private AlertDialog.Builder ADBuilder;
     private final boolean modeDialog;

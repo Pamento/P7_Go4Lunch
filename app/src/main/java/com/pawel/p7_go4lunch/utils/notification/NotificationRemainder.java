@@ -21,9 +21,8 @@ import java.util.List;
 import static com.pawel.p7_go4lunch.utils.Const.CHANNEL_ID;
 
 public class NotificationRemainder extends ContextWrapper {
-    private static final String TAG = "AUTO_COM";
+
     private final Context mContext;
-    //private final CharSequence nTitle;
     private final CharSequence nTicker;
     private final CharSequence intro;
     private final CharSequence noWorkmates;
@@ -32,11 +31,9 @@ public class NotificationRemainder extends ContextWrapper {
     private String restoAdress;
     private final StringBuilder workmatesList = new StringBuilder();
 
-
     public NotificationRemainder(Context base) {
         super(base);
         mContext = base;
-        //nTitle = mContext.getString(R.string.notification_title);
         nTicker = mContext.getString(R.string.app_name);
         intro = mContext.getString(R.string.notification_intro);
         noWorkmates = mContext.getString(R.string.notification_no_workmates_go);
@@ -60,26 +57,16 @@ public class NotificationRemainder extends ContextWrapper {
 
     public void showNotification() {
         CharSequence workmates = workmatesList.length() > 0 ? workmatesList : noWorkmates;
-//        StringBuilder workmates = new StringBuilder();
-//        workmates.append(restoAdress).append("\n")
-//        .append(intro).append("\n")
-//        .append("Nathan").append("\n")
-//        .append("Hipolit").append("\n")
-//        .append("Cadaphie").append("\n")
-//        .append("Paul");
 
         if (Build.VERSION.SDK_INT >= 26) {
             CharSequence name = Const.VERBOSE_NOTIF_CHANNEL_NAME;
             String description = Const.VERBOSE_NOTIF_CHANNEL_DESCRIPT;
-            Log.i(TAG, "NOTIF__ showNotification: name::::" + name + " & description::: " + description);
             int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel channel =
                     new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
 
             NotificationManager nMgr = mContext.getSystemService(NotificationManager.class);
-//            NotificationManager nMgr =
-//                    (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
             if (nMgr != null) {
                 nMgr.createNotificationChannel(channel);
             }

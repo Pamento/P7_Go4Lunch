@@ -77,27 +77,7 @@ public class WorkmateAdapter extends FirestoreRecyclerAdapter<User, WorkmateAdap
         holder.description.setText(beOrNotToBe);
         if (workmateEatAt) holder.description.setTypeface(null, Typeface.ITALIC);
         else holder.description.setTextColor(Color.BLACK);
-
-        //setTextAppearance(mContext, R.style.TextItalicGrayLight);
-        //else holder.description.setTextAppearance(mContext, R.style.TextNormalBlack);
     }
-
-    /**
-     * If you want to support API 23 or higher as well as lower one,
-     * you can use the below method to simplify your task.
-     * Use the below method only if you are already targeting API 23 or higher.
-     * If you are targeting API is less than 23,
-     * the below code will give error as the new method wasn't available in it.
-     * https://stackoverflow.com/questions/16270814/setting-textview-textappeareance-programmatically-in-android
-     * public void setTextAppearance(Context context, int resId) {
-     * if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-     * super.setTextAppearance(context, resId);
-     * } else {
-     * super.setTextAppearance(resId);
-     * }
-     * }
-     */
-
 
     // ...............................................................WorkmateViewHolder.class
     public class WorkmateViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

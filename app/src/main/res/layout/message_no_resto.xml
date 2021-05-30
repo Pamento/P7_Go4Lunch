@@ -13,5 +13,5 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_margin="@dimen/size_b"
-        android:text="@string/resto_list_non_data"/>
+        android:text="@string/resto_list_non_data" />
 </RelativeLayout>

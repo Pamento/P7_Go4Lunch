@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_header"
     android:layout_width="match_parent"
     android:layout_height="@dimen/nav_drawer_header_height"
-    android:id="@+id/drawer_header"
     android:theme="@style/ThemeOverlay.AppCompat.Dark"
     tools:context=".ui.MainActivity">
 
@@ -11,8 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/background_header_land"
-        android:scaleType="centerCrop"
-        android:contentDescription="@string/app_name" />
+        android:contentDescription="@string/app_name"
+        android:scaleType="centerCrop" />
 
     <RelativeLayout
         android:id="@+id/drawer_header_content"
@@ -50,8 +50,8 @@
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/nav_drawer_user_image"
             android:layout_marginStart="@dimen/size_n"
-            android:layout_marginBottom="@dimen/size_s"
             android:layout_marginTop="@dimen/size_s"
+            android:layout_marginBottom="@dimen/size_s"
             android:layout_toEndOf="@+id/nav_drawer_user_image"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             tools:text="John Travolta" />

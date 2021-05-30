@@ -5,7 +5,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.util.Log;
 
 import com.pawel.p7_go4lunch.utils.TimeUtils;
 import com.pawel.p7_go4lunch.utils.receiver.AlarmReceiver;
@@ -19,34 +18,21 @@ import static com.pawel.p7_go4lunch.utils.Const.NOTIF_PENDING_ID;
 
 public abstract class AlarmService {
 
-    private static final String TAG = "AUTO_COM";
     private static Calendar mCalendar;
 
     private static void setCalendar(String hour) {
         int[] time = TimeUtils.timeToInt(hour);
-        // For test purpose
-        //int[] time = TimeUtils.timeToInt("2_05");
-
 
         mCalendar = Calendar.getInstance();
         mCalendar.setTimeInMillis(System.currentTimeMillis());
         mCalendar.set(Calendar.HOUR_OF_DAY, time[0]);
         mCalendar.set(Calendar.MINUTE, time[1]);
-        Log.i(TAG, "setCalendar: before " + Calendar.getInstance().before(mCalendar) + " time[0]::: " + time[0] );
-        Log.i(TAG, "setCalendar: after  " + Calendar.getInstance().after(mCalendar) + " time[1]::: " + time[1] );
         if (Calendar.getInstance().after(mCalendar)) {
-            Log.i(TAG, "AlarmService.setCalendar: ___if (Calendar.getInstance().after(mCalendar))___add(Calendar.DAY_OF_MONTH, 1)");
             mCalendar.add(Calendar.DAY_OF_MONTH, 1);
-        }
-        if (Calendar.getInstance().after(mCalendar)) {
-            // Should't run this condition, if the above check for .after(mCalendar) is add correctly.
-            Log.i(TAG, "setCalendar: AFTER SETTING IT TO _1_DAY LATER. Still is mCalendar is in the PAST §§§§§§§:!!!!!!!!!!!!");
         }
     }
 
     public static void startAlarm(String hour) {
-        Log.i(TAG, "startAlarm: system.Millis " + System.currentTimeMillis());
-        Log.i(TAG, "startAlarm ___at: " + hour);
         setCalendar(hour);
         if (mCalendar != null) {
             AlarmManager aMgr = (AlarmManager) Go4Lunch.getContext().getSystemService(Context.ALARM_SERVICE);
@@ -63,10 +49,8 @@ public abstract class AlarmService {
     }
 
     public static void startRepeatedAlarm(String hour) {
-        Log.i(TAG, "ALARM__>>>    startRepeatedAlarm ___at:" + hour);
         setCalendar(hour);
         if (mCalendar != null) {
-            Log.i(TAG, "ALARM__>>>    startRepeatedAlarm: + mCalendar.toString()::::: \n" + mCalendar.toString());
             AlarmManager aMgr = (AlarmManager) Go4Lunch.getContext().getSystemService(Context.ALARM_SERVICE);
             Intent intent = new Intent(Go4Lunch.getContext(), AlarmReceiver.class);
             intent.putExtra(ALARM_ID, ALARM_MULTIPLE);
@@ -78,20 +62,13 @@ public abstract class AlarmService {
     }
 
     public static PendingIntent isAlarmSet() {
-        Log.i(TAG, "isAlarmSet: ");
         Intent intent = new Intent(Go4Lunch.getContext(), AlarmReceiver.class);
         return PendingIntent.getBroadcast(Go4Lunch.getContext(), NOTIF_PENDING_ID, intent,
                         PendingIntent.FLAG_NO_CREATE);
     }
 
     public static void cancelAlarm() {
-        Log.i(TAG, "AlarmService:::/cancelAlarm: ");
         PendingIntent pI = isAlarmSet();
-        if (pI != null) {
-            Log.i(TAG, "cancelAlarm: pendingIntent ::: " + pI.toString());
-        } else {
-            Log.i(TAG, "cancelAlarm: pendingIntent ::: is NULL");
-        }
         AlarmManager aMgr = (AlarmManager) Go4Lunch.getContext().getSystemService(Context.ALARM_SERVICE);
         if (pI != null && aMgr != null) {
             aMgr.cancel(pI);

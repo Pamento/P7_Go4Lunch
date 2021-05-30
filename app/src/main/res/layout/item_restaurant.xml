@@ -72,10 +72,12 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/size_s"
             android:textColor="@android:color/black"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/list_restaurant_ratingBar"
             app:layout_constraintRight_toLeftOf="@+id/list_restaurant_image"
             app:layout_constraintTop_toBottomOf="@+id/list_restaurant_distance"
-            tools:text="(2)" />
+            tools:text="(2)"
+            tools:visibility="visible" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/list_restaurant_ic_persona"
@@ -83,9 +85,11 @@
             android:layout_height="@dimen/size_m"
             android:contentDescription="@string/app_name"
             android:src="@drawable/ic_person_outline_24"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/list_restaurant_number_workmates"
             app:layout_constraintRight_toLeftOf="@+id/list_restaurant_number_workmates"
-            app:layout_constraintTop_toTopOf="@+id/list_restaurant_number_workmates" />
+            app:layout_constraintTop_toTopOf="@+id/list_restaurant_number_workmates"
+            tools:visibility="visible" />
 
         <androidx.appcompat.widget.AppCompatRatingBar
             android:id="@+id/list_restaurant_ratingBar"

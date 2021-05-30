@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -61,7 +60,6 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         LocationListener {
 
-    private static final String TAG = "AUTO_COM";
     private MainActivityViewModel mMainActivityViewModel;
     private ActivityMainBinding binding;
     private View view;
@@ -104,13 +102,7 @@ public class MainActivity extends AppCompatActivity
             Places.initialize(getApplicationContext(), BuildConfig.API_KEY);
         }
         getLocalAppSettings();
-        //PlacesClient placesClient = Places.createClient(this);
         if (Build.VERSION.SDK_INT <= 21) {
-            Log.i(TAG, "21");
-            Log.i(TAG, "21");
-            Log.i(TAG, "21");
-            Log.i(TAG, "21");
-            //getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
             View deco = getWindow().getDecorView();
             deco.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
                 @Override
@@ -133,7 +125,6 @@ public class MainActivity extends AppCompatActivity
 
     // Check if service Google Maps is available
     public boolean isMapsServiceOk() {
-        Log.i(TAG, "isMapsServiceOk: START");
         int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(MainActivity.this);
         if (available == ConnectionResult.SUCCESS) {
             return true;
@@ -162,11 +153,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         // Remove filters from Menu if Map Fragment is displayed.
-
-        Log.i(TAG, "onPrepareOptionsMenu: isMapFragment ::: " + isMapFragment);
-        Log.i(TAG, "MainA__ onPrepareOptionsMenu: MMMMMMMMMM__ MAKE __MMMMMMMMMMM");
         if (isMapFragment) {
-            Log.i(TAG, "MainA__ onPrepareOptionsMenu: MMMMMMMMM__ ReMake __MMMMMMMMM");
             menu.removeItem(R.id.filter_AZ);
             menu.removeItem(R.id.filter_distance);
             menu.removeItem(R.id.filter_rating);
@@ -177,7 +164,6 @@ public class MainActivity extends AppCompatActivity
 
     // Fun: updateMenuItems is run from fragments to remove filters from Map Fragment and add it to ListRestaurants.
     public void updateMenuItems(boolean isMap) {
-        Log.i(TAG, "MainA__ onPrepareOptionsMenu");
         isMapFragment = isMap;
         // invalidateOptionsMenu: internal function of OS Android to rerun onPrepareOptionsMenu
         this.invalidateOptionsMenu();
@@ -230,17 +216,12 @@ public class MainActivity extends AppCompatActivity
             public boolean onMenuItemActionExpand(MenuItem item) {
                 isCollapse = false;
                 setAutoSearchEventStatus(false, AutoSearchEvents.AUTO_START);
-                Log.i(TAG, "MainA__ setSearch.onMenuItemActionExpand: EXPAND=false ::: " + isCollapse);
                 return true;
             }
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                // Keep this values below to time of implement filter on listViewResto.
-                //MainA__ onMenuItemActionExpand. item.id::: 2131296835
-                //MainA__ onMenuItemActionCollapse: toolbar_search_icon.id::: 2131296835
                 isCollapse = true;
-                Log.i(TAG, "MainA__ setSearch.onMenuItemActionCollapse: COLLAPSE=true ::: " + isCollapse);
                 setAutoSearchEventStatus(true, AutoSearchEvents.AUTO_STOP);
                 return true;
             }
@@ -249,7 +230,6 @@ public class MainActivity extends AppCompatActivity
             @Override
             public boolean onQueryTextChange(String newText) {
                 mCurrentLocationStr = mMainActivityViewModel.getCurrentLocation();
-                Log.i(TAG, " __onQueryTextChange: ___________________________________________ \"" + newText + "\"");
                 if (newText.length() == 0 && !isCollapse) {
                     setAutoSearchEventStatus(false, AutoSearchEvents.AUTO_SEARCH_EMPTY);
                 }
@@ -296,7 +276,8 @@ public class MainActivity extends AppCompatActivity
 
     private void updateUiNavigationDrawerMenu(FirebaseUser user) {
         String name = getResources().getString(R.string.drawer_head_name);
-        if (user.getDisplayName() != null && !user.getDisplayName().equals("")) name = user.getDisplayName();
+        if (user.getDisplayName() != null && !user.getDisplayName().equals(""))
+            name = user.getDisplayName();
         View drawerHeader = binding.navDrawerView.getHeaderView(0);
         NavigationDrawerHeaderBinding headerBinding = NavigationDrawerHeaderBinding.bind(drawerHeader);
         GlideApp.with(this)
@@ -306,8 +287,6 @@ public class MainActivity extends AppCompatActivity
                 .fitCenter()
                 .circleCrop()
                 .into(headerBinding.navDrawerUserImage);
-        Log.i(TAG, "updateUiNavigationDrawerMenu: USER.email::: " + user.getEmail());
-        Log.i(TAG, "updateUiNavigationDrawerMenu: USER.name:::  " + name);
         headerBinding.navDrawerUserEmail.setText(user.getEmail());
         headerBinding.navDrawerUserFullName.setText(name);
     }
@@ -342,7 +321,6 @@ public class MainActivity extends AppCompatActivity
 
     // ____________ Firebase Authentication builder _____________________
     private void startSignInActivity() {
-        Log.i(TAG, "startSignInActivity: START");
         AuthMethodPickerLayout customLayout = new AuthMethodPickerLayout
                 .Builder(R.layout.login_firebase)
                 .setGoogleButtonId(R.id.google_btn)
@@ -382,9 +360,6 @@ public class MainActivity extends AppCompatActivity
                 }
                 startMainActivity();
             } else {
-                // Sign in failed. If response is null the user canceled the
-                // sign-in flow using the back background_facebook_btn. Otherwise check
-                // response.getError().getErrorCode() and handle the error.
                 if (response != null && response.getError() == null) {
                     ViewWidgets.showSnackBar(1, view, getString(R.string.login_filed));
                 }
@@ -448,13 +423,11 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         getLocalAppSettings();
-        Log.i(TAG, "MAIN_ACTIVITY onResume is");
     }
 
     @Override
     protected void onDestroy() {
         mMainActivityViewModel.disposeDisposable();
         super.onDestroy();
-        Log.i(TAG, "MAIN_ACTIVITY onDestroy is");
     }
 }

@@ -17,7 +17,7 @@ public interface GooglePlaceAPI {
      * Request HTTP in Json nearbySearch for list of Restaurants in defined area
      * <p>
      * http example: https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=500&type=restaurant&keyword=cruise&key=YOUR_API_KEY
-     *f
+     *
      * @param location String with current location of User
      * @param radius   double to define the area of research of the restaurant
      * @param key      String API key
@@ -55,9 +55,7 @@ public interface GooglePlaceAPI {
      * Request HTTP
      * (Place Autocomplete[https://developers.google.com/maps/documentation/places/web-service/autocomplete])
      * for Restaurants
-     * <p>
      * example:   https://maps.googleapis.com/maps/api/place/autocomplete/json?key=YOUR_API_KEY&language=fr&input=pizza+near%20par
-     * test: https://maps.googleapis.com/maps/api/place/autocomplete/json?input=Pizza&types=establishment&language=fr&location=37.76999,-122.44696&radius=500&origin=37.76999,-122.44696&strictbounds&key=YOUR_API_KEY
      *
      * KEY String API key
      * @param input String from EditText

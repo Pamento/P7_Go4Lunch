@@ -45,5 +45,4 @@ public class Const {
     public static final String ALARM_ID = "alarm_id";
     public static final int ALARM_MULTIPLE = 1009;
     public static final int ALARM_SINGLE = 1001;
-    public static final int ONE_DAY_IN_MILLIS = 86400000;
 }

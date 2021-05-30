@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
@@ -57,28 +56,29 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:fitsSystemWindows="true"
-        app:itemTextColor="@android:color/white"
-        app:itemTextAppearance="@style/TextAppearance.AppCompat.Medium"
-        app:itemIconTint="@android:color/white"
-        app:itemIconSize="@dimen/size_b"
         android:background="@color/colorPrimary"
+        android:fitsSystemWindows="true"
         app:headerLayout="@layout/navigation_drawer_header"
+        app:itemIconSize="@dimen/size_b"
+        app:itemIconTint="@android:color/white"
+        app:itemTextAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:itemTextColor="@android:color/white"
         app:menu="@menu/drawer_menu">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingBottom="@dimen/size_b">
+
             <ImageView
                 android:id="@+id/go4lunch_Logo"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
-                android:src="@drawable/ic_logo_go4lunch"
                 android:layout_alignParentBottom="true"
                 android:layout_centerInParent="true"
-                android:contentDescription="@string/app_name" />
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/ic_logo_go4lunch" />
         </RelativeLayout>
     </com.google.android.material.navigation.NavigationView>
-
 
 </androidx.drawerlayout.widget.DrawerLayout>

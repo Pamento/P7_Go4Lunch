@@ -24,7 +24,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class MainActivityViewModel extends ViewModel {
-    private static final String TAG = "AUTO_COM";
+
     private final FirebaseUserRepository mFirebaseUserRepo;
     private final GooglePlaceRepository mGooglePlaceRepository;
     private final CompositeDisposable mDisposable = new CompositeDisposable();
@@ -54,7 +54,6 @@ public class MainActivityViewModel extends ViewModel {
 
                     @Override
                     public void onNext(@io.reactivex.annotations.NonNull Result result) {
-                        Log.i(TAG, "MainActivityVM.onNext: result.getName()::: " + result.getName());
                         mGooglePlaceRepository.findRestoForUpdates(result, false);
                     }
 
@@ -91,17 +90,12 @@ public class MainActivityViewModel extends ViewModel {
 
             @Override
             public void onNext(@NonNull List<Restaurant> restaurants) {
-                Log.i(TAG, "MainA__ onNext: restos::: " + restaurants.size());
                 switch (filterType) {
                     case 1:
-                        Log.i(TAG, "MainA__ onNext: FilterRestaurants.byAZ(restaurants) mRestaurants::Bi:: " + mRestaurants.size());
                         mRestaurants = FilterRestaurants.byAZ(restaurants);
-                        Log.i(TAG, "MainA__ onNext: FilterRestaurants.byAZ(restaurants) mRestaurants::Af:: " + mRestaurants.size());
                     case 2:
                     case 3:
-                        Log.i(TAG, "MainA__ onNext: FilterRestaurants.byRating(restaurants, filterType) mRestaurants::Bi:: " + mRestaurants.size());
                         mRestaurants = FilterRestaurants.byRating(restaurants, filterType);
-                        Log.i(TAG, "MainA__ onNext: FilterRestaurants.byRating(restaurants, filterType) mRestaurants::Af:: " + mRestaurants.size());
                         break;
                     case 4:
                         mRestaurants = FilterRestaurants.byDistance(restaurants);
@@ -122,7 +116,6 @@ public class MainActivityViewModel extends ViewModel {
             }
         });
     }
-
 
     public void disposeDisposable() {
         if (mDisposable.isDisposed()) {

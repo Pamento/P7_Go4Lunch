@@ -70,8 +70,4 @@ public class LocalAppSettings {
     public void setNotification(boolean notification) {
         prefs.edit().putBoolean( "notification", notification).apply();
     }
-
-    public void setNotif_recurrence(boolean notif_recurrence) {
-        prefs.edit().putBoolean("repeat", notif_recurrence).apply();
-    }
 }

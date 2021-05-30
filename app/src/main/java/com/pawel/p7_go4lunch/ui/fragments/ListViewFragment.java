@@ -3,7 +3,6 @@ package com.pawel.p7_go4lunch.ui.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,7 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ListViewFragment extends Fragment implements RestaurantAdapter.OnItemRestaurantListClickListener {
-    private static final String TAG = "AUTO_COM";
+
     private RestaurantsViewModel mRestaurantsVM;
     private FragmentListViewBinding mBinding;
     private ProgressBarBinding progressBarBiding;
@@ -59,15 +58,13 @@ public class ListViewFragment extends Fragment implements RestaurantAdapter.OnIt
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        //super.onViewCreated(view, savedInstanceState);
-
         MainActivity mainActivity = (MainActivity) getActivity();
-        mainActivity.updateMenuItems(false);
+        if (mainActivity != null) mainActivity.updateMenuItems(false);
         setAutocompleteEventObserver();
         com.pawel.p7_go4lunch.databinding.WifiOffBinding wifiOffBinding = mBinding.listWifiOff;
-        if (!LocationUtils.isNetworkAvailable()) wifiOffBinding.mapWifiOff.setVisibility(View.VISIBLE);
+        if (!LocationUtils.isNetworkAvailable())
+            wifiOffBinding.mapWifiOff.setVisibility(View.VISIBLE);
         else {
-            Log.i(TAG, "LVF__ onViewCreated: observeRestaurantAPIResponse()");
             setProgressBar();
             observeRestaurantAPIResponse();
         }
@@ -87,11 +84,11 @@ public class ListViewFragment extends Fragment implements RestaurantAdapter.OnIt
     }
 
     private void showToastRestosNr() {
-        Log.i(TAG, "setAutocompleteEventObserver: " + mRestaurants.size());
         String restoFound = view.getResources().getString(R.string.number_resto_found, mRestaurants.size());
         showToast(restoFound);
     }
 
+    // fun: setAutocompleteEventObserver() detect if Autocomplete is in use and at which step
     private void setAutocompleteEventObserver() {
         mRestaurantsVM.getAutoSearchEventList().observe(getViewLifecycleOwner(), autoSearchEvents -> {
             autoEvent = autoSearchEvents;
@@ -134,7 +131,6 @@ public class ListViewFragment extends Fragment implements RestaurantAdapter.OnIt
     }
 
     final Observer<List<Restaurant>> observerRestos = restaurants -> {
-        Log.i(TAG, "LVM__ OB_ observeRestaurantAPIResponse restaurants.size()::: " + restaurants.size());
         mRestaurants = restaurants;
         if (autoEvent.equals(AutoSearchEvents.AUTO_OK)) showToastRestosNr();
         isRestoReceived();
@@ -153,7 +149,6 @@ public class ListViewFragment extends Fragment implements RestaurantAdapter.OnIt
             progressBarBiding.progressBarLayout.setVisibility(View.GONE);
             mMessageNoRestoBinding.messageNoResto.setVisibility(View.VISIBLE);
         } else {
-            Log.i(TAG, "LVM__ isRestoReceived: mRestaurants.isFULL");
             progressBarBiding.progressBarLayout.setVisibility(View.GONE);
             mMessageNoRestoBinding.messageNoResto.setVisibility(View.GONE);
             displayRestoInRecyclerV();
@@ -161,7 +156,6 @@ public class ListViewFragment extends Fragment implements RestaurantAdapter.OnIt
     }
 
     private void setRecyclerView() {
-        Log.i(TAG, "LVF__ setRecyclerView");
         RecyclerView recView = mBinding.restaurantRecyclerView;
         adapter = new RestaurantAdapter(mRestaurants, this);
         recView.setAdapter(adapter);
@@ -171,9 +165,6 @@ public class ListViewFragment extends Fragment implements RestaurantAdapter.OnIt
 
     private void displayRestoInRecyclerV() {
         if (!mRestaurants.isEmpty() || !autoEvent.equals(AutoSearchEvents.AUTO_NULL)) {
-            Log.i(TAG, "LVM__ m_ displayRestoInRecycler: mRestaurants.isFully");
-            Log.i(TAG, "LVM__ m_ displayRestoInRecycler: mRestaurants.size() " + mRestaurants.size());
-            Log.i(TAG, "LVM__ m_ displayRestoInRecycler: AutoSearchEvent " + autoEvent);
             adapter.updateList(mRestaurants);
         }
     }
@@ -188,7 +179,6 @@ public class ListViewFragment extends Fragment implements RestaurantAdapter.OnIt
 
     @Override
     public void onStop() {
-        Log.i(TAG, "LVF__ onStop: UNSUBSCRIBE observable RESTO");
         unsubscribeRestaurants();
         mRestaurantsVM.unsubscribeRestoWithUsers();
         super.onStop();
@@ -196,8 +186,6 @@ public class ListViewFragment extends Fragment implements RestaurantAdapter.OnIt
 
     @Override
     public void onPause() {
-        Log.i(TAG, "LVF__ onPause: unsubscribe observer ?");
-        //unsubscribeRestaurants();
         super.onPause();
     }
 

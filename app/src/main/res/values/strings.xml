@@ -131,7 +131,7 @@
     <string name="about_restaurant_workmates_empty_list">Personne n\'a encore rejoint cet endroit.</string>
 
     <!-- Restaurant list (item of RecyclerView) -->
-    <string name="workmate_number" translatable="false">(%d)</string>
+    <string name="workmate_number" translatable="false">(%x)</string>
     <string name="distance_to_restaurant" translatable="false">%dm</string>
     <string name="open_now">Ouvert à cette heure</string>
     <string name="close_now">Fermé à cette heure</string>

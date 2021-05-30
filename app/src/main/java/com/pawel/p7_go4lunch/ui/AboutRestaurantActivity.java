@@ -35,7 +35,6 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -46,8 +45,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class AboutRestaurantActivity extends AppCompatActivity implements WorkmateAdapter.OnItemClickListener {
-
-    private static final String TAG = "AUTO_COM";
 
     // view
     private AboutRestaurantViewModel mAboutRestaurantVM;
@@ -98,7 +95,6 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
     }
 
     private void initAboutRestaurantViewModel() {
-        Log.i(TAG, "ABOUT__ initAboutRestaurantViewModel: init()");
         ViewModelFactory vmf = Injection.sViewModelFactory();
         mAboutRestaurantVM = new ViewModelProvider(this, vmf).get(AboutRestaurantViewModel.class);
         mAboutRestaurantVM.init();
@@ -114,18 +110,13 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
     }
 
     private void getUser() {
-        Log.i(TAG, "About__ getUser: RUN_RUN_RUN_____________________RUN");
         mAboutRestaurantVM.getUser().observe(this, user -> {
             if (user != null) {
-                Log.i(TAG, "About__ getUser: in __ ::: " + user.getEmail());
                 mUser = user;
-                Log.i(TAG, "getUser: user: " + user.toString());
                 if (user.getFavoritesRestaurants() != null)
                     favoritesResto = user.getFavoritesRestaurants();
                 if (isCalledFromGoogleMap()) getRestaurantFromGoogleMap();
                 else getRestaurantFromUser();
-            } else {
-                Log.i(TAG, "getUser: User is not there");
             }
         });
     }
@@ -200,7 +191,6 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
     }
 
     private void setUiAboutRestaurant() {
-        Log.i(TAG, "ABOUT__ setUiAboutRestaurant: RUN");
         if (mThisRestaurant != null) {
             // name
             if (mThisRestaurant.getName().isEmpty()) {
@@ -217,28 +207,23 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
             // rating
 //            double starsRange = Math.round(mThisRestaurant.getRating() * 3 / 5);
             double starsRange = mThisRestaurant.getRating();
-            Log.i(TAG, "ABOUT__ setUiAboutRestaurant: starsRange::: " + starsRange);
             switch ((int) starsRange) {
                 case 1:
-                    Log.i(TAG, "ABOUT__ setUiAboutRestaurant: case 1");
                     mScrolBinding.aboutTheRestStar1.setImageDrawable(ic_full_star);
                     mScrolBinding.aboutTheRestStar2.setImageDrawable(ic_empty_star);
                     mScrolBinding.aboutTheRestStar3.setImageDrawable(ic_empty_star);
                     break;
                 case 2:
-                    Log.i(TAG, "ABOUT__ setUiAboutRestaurant: case 2");
                     mScrolBinding.aboutTheRestStar1.setImageDrawable(ic_full_star);
                     mScrolBinding.aboutTheRestStar2.setImageDrawable(ic_full_star);
                     mScrolBinding.aboutTheRestStar3.setImageDrawable(ic_empty_star);
                     break;
                 case 3:
-                    Log.i(TAG, "ABOUT__ setUiAboutRestaurant: case 3");
                     mScrolBinding.aboutTheRestStar1.setImageDrawable(ic_full_star);
                     mScrolBinding.aboutTheRestStar2.setImageDrawable(ic_full_star);
                     mScrolBinding.aboutTheRestStar3.setImageDrawable(ic_full_star);
                     break;
                 default:
-                    Log.i(TAG, "ABOUT__ setUiAboutRestaurant: default");
                     mScrolBinding.aboutTheRestStar1.setImageDrawable(ic_empty_star);
                     mScrolBinding.aboutTheRestStar2.setImageDrawable(ic_empty_star);
                     mScrolBinding.aboutTheRestStar3.setImageDrawable(ic_empty_star);
@@ -251,17 +236,7 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
         if (!LocationUtils.isNetworkAvailable()) mWifiOffBinding.mapWifiOff.setVisibility(View.VISIBLE);
         else {
             mAboutRestaurantVM.getUsersWithTheSameRestaurant(restaurantId).get().addOnCompleteListener(task -> {
-                Log.i(TAG, "ABOUT__ setRecyclerViewWorkmates: inside OnCompleteListener + task");
-                Log.i(TAG, "ABOUT__ setRecyclerViewWorkmates: inside OnCompleteListener. NON__conditions:");
-                Log.i(TAG, "ABOUT__ setRecyclerViewWorkmates: inside OnCompleteListener::: task.successful()::: " + task.isSuccessful());
-                Log.i(TAG, "ABOUT__ setRecyclerViewWorkmates: inside OnCompleteListener::: task.getResult().isEmpty()::: " + task.getResult().isEmpty());
-                Log.i(TAG, "ABOUT__ setRecyclerViewWorkmates: inside OnCompleteListener::: task.getResult().size()::: " + task.getResult().size());
                 if (task.isSuccessful() && task.getResult().isEmpty()) {
-                    Log.i(TAG, "ABOUT__ setRecyclerViewWorkmates: inside OnCompleteListener.if__conditions:");
-                    Log.i(TAG, "ABOUT__ setRecyclerViewWorkmates: inside OnCompleteListener::: task.successful()::: " + task.isSuccessful());
-                    Log.i(TAG, "ABOUT__ setRecyclerViewWorkmates: inside OnCompleteListener::: task.getResult().isEmpty()::: " + task.getResult().isEmpty());
-                    Log.i(TAG, "ABOUT__ setRecyclerViewWorkmates: inside OnCompleteListener::: task.getResult().size()::: " + task.getResult().size());
-
                     mScrolBinding.aboutTheRestWorkmatesListEmpty.setVisibility(View.VISIBLE);
                 }
             });
@@ -283,17 +258,13 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
 
     private void checkIfThisRestaurantIsFavorite() {
         isLiked = false;
-        Log.i(TAG, "checkIfThisRestaurantIsFavorite: ");
         if (favoritesResto != null) {
-            Log.i(TAG, "checkIfThisRestaurantIsFavorite: in if ");
             for (int i = 0; i < favoritesResto.size(); i++) {
                 if (favoritesResto.get(i).equals(mThisRestaurant.getPlaceId())) {
                     isLiked = true;
                 }
             }
         }
-        Log.i(TAG, "checkIfThisRestaurantIsFavorite: isLiked ::: " + isLiked);
-
         updateIconLike();
     }
 
@@ -328,7 +299,6 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
     }
 
     private void updateIconLike() {
-        Log.i(TAG, "updateIconLike: isLiked ? " + isLiked);
         mScrolBinding.aboutTheRestTxLike
                 .setCompoundDrawablesRelativeWithIntrinsicBounds(null, isLiked ? ic_Like : ic_notLike, null, null);
     }
@@ -401,7 +371,6 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
     }
 
     private void setRemainderOnce(String h) {
-        Log.i(TAG, "setRemainderOnce: isNotification _:_" + mAppSettings.isNotification());
         if (!mAppSettings.isNotification()) {
             ViewWidgets.showSnackBar(1,view,getString(R.string.notification_disabled_warning));
         }
@@ -428,12 +397,10 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
 
     @Override
     protected void onPause() {
-        Log.i(TAG, "onPause: AboutRestaurantActivity");
         super.onPause();
         if (mUser != null && mThisRestaurant != null) {
             if (isChosen) {
                 mThisRestaurant.setDateCreated(new Date());
-                Log.i(TAG, "onPause: isNotification _:_" + mAppSettings.isNotification());
                 if (!mAppSettings.isNotification()) mAppSettings.setNotification(true);
                 setRemainder();
                 mAboutRestaurantVM.updateUserRestaurant(mUser.getUid(), mThisRestaurant);
@@ -445,8 +412,6 @@ public class AboutRestaurantActivity extends AppCompatActivity implements Workma
     private void setRemainder() {
         // if the alarm was set delete it for give the place for next one
         cancelAlarm();
-        Log.i(TAG, "setRemainder: isNotification _:_" + mAppSettings.isNotification());
-        Log.i(TAG, "setRemainder: ____at ::: " + mAppSettings.getHour());
         if (mAppSettings.isNotif_recurrence()) setMultiRemainder(mAppSettings.getHour());
         else setRemainderOnce(mAppSettings.getHour());
     }

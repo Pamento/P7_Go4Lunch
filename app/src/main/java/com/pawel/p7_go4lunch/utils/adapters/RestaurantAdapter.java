@@ -1,7 +1,6 @@
 package com.pawel.p7_go4lunch.utils.adapters;
 
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,7 @@ import com.pawel.p7_go4lunch.utils.GlideApp;
 import java.util.List;
 
 public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder> {
-    private static final String TAG = "AUTO_COM";
+
     private final List<Restaurant> mRestaurants;
     private final OnItemRestaurantListClickListener mListClickListener;
 
@@ -44,7 +43,12 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
         String w = "";
         if (restaurant.getUserList() != null) {
             n = restaurant.getUserList().size();
-            w = holder.itemView.getResources().getString(R.string.workmate_number, restaurant.getUserList().size());
+            w = holder.itemView.getResources().getString(R.string.workmate_number, n);
+        }
+        holder.restaurantWorkmatesNumber.setText(w);
+        if (n > 0) {
+            holder.restaurantWorkmatesNumber.setVisibility(View.VISIBLE);
+            holder.workmatesIcon.setVisibility(View.VISIBLE);
         }
         String h = holder.itemView.getResources().getString(R.string.close_now);
         if (restaurant.getOpeningHours() != null && restaurant.getOpeningHours().getOpenNow()) {
@@ -57,14 +61,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
         holder.restaurantName.setText(restaurant.getName());
         holder.restaurantAddress.setText(restaurant.getAddress());
         holder.restaurantDistanceFromUser.setText(d);
-        if (n > 0)
-            holder.restaurantWorkmatesNumber.setText(w);
-        else {
-            holder.restaurantWorkmatesNumber.setVisibility(View.GONE);
-            holder.workmatesIcon.setVisibility(View.GONE);
-        }
-
-        holder.restaurantRatingBar.setRating((float)restaurant.getRating());
+        holder.restaurantRatingBar.setRating((float) restaurant.getRating());
         // Restaurant image
         GlideApp.with(holder.restaurantImage.getContext())
                 .load(restaurant.getImage())
@@ -79,13 +76,8 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
     }
 
     public void updateList(List<Restaurant> restos) {
-        Log.i(TAG, "R_adapter__ updateList: restos.size() " + restos.size());
-        Log.i(TAG, "R_adapter__ updateList: mRestaurants.size(Be) " + mRestaurants.size());
         this.mRestaurants.clear();
-        Log.i(TAG, "R_adapter__ updateList: mRestaurants.size(--) " + mRestaurants.size());
-        Log.i(TAG, "R_adapter__ updateList: restos.size(Af) " + restos.size());
         this.mRestaurants.addAll(restos);
-        Log.i(TAG, "R_adapter__ updateList: mRestaurants.size(Af) " + mRestaurants.size());
         this.notifyDataSetChanged();
     }
 
@@ -101,7 +93,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
         AppCompatRatingBar restaurantRatingBar;
         OnItemRestaurantListClickListener mOnItemRestaurantListClickListener;
 
-        public RestaurantViewHolder(@NonNull ItemRestaurantBinding vBinding, OnItemRestaurantListClickListener onItemRestaurantListClickListener ) {
+        public RestaurantViewHolder(@NonNull ItemRestaurantBinding vBinding, OnItemRestaurantListClickListener onItemRestaurantListClickListener) {
             super(vBinding.getRoot());
             restaurantName = vBinding.listRestaurantName;
             restaurantAddress = vBinding.listRestaurantAddress;

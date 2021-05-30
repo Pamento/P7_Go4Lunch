@@ -83,11 +83,9 @@ public class MapViewFragment extends Fragment
     private Activity mActivity;
     private List<Restaurant> mRestaurants = new ArrayList<>();
     private AutoSearchEvents autoEvent = AutoSearchEvents.AUTO_NULL;
-    private static final String TAG = "AUTO_COM";
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        Log.i(TAG, "MVF__ onCreateView: ");
         initViewModel();
         mBinding = FragmentMapViewBinding.inflate(inflater, container, false);
         mWifiOffBinding = mBinding.msWifiOff;
@@ -96,7 +94,6 @@ public class MapViewFragment extends Fragment
         if ((mActivity != null) && (mAppSettings == null)) getLocalAppSettings(mActivity);
         initMap();
         mCache = InMemoryRestosCache.getInstance();
-        Log.i(TAG, "MVF__ onCreateView: updateMenuItems(true);");
         MainActivity mainActivity = (MainActivity) getActivity();
         mainActivity.updateMenuItems(true);
         setAutocompleteEventObserver();
@@ -122,14 +119,12 @@ public class MapViewFragment extends Fragment
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Log.i(TAG, "MVF__ onMapReady");
         this.mGoogleMaps = googleMap;
         mGoogleMaps.setOnMarkerClickListener(this);
         mRestaurantsVM.setGoogleMap(googleMap);
         Permissions.check(requireContext(), Const.PERMISSIONS, null, null, new PermissionHandler() {
             @Override
             public void onGranted() {
-                Log.i(TAG, "MVF__ onGranted: PERMISSIONS");
                 initMapRestaurant();
             }
         });
@@ -142,7 +137,6 @@ public class MapViewFragment extends Fragment
     }
 
     private void showToastRestosNr() {
-        Log.i(TAG, "MVF__ showToastRestosNr.setAutocompleteEventObserver: " + mRestaurants.size());
         String restoFound = view.getResources().getString(R.string.number_resto_found, mRestaurants.size());
         showToast(restoFound);
     }
@@ -180,8 +174,6 @@ public class MapViewFragment extends Fragment
         public void onChanged(Location location) {
             if (location != null) {
                 updateLocationAndPosition(location, mAppSettings.getRadius());
-                Log.i(TAG, "MVF__ m_initMapRestaurant.getLocation: " + location);
-                Log.i(TAG, "onChanged: AutoSearchEvent::: " + autoEvent);
                 if (autoEvent.equals(AutoSearchEvents.AUTO_NULL)) {
                     getRestaurantFromSource();
                 } else {
@@ -198,7 +190,6 @@ public class MapViewFragment extends Fragment
     };
 
     private void getRestaurantFromSource() {
-        Log.i(TAG, "MVF__ getRestaurantFromSource: && REMOVE___OBSERVER-LOCATION");
         mRestaurantsVM.getRestosFromCacheOrNetwork();
         removeGetLocationObserver();
     }
@@ -214,7 +205,6 @@ public class MapViewFragment extends Fragment
                 //ViewWidgets.showSnackBar(0, view, getResources().getString(R.string.current_location_not_found));
                 LocationUtils.LocationDisabledDialog.newInstance().show(mFragmentActivity.getSupportFragmentManager(), "dialog");
             } else {
-                Log.i(TAG, "MVF__ m_onViewModelReadySetObservers.observeLocation " + location);
                 // moveCamera to go back on User current position, without any other action
                 updateLocationAndPosition(location, mAppSettings.getRadius());
             }
@@ -223,37 +213,20 @@ public class MapViewFragment extends Fragment
 
     private void initMapRestaurant() {
         if (mAppSettings.isLocalisation()) {
-            Log.i(TAG, "MVF__ START initMapRestaurant: :if ");
             Objects.requireNonNull(LocationUtils.getCurrentDeviceLocation()).observe(getViewLifecycleOwner(), getLocation);
         } else {
             ViewWidgets.showSnackBar(1, view, getString(R.string.ask_location_local_settings_message));
         }
-        // get automatically & unrepentantly of user will the position of device
-        // Set blue point (mark) of user position. "true" is visible; "false" is hidden.
-        //mMap.setMyLocationEnabled(true);
-        // Disable icon of the center location
-        //mMap.getUiSettings().setMyLocationButtonEnabled(false);
-//        mGoogleMaps.setOnCameraMoveListener(() -> {
-//            Log.i(TAG, "initMapRestaurant: CAMERA MOVED");
-//            mGoogleMaps.setOnCameraMoveCanceledListener(() -> {
-//                Log.i(TAG, "initMapRestaurant: CAMERA _STOPPED");
-//            });
-//        });
     }
 
     private void onViewModelReadySetObservers() {
         mBinding.fabCurrentLocation.setVisibility(View.VISIBLE);
-        mBinding.fabCurrentLocation.setOnClickListener(v -> {
-            Log.i(TAG, "MVF__ initMapRestaurant: FAB_OnClick");
-            Objects.requireNonNull(LocationUtils.getCurrentDeviceLocation()).observe(getViewLifecycleOwner(), observeLocation);
-        });
+        mBinding.fabCurrentLocation.setOnClickListener(v ->
+                Objects.requireNonNull(LocationUtils.getCurrentDeviceLocation()).observe(getViewLifecycleOwner(), observeLocation));
     }
 
     Observer<List<Restaurant>> mObserverRestos = restaurants -> {
-        Log.i(TAG, "MVF__ .OBSERVER.observeRestaurantAPIResponse");
         if (restaurants != null) {
-            Log.i(TAG, "MVF__ .OBSERVER.observeRestaurantAPIResponse: resto.size() " + restaurants.size());
-            Log.i(TAG, "MVF__ .OBSERVER.observeRestaurantAPIResponse: autoEvent::: " + autoEvent);
             mRestaurants = restaurants;
             if (autoEvent.equals(AutoSearchEvents.AUTO_OK)) showToastRestosNr();
             setRestaurantMarksOnMap();
@@ -262,41 +235,31 @@ public class MapViewFragment extends Fragment
 
     // Observe restos in RestaurantViewModel
     private void observeGetRestaurants() {
-        Log.i(TAG, "MVF__ observeGetRestaurants: set__ OBSERVER: START");
         mRestaurantsVM.getRestaurantWithUsers().observe(getViewLifecycleOwner(), mObserverRestos);
     }
-
 
     private void unsubscribeRestaurants() {
         mRestaurantsVM.getRestaurantWithUsers().removeObserver(mObserverRestos);
     }
 
     private void unsubscribeLocation() {
+        // or         if (Objects.requireNonNull(LocationUtils.getCurrentDeviceLocation()).hasObservers()) ?
         if (Objects.requireNonNull(LocationUtils.getCurrentDeviceLocation()).hasActiveObservers()) {
-            Log.i(TAG, "unsubscribeLocation: OOOOOOOOOOOOOOOOOOOOOOOOOO__ has Active_ observer OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
-            Log.i(TAG, "unsubscribeLocation: has ACTIVE observer");
             Objects.requireNonNull(LocationUtils.getCurrentDeviceLocation()).removeObserver(observeLocation);
-        }
-        if (Objects.requireNonNull(LocationUtils.getCurrentDeviceLocation()).hasObservers()) {
-            Log.i(TAG, "unsubscribeLocation: OOOOOOOOOOOOOOOOOOOOOOOOOOOO__ hasObserver __OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
-            Log.i(TAG, "unsubscribeLocation: has Observer");
         }
     }
 
     private void setRestaurantMarksOnMap() {
         if (mGoogleMaps == null) mGoogleMaps = mRestaurantsVM.getGoogleMap();
         if (mRestaurants.isEmpty()) {
-            Log.i(TAG, "MVF__ setRestaurantMarksOnMap:  isEmpty:::::::: ");
             if (mGoogleMaps != null) mGoogleMaps.clear();
         } else {
-            Log.i(TAG, "MVF__ setRestaurantMarksOnMap: MARKERS ___google mRestaurants[].size() " + mRestaurants.size());
             mGoogleMaps.clear();
             for (Restaurant rst : mRestaurants) {
                 if (rst != null) {
-                    Log.i(TAG, "setRestaurantMarksOnMap: in FOR::>> rst(!null)::: rst.getUserlist().size()::: " + rst.getUserList().size());
                     LatLng latLng = new LatLng(rst.getLocation().getLat(), rst.getLocation().getLng());
                     Marker marker;
-                    if (rst.getUserList().size() > 0) {
+                    if (rst.getUserList() != null && rst.getUserList().size() > 0) {
                         marker = mGoogleMaps.addMarker(new MarkerOptions()
                                 .position(latLng)
                                 .title(rst.getName())
@@ -317,11 +280,9 @@ public class MapViewFragment extends Fragment
     public boolean onMarkerClick(Marker marker) {
         if (marker.getTag() != null) {
             String placeId = marker.getTag().toString();
-            Log.i(TAG, "START onMarkerClick: " + placeId);
 
             for (Restaurant rst : mRestaurants) {
                 if (rst.getPlaceId().equals(placeId)) {
-                    Log.i(TAG, "onMarkerClick: foreach placeId " + rst.toString());
                     Intent intent = new Intent(getActivity(), AboutRestaurantActivity.class);
                     intent.putExtra(Const.EXTRA_KEY_RESTAURANT, placeId);
                     startActivity(intent);
@@ -338,7 +299,6 @@ public class MapViewFragment extends Fragment
     }
 
     private void getLocalAppSettings(Activity activity) {
-        Log.i(TAG, "MVF__ getLocalAppSettings: FIRED");
         mAppSettings = new LocalAppSettings(activity);
     }
 
@@ -347,31 +307,23 @@ public class MapViewFragment extends Fragment
         super.onStart();
         mFragmentActivity = getActivity();
         mAppSettings = new LocalAppSettings(mActivity);
-        Log.i(TAG, "MVF__ onStart: mPrefs ? " + mAppSettings);
 
         // On back to MapFragment check if radius of search has changed
         if (mCache.getRadius() != 0 && (mCache.getRadius() != mAppSettings.getRadius())) {
-            Log.i(TAG, "MVF__ onStart: RUN __if USER HAS CHANGED RADIUS IN settings LOCAL.");
-            Log.i(TAG, "MVF__ onStart: old radius:::: " + mCache.getRadius());
-            Log.i(TAG, "MVF__ onStart: new radius:::: " + mAppSettings.getRadius());
             updateRestaurantQueryToRadius(mCache.getRadius(), mAppSettings.getRadius());
             mCache.setRadius(mAppSettings.getRadius());
         }
     }
 
     private void updateRestaurantQueryToRadius(int previousRadius, int currentRadius) {
-        // old 500 - new 1000
         if ((previousRadius - currentRadius) < 0) {
-            Log.i(TAG, "MVF__ if __updateRestaurantQueryToRadius: previousRadius::: " + previousRadius + ", currentRadius::-:: " + currentRadius);
             mRestaurantsVM.streamGetRestaurantNearbyAndDetail(mRestaurantsVM.getCurrentLocStr(), mAppSettings.getRadius());
         } else {
-            Log.i(TAG, "MVF__ else __updateRestaurantQueryToRadius: previousRadius::: " + previousRadius + ", currentRadius::+:: " + currentRadius);
             mRestaurantsVM.getRestosFromCache(currentRadius);
         }
     }
 
     protected void createLocationRequest() {
-        Log.i(TAG, "MVF__ createLocationRequest: ");
         locationRequest = LocationRequest.create();
         locationRequest.setInterval(10000);
         locationRequest.setFastestInterval(5000);
@@ -383,10 +335,7 @@ public class MapViewFragment extends Fragment
         SettingsClient client = LocationServices.getSettingsClient(requireActivity());
         Task<LocationSettingsResponse> task = client.checkLocationSettings(builder.build());
 
-        task.addOnSuccessListener(locationSettingsResponse -> {
-            startLocationUpdates();
-            Log.i(TAG, "MVF__ onSuccess: response " + locationSettingsResponse.toString());
-        });
+        task.addOnSuccessListener(locationSettingsResponse -> startLocationUpdates());
         task.addOnFailureListener(e -> {
             if (e instanceof ResolvableApiException) {
                 // Location settings are not satisfied, but this can be fixed
@@ -409,14 +358,10 @@ public class MapViewFragment extends Fragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == Const.REQUEST_CHECK_SETTINGS) {
-            Log.i(TAG, "MVF__ onActivityResult: " + data);
-        }
         ViewWidgets.showSnackBar(1, view, getString(R.string.fail_ask_gps_signal));
     }
 
     private void startLocationUpdates() {
-        Log.i(TAG, "MVF__ START startLocationUpdates: ");
         if (fusedLocationProviderClient == null) setFusedLocationProviderClient();
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -439,17 +384,12 @@ public class MapViewFragment extends Fragment
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i(TAG, "onCreate: Start LOCATION____CALLBACK");
         // if need more check if/else see https://developer.android.com/training/location/request-updates#save-state
         locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(@NotNull LocationResult locationResult) {
-                if (locationResult == null) {
-                    return;
-                }
                 for (Location location : locationResult.getLocations()) {
                     updateLocationAndPosition(location, mAppSettings.getRadius());
-                    Log.i(TAG, "onChanged: AutoSearchEvent::: " + autoEvent);
                     if (autoEvent.equals(AutoSearchEvents.AUTO_NULL)) {
                         getRestaurantFromSource();
                     }
@@ -464,22 +404,8 @@ public class MapViewFragment extends Fragment
         mCache.setRadius(radius);
     }
 
-/*    @Override
-    public void onLocationChanged(@NotNull Location location) {
-    // need implement         com.google.android.gms.location.LocationListener,
-        Log.i(TAG, "MVF__ onLocationChanged: USER HAS MOVED !____!_____!_____!_____!!");
-        LatLng initialLatLng = mRestaurantsVM.getInitialLatLng();
-        Location oldLocation = new Location("");
-        oldLocation.setLatitude(initialLatLng.latitude);
-        oldLocation.setLongitude(initialLatLng.longitude);
-        if (oldLocation.distanceTo(location) >= 300) {
-            // We reset the limit guard of initial location
-        }
-    }*/
-
     @Override
     public void onPause() {
-        Log.i(TAG, "MVF__ onPause");
         stopLocationUpdates();
         mRestaurantsVM.unsubscribeRestoWithUsers();
         super.onPause();
@@ -487,7 +413,6 @@ public class MapViewFragment extends Fragment
 
     @Override
     public void onStop() {
-        Log.i(TAG, "MVF__ onStop: UNSUBSCRIBE observable RESTO");
         unsubscribeRestaurants();
         super.onStop();
     }
@@ -501,7 +426,6 @@ public class MapViewFragment extends Fragment
 
     @Override
     public void onDestroy() {
-        Log.i(TAG, "MVF__ onDestroy: is");
         mRestaurantsVM.disposeDisposable();
         super.onDestroy();
     }

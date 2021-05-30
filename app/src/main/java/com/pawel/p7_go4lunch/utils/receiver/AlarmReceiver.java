@@ -3,7 +3,6 @@ package com.pawel.p7_go4lunch.utils.receiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -22,8 +21,6 @@ import static com.pawel.p7_go4lunch.utils.Const.ALARM_MULTIPLE;
 import static com.pawel.p7_go4lunch.utils.Const.ALARM_SINGLE;
 
 public class AlarmReceiver extends BroadcastReceiver {
-
-    private static final String TAG = "AUTO_COM";
 
     private Context context;
     private final NotificationData notifData = NotificationData.getInstance();
@@ -48,9 +45,10 @@ public class AlarmReceiver extends BroadcastReceiver {
     private void getResto(String uid) {
         FirebaseUserRepository.getInstance().getUser(uid).addOnSuccessListener(documentSnapshot -> {
             User user = documentSnapshot.toObject(User.class);
-            Restaurant r = user.getUserRestaurant();
+            Restaurant r = new Restaurant();
+            if (user != null) r = user.getUserRestaurant();
             notifData.setRestaurant(r);
-            getWorkmates(r.getPlaceId());
+            if (r != null) getWorkmates(r.getPlaceId());
         });
     }
 
@@ -70,9 +68,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     }
 
     private void checkForNextNotif() {
-        Log.i(TAG, "NOTIF_NEXT_ALARM_CHECK__ checkForNextNotif: Settings.isNotif_recurrence ? _" + mAppSettings.isNotif_recurrence());
         int alarmId = mIntent.getIntExtra(Const.ALARM_ID, -1);
-        Log.i(TAG, "checkForNextNotif: alarmId from PendingIntent :__:: " + alarmId);
         // If in Setting of this app the alarm repeating is set to false, do: cancelAlarm()
         // because the ALARM_SINGLE it run only once.
         if (!(mAppSettings.isNotif_recurrence() && alarmId == ALARM_MULTIPLE)) {
@@ -80,7 +76,6 @@ public class AlarmReceiver extends BroadcastReceiver {
         }
         // Recurrence of notification was changed between set of alarm and display of notification
         if (mAppSettings.isNotif_recurrence() && alarmId == ALARM_SINGLE) {
-            Log.i(TAG, "checkForNextNotif: _*_*_*_*_*___mAppSettings.isNotif_recurrence() && alarmId == ALARM_SINGLE ");
             AlarmService.startRepeatedAlarm(mAppSettings.getHour());
         }
         if (!mAppSettings.isNotif_recurrence()) {

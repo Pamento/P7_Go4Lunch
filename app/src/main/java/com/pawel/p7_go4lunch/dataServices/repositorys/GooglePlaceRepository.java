@@ -1,7 +1,6 @@
 package com.pawel.p7_go4lunch.dataServices.repositorys;
 
 import android.location.Location;
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -17,11 +16,9 @@ import com.pawel.p7_go4lunch.model.googleApiPlaces.RestaurantResult;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.Result;
 import com.pawel.p7_go4lunch.model.googleApiPlaces.SingleRestaurant;
 import com.pawel.p7_go4lunch.utils.AutoSearchEvents;
-import com.pawel.p7_go4lunch.utils.Tools;
 import com.pawel.p7_go4lunch.utils.helpers.RestaurantsHelper;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -31,7 +28,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class GooglePlaceRepository {
-    private static final String TAG = "AUTO_COM";
+
     private static volatile GooglePlaceRepository instance;
     private static String mCurrentLocation;
     private final GooglePlaceAPI mGooglePlaceAPIService;
@@ -50,19 +47,15 @@ public class GooglePlaceRepository {
     }
 
     public void setRestaurantLiveData(List<Restaurant> restaurants) {
-        Log.i(TAG, "GR__setRestaurantLiveData: from CACHE ::: " + restaurants.size());
         mRestaurantLiveData.setValue(restaurants);
-        Log.i(TAG, "GR__setRestaurantLiveData: mRestaurantLiveData ::: " + mRestaurantLiveData.getValue().size());
     }
 
     public void setRestaurantLiveData(boolean isNearby) {
         if (isNearby) {
-            Log.i(TAG, "GR__setRestaurantLiveData: from NET");
             mRestaurantLiveData.setValue(mRestaurants);
             mCache.cacheRestoInMemory(mRestaurants);
             mCache.setLocation(mCrntLocation);
         } else {
-            Log.i(TAG, "GR__setRestaurantLiveData: from AUTO_COM");
             mRestaurantLiveData.setValue(mRestaurantsAutoCom);
         }
     }
@@ -130,7 +123,6 @@ public class GooglePlaceRepository {
     }
 
     public Observable<Result> getRestaurantNearby(String location, int radius) {
-        Log.i(TAG, "GPR__ getRestaurantNearby: ");
         return streamGetRestaurantsNearby(location, radius)
                 .map(RestaurantResult::getResults)
                 .concatMap(results -> {
@@ -144,16 +136,11 @@ public class GooglePlaceRepository {
         return streamAutocompletePlaces(input, lang, radius, location, origin)
                 .map(autoResponse -> {
                     String s = autoResponse.getStatus();
-                    Log.i(TAG, "getRestoAutocompleteBy: getStatus( " + autoResponse.getStatus());
-                    Log.i(TAG, "getRestoAutocompleteBy: local string == " + s);
                     if (s.equals("OK")) {
-                        Log.i(TAG, "getRestoAutocompleteBy: OK");
                         GooglePlaceRepository.this.setAutoSearchEvents(AutoSearchEvents.AUTO_OK);
                     } else if (s.equals("ZERO_RESULTS")) {
-                        Log.i(TAG, "getRestoAutocompleteBy: ZERO");
                         GooglePlaceRepository.this.setAutoSearchEvents(AutoSearchEvents.AUTO_ZERO_RESULT);
                     } else {
-                        Log.e(TAG, "getRestoAutocompleteBy: ERROR");
                         GooglePlaceRepository.this.setAutoSearchEvents(AutoSearchEvents.AUTO_ERROR);
                     }
                     return autoResponse.getPredictions();
@@ -170,7 +157,6 @@ public class GooglePlaceRepository {
     }
 
     public Observable<Result> getRestaurantDetails(String placeId) {
-        Log.i(TAG, "GooglePlaceRepository.getRestaurantDetails: placeId:: " + placeId);
         return mGooglePlaceAPIService.getDetailsOfResto(placeId)
                 .map(SingleRestaurant::getResult);
     }
@@ -183,12 +169,10 @@ public class GooglePlaceRepository {
 
     // ................................................................. UTILS FUNCTIONS
     private void setRestaurantsNearby(List<Result> results) {
-        Log.i("SEARCH", "setRestaurantsNearby: " + results.size());
         for (Result r : results) {
             Restaurant res = createRestaurant(r);
             if (res != null) {
                 if (mRestaurants.contains(res)) {
-                    Log.i(TAG, "setRestaurantsNearby: the same. Id::: " + res.getPlaceId());
                     mRestaurants.set(mRestaurants.indexOf(res), res);
                 } else {
                     mRestaurants.add(res);
@@ -217,7 +201,6 @@ public class GooglePlaceRepository {
     }
 
     private void updateRestoWithDetails(Result result, Restaurant rcp) {
-        Log.i(TAG, "GooglePlaceRepository.updateRestoWithDetails: ");
         if (result != null) {
             Restaurant updated = mRestaurantsHelper.updateWithDetail(result, rcp);
             mRestaurantsAutoCom.set(mRestaurantsAutoCom.indexOf(rcp), updated);
@@ -242,7 +225,6 @@ public class GooglePlaceRepository {
         // First, reset previous value of mRestaurantsAutoCom.
         mRestaurantsAutoCom = new ArrayList<>();
         if (predictions != null) {
-            Log.i(TAG, "GR__ setRestoFromPredictions:size N° " + predictions.size());
             mRestaurantsAutoCom.addAll(mRestaurantsHelper.setRestoFromPredictions(predictions));
         }
     }

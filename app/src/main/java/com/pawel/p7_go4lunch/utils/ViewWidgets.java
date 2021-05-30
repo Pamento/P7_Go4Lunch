@@ -15,13 +15,12 @@ public abstract class ViewWidgets {
      */
     public static void showSnackBar(int actionID, View view, String message) {
 
+        Snackbar snackbar;
         if (actionID == 1) {
-
-            Snackbar snackbar = Snackbar
+            snackbar = Snackbar
                     .make(view, message, Snackbar.LENGTH_INDEFINITE)
                     .setAction(R.string.snack_action_btn, v -> {
-//                        Snackbar snackBarError = Snackbar.make(view, R.string.thanks, Snackbar.LENGTH_SHORT);
-//                        snackBarError.show();
+                        // Set the "OK" button, is for be sur that the user get the message
                     })
                     .setActionTextColor(Color.WHITE);
 
@@ -29,11 +28,9 @@ public abstract class ViewWidgets {
             TextView textView = snackView.findViewById(com.google.android.material.R.id.snackbar_text);
             textView.setTextColor(Color.YELLOW);
 
-            snackbar.show();
-
         } else {
-            Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG);
-            snackbar.show();
+            snackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG);
         }
+        snackbar.show();
     }
 }

@@ -1,7 +1,5 @@
 package com.pawel.p7_go4lunch.dataServices.repositorys;
 
-import android.util.Log;
-
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -49,10 +47,7 @@ public class FirebaseUserRepository {
     }
 
     public Query getUsersWithTheSameRestaurant(String restoId) {
-        Log.i("AUTO_COM", "getUsersWithTheSameRestaurant: restoId::: " + restoId);
         return userRepository.whereNotEqualTo("userRestaurant", null).whereEqualTo("userRestaurant.placeId", restoId);
-                //.whereArrayContains("placeId", restoId);
-//                .whereEqualTo("placeId", restoId);
     }
 
     public Query getUsersWithChosenRestaurant() {
@@ -61,20 +56,10 @@ public class FirebaseUserRepository {
 
     // ................................................................................... UPDATE
     public void updateUserRestaurant(String uid, Restaurant chosenRestaurant) {
-        Log.i("SEARCH", "updateUserRestaurant: " + chosenRestaurant);
         userRepository.document(uid).update("userRestaurant", chosenRestaurant);
     }
 
     public void updateUserFavoritesRestaurant(String uid, List<String> favoritesRestaurants) {
         userRepository.document(uid).update("favoritesRestaurants", favoritesRestaurants);
     }
-
-//    public Task<Void> updateUser(String uid, User user) {
-//        return userRepository.document(uid).update(user);
-//    }
-
-    // ................................................................................... DELETE
-//    public Task<Void> deleteUser(String uid) {
-//        return userRepository.document(uid).delete();
-//    }
 }

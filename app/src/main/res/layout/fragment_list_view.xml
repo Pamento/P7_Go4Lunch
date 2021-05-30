@@ -24,7 +24,6 @@
             tools:listitem="@layout/item_restaurant" />
     </LinearLayout>
 
-
     <include
         android:id="@+id/list_wifi_off"
         layout="@layout/wifi_off" />

@@ -30,7 +30,6 @@ public class AboutRestaurantViewModel extends ViewModel {
 
     public void init() {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        Log.i("AUTO_COM", "AboutVM__ init: ");
         if (firebaseUser != null) getUserFromFirestore(firebaseUser.getUid());
     }
 
@@ -62,7 +61,7 @@ public class AboutRestaurantViewModel extends ViewModel {
     }
 
     protected OnFailureListener onFailureListener() {
-        return e -> Log.e("GET_USER", "onFailure: ", e);
+        return e -> Log.e("ERROR", "Failure on GET USER from Firestore: ", e);
     }
 
 }

@@ -28,7 +28,8 @@ public class Go4Lunch extends MultiDexApplication {
             );
             channel1.setDescription(Const.VERBOSE_NOTIF_CHANNEL_DESCRIPT);
             NotificationManager manager = getSystemService(NotificationManager.class);
-            manager.createNotificationChannel(channel1);
+            if (manager != null)
+                manager.createNotificationChannel(channel1);
         }
     }
 
